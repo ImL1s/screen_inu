@@ -72,3 +72,43 @@ pub fn run() {
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::io::Read;
+    use std::path::PathBuf;
+
+    #[test]
+    fn test_perform_ocr() {
+        // Construct path to the sample image in the tests directory
+        let mut d = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+        d.push("tests/sample_ocr.png");
+
+        println!("Testing OCR with image at: {:?}", d);
+
+        // Read image file
+        let mut file = std::fs::File::open(d).expect("failed to open sample image");
+        let mut buffer = Vec::new();
+        file.read_to_end(&mut buffer).expect("failed to read file");
+
+        // Encode to base64 to simulate frontend input
+        let base64_img = base64::engine::general_purpose::STANDARD.encode(&buffer);
+        
+        // Add data header like the real app does
+        let data_url = format!("data:image/png;base64,{}", base64_img);
+
+        // Call the command
+        let result = perform_ocr(&data_url, Some("eng".to_string()));
+
+        // Check verification
+        match result {
+            Ok(text) => {
+                println!("OCR Result: '{}'", text);
+                assert!(text.to_lowercase().contains("screen"), "Result should contain 'Screen'");
+                assert!(text.to_lowercase().contains("test"), "Result should contain 'Test'");
+            },
+            Err(e) => panic!("OCR failed: {}", e),
+        }
+    }
+}
