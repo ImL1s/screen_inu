@@ -29,7 +29,7 @@
   <img src="app/public/images/features.png" alt="Screen Inu Features" width="80%" />
 </div>
 
-*   **Global Shortcut** (`⌘ + Shift + X`): Snap from anywhere, anytime.
+*   **Global Shortcut** (`Ctrl/⌘ + Shift + X`): Snap from anywhere, anytime.
 *   **High Accuracy OCR**: Powered by Tesseract engine with multi-language support (English, Traditional Chinese, Japanese).
 *   **Auto-Copy**: Optionally text to clipboard automatically after recognition.
 *   **Dark/Light Theme**: Beautiful glassmorphism UI that adapts to your preference (Auto-saved).
@@ -68,9 +68,41 @@ Screen Inu leverages the power of **Tauri 2.0** for a lightweight, secure, and p
 ## 🛠️ Getting Started
 
 ### Prerequisites
-*   Node.js (v18+)
-*   Rust (latest stable)
-*   Top-level command execution privileges (for screen recording permissions on macOS)
+*   **Node.js** (v18+)
+*   **Rust** (latest stable)
+*   **Tesseract OCR** with language packs
+
+#### Tesseract Installation by Platform
+
+<details>
+<summary><strong>macOS</strong></summary>
+
+```bash
+brew install tesseract tesseract-lang
+```
+Grant Screen Recording permission in **System Settings > Privacy & Security > Screen Recording**.
+</details>
+
+<details>
+<summary><strong>Windows</strong></summary>
+
+1. Download installer from [UB Mannheim](https://github.com/UB-Mannheim/tesseract/wiki).
+2. During install, select **Additional language data** (e.g., Chinese Traditional, Japanese).
+3. Add Tesseract to your `PATH` (installer usually offers this option).
+4. Verify: `tesseract --version`
+</details>
+
+<details>
+<summary><strong>Linux (Debian/Ubuntu)</strong></summary>
+
+```bash
+sudo apt update
+sudo apt install tesseract-ocr tesseract-ocr-chi-tra tesseract-ocr-jpn
+```
+For other distros, consult your package manager.
+</details>
+
+---
 
 ### Installation
 
@@ -95,6 +127,9 @@ Screen Inu leverages the power of **Tauri 2.0** for a lightweight, secure, and p
     ```bash
     npm run tauri build
     ```
+    *   **macOS**: `.app` and `.dmg` in `src-tauri/target/release/bundle/`
+    *   **Windows**: `.msi` or `.exe` (NSIS) in `src-tauri/target/release/bundle/`
+    *   **Linux**: `.AppImage` or `.deb` in `src-tauri/target/release/bundle/`
 
 ---
 
