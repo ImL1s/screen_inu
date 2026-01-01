@@ -47,5 +47,13 @@
         "bundleMediaFramework": false
       }
     }
+  },
+  "plugins": {
+    "updater": {
+      "endpoints": [
+        "https://github.com/ImL1s/screen_inu/releases/latest/download/latest.json"
+      ],
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDE0ODg3NzgwMjJCRjJGNjYKUldSbUw3OGlnSGVJRkVnNXdVcUxONE0xSXg4d0tZb2YvQnpBVGxGalJ4Wm03aGJZNFpGdUdCT3cK"
+    }
   }
 }

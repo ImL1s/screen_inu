@@ -1,14 +1,14 @@
-use xcap::Monitor;
-use std::io::Cursor;
 use base64::Engine;
 use image::ImageFormat;
+use std::io::Cursor;
+use xcap::Monitor;
 
 #[tauri::command]
 fn capture_full_screen() -> Result<String, String> {
     let monitors = Monitor::all().map_err(|e| e.to_string())?;
     let monitor = monitors.first().ok_or("No monitor found")?;
     let image = monitor.capture_image().map_err(|e| e.to_string())?;
-    
+
     let mut bytes: Vec<u8> = Vec::new();
     image::DynamicImage::ImageRgba8(image)
         .write_to(&mut Cursor::new(&mut bytes), ImageFormat::Png)
@@ -18,15 +18,15 @@ fn capture_full_screen() -> Result<String, String> {
     Ok(base64_str)
 }
 
+use rusty_tesseract::{Args, Image};
 use std::fs::File;
 use std::io::Write;
-use rusty_tesseract::{Args, Image};
 
 #[tauri::command]
 fn perform_ocr(base64_image: &str, langs: Option<String>) -> Result<String, String> {
     // Remove header if present
     let base64_data = base64_image.split(",").last().unwrap_or(base64_image);
-    
+
     let bytes = base64::engine::general_purpose::STANDARD
         .decode(base64_data)
         .map_err(|e| e.to_string())?;
@@ -36,16 +36,15 @@ fn perform_ocr(base64_image: &str, langs: Option<String>) -> Result<String, Stri
     file.write_all(&bytes).map_err(|e| e.to_string())?;
 
     let img = Image::from_path(temp_path.to_str().unwrap()).map_err(|e| e.to_string())?;
-    
+
     let mut args = Args::default();
     // Default to English + Traditional Chinese if not specified
     // Note: User must have tesseract-lang installed
     args.lang = langs.unwrap_or("eng+chi_tra".to_string());
     args.psm = Some(6);
-    
-    let text = rusty_tesseract::image_to_string(&img, &args)
-        .map_err(|e| e.to_string())?;
-    
+
+    let text = rusty_tesseract::image_to_string(&img, &args).map_err(|e| e.to_string())?;
+
     Ok(text)
 }
 
@@ -53,7 +52,7 @@ fn perform_ocr(base64_image: &str, langs: Option<String>) -> Result<String, Stri
 fn scan_qr(base64_image: &str) -> Result<Option<String>, String> {
     // Remove header if present
     let base64_data = base64_image.split(",").last().unwrap_or(base64_image);
-    
+
     let bytes = base64::engine::general_purpose::STANDARD
         .decode(base64_data)
         .map_err(|e| e.to_string())?;
@@ -66,14 +65,14 @@ fn scan_qr(base64_image: &str) -> Result<Option<String>, String> {
     // Prepare image for rqrr
     let mut prepared = rqrr::PreparedImage::prepare(img);
     let grids = prepared.detect_grids();
-    
+
     // Try to decode QR codes
     for grid in grids {
         if let Ok((_, content)) = grid.decode() {
             return Ok(Some(content));
         }
     }
-    
+
     Ok(None) // No QR code found
 }
 
@@ -87,6 +86,9 @@ mod tray;
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_process::init())
+        .plugin(tauri_plugin_dialog::init())
+        .plugin(tauri_plugin_updater::Builder::new().build())
         .setup(|app| {
             #[cfg(desktop)]
             {
@@ -96,7 +98,12 @@ pub fn run() {
         })
         .plugin(tauri_plugin_global_shortcut::Builder::new().build())
         .plugin(tauri_plugin_opener::init())
-        .invoke_handler(tauri::generate_handler![greet, capture_full_screen, perform_ocr, scan_qr])
+        .invoke_handler(tauri::generate_handler![
+            greet,
+            capture_full_screen,
+            perform_ocr,
+            scan_qr
+        ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
@@ -115,7 +122,8 @@ mod tests {
 
         let mut file = std::fs::File::open(path).expect("Failed to open sample_ocr.png");
         let mut buffer = Vec::new();
-        file.read_to_end(&mut buffer).expect("Failed to read image data");
+        file.read_to_end(&mut buffer)
+            .expect("Failed to read image data");
 
         let b64 = base64::engine::general_purpose::STANDARD.encode(&buffer);
         let data_url = format!("data:image/png;base64,{}", b64);
@@ -139,7 +147,8 @@ mod tests {
 
         let mut file = std::fs::File::open(path).expect("Failed to open sample_qr.png");
         let mut buffer = Vec::new();
-        file.read_to_end(&mut buffer).expect("Failed to read image data");
+        file.read_to_end(&mut buffer)
+            .expect("Failed to read image data");
 
         let b64 = base64::engine::general_purpose::STANDARD.encode(&buffer);
         let data_url = format!("data:image/png;base64,{}", b64);
@@ -170,7 +179,7 @@ mod tests {
             "ita",
             "por",
             "rus",
-            "vie"
+            "vie",
         ];
 
         let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
@@ -179,7 +188,8 @@ mod tests {
 
         let mut file = std::fs::File::open(path).expect("Failed to open sample_ocr.png");
         let mut buffer = Vec::new();
-        file.read_to_end(&mut buffer).expect("Failed to read image data");
+        file.read_to_end(&mut buffer)
+            .expect("Failed to read image data");
         let b64 = base64::engine::general_purpose::STANDARD.encode(&buffer);
         let data_url = format!("data:image/png;base64,{}", b64);
 

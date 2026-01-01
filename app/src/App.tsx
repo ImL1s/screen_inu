@@ -210,31 +210,66 @@ function App() {
                 </select>
               </div>
 
-              {/* Auto Copy Toggle */}
-              <div className="flex items-center justify-between">
-                <label className={`text-sm ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>Auto-copy to clipboard</label>
+              {/* Update Checker */}
+              <div className={`pt-4 border-t ${isDark ? 'border-white/10' : 'border-indigo-100'}`}>
                 <button
-                  onClick={toggleAutoCopy}
-                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 ${autoCopy ? 'bg-indigo-600' : 'bg-gray-200'}`}
+                  onClick={async () => {
+                    try {
+                      // Dynamically import to avoid SSR issues if any, though SPA remains safe
+                      const { check } = await import('@tauri-apps/plugin-updater');
+                      const { ask } = await import('@tauri-apps/plugin-dialog');
+                      const { relaunch } = await import('@tauri-apps/plugin-process');
+
+                      const update = await check();
+                      if (update) {
+                        const yes = await ask(`Update to ${update.version} is available!\n\nRelease notes: ${update.body}`, {
+                          title: 'Update Available',
+                          kind: 'info'
+                        });
+                        if (yes) {
+                          await update.downloadAndInstall();
+                          await relaunch();
+                        }
+                      } else {
+                        await ask('You are on the latest version.', { title: 'No Update Available', kind: 'info' });
+                      }
+                    } catch (error) {
+                      console.error(error);
+                      const { message } = await import('@tauri-apps/plugin-dialog');
+                      await message(`Failed to check for updates: ${String(error)}`, { title: 'Error', kind: 'error' });
+                    }
+                  }}
+                  className={`w-full py-2 rounded-lg text-sm font-medium transition-colors border ${isDark ? 'border-indigo-400 text-indigo-400 hover:bg-indigo-400/10' : 'border-indigo-600 text-indigo-600 hover:bg-indigo-50'}`}
                 >
-                  <span
-                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${autoCopy ? 'translate-x-6' : 'translate-x-1'}`}
-                  />
+                  Check for Updates
                 </button>
               </div>
+            </div>
 
-              {/* History Button */}
+            {/* Auto Copy Toggle */}
+            <div className="flex items-center justify-between">
+              <label className={`text-sm ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>Auto-copy to clipboard</label>
               <button
-                onClick={() => {
-                  setHistoryItems(getHistory());
-                  setShowHistory(true);
-                }}
-                className={`w-full flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${isDark ? 'bg-gray-700 hover:bg-gray-600 text-gray-200' : 'bg-gray-100 hover:bg-gray-200 text-gray-700'}`}
+                onClick={toggleAutoCopy}
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 ${autoCopy ? 'bg-indigo-600' : 'bg-gray-200'}`}
               >
-                <History size={16} />
-                View History
+                <span
+                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${autoCopy ? 'translate-x-6' : 'translate-x-1'}`}
+                />
               </button>
             </div>
+
+            {/* History Button */}
+            <button
+              onClick={() => {
+                setHistoryItems(getHistory());
+                setShowHistory(true);
+              }}
+              className={`w-full flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${isDark ? 'bg-gray-700 hover:bg-gray-600 text-gray-200' : 'bg-gray-100 hover:bg-gray-200 text-gray-700'}`}
+            >
+              <History size={16} />
+              View History
+            </button>
           </motion.div>
         )}
       </AnimatePresence>
@@ -297,16 +332,18 @@ function App() {
       </AnimatePresence>
 
       {/* Snipping Overlay */}
-      {screenshot && (
-        <SnippingOverlay
-          image={screenshot}
-          onClose={() => setScreenshot(null)}
-          onCrop={(croppedImage) => {
-            setScreenshot(null);
-            runOcr(croppedImage);
-          }}
-        />
-      )}
+      {
+        screenshot && (
+          <SnippingOverlay
+            image={screenshot!}
+            onClose={() => setScreenshot(null)}
+            onCrop={(croppedImage) => {
+              setScreenshot(null);
+              runOcr(croppedImage);
+            }}
+          />
+        )
+      }
 
       {/* Loading Overlay */}
       <AnimatePresence>
@@ -398,7 +435,7 @@ function App() {
           </motion.div>
         )}
       </AnimatePresence>
-    </div>
+    </div >
   );
 }
 
