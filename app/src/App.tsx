@@ -8,13 +8,6 @@ import { notifyOcrComplete } from "./utils/notification";
 import { addToHistory, getHistory, clearHistory, HistoryItem } from "./utils/history";
 import "./App.css";
 
-const LANGUAGES = [
-  { code: "eng", label: "English" },
-  { code: "chi_tra", label: "Traditional Chinese" },
-  { code: "jpn", label: "Japanese" },
-  { code: "eng+chi_tra", label: "Eng + Chi (Tra)" },
-];
-
 function App() {
   const [screenshot, setScreenshot] = useState<string | null>(null);
   const [ocrResult, setOcrResult] = useState<string>("");
@@ -200,11 +193,20 @@ function App() {
                 <select
                   value={selectedLang}
                   onChange={(e) => setSelectedLang(e.target.value)}
-                  className={`w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/50 appearance-none cursor-pointer transition-colors ${isDark ? 'bg-black/40 border-white/10 text-white' : 'bg-white border-indigo-200 text-gray-700'}`}
+                  className={`w-full p-2.5 rounded-lg border text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all cursor-pointer ${isDark ? 'bg-gray-800 border-gray-700 text-white' : 'bg-white border-zinc-200 text-gray-800'}`}
                 >
-                  {LANGUAGES.map(lang => (
-                    <option key={lang.code} value={lang.code}>{lang.label}</option>
-                  ))}
+                  <option value="eng">English (English)</option>
+                  <option value="chi_tra+eng">Traditional Chinese (繁體中文 + English)</option>
+                  <option value="chi_sim+eng">Simplified Chinese (简体中文 + English)</option>
+                  <option value="jpn+eng">Japanese (日本語 + English)</option>
+                  <option value="kor+eng">Korean (한국어 + English)</option>
+                  <option value="fra">French (Français)</option>
+                  <option value="deu">German (Deutsch)</option>
+                  <option value="spa">Spanish (Español)</option>
+                  <option value="ita">Italian (Italiano)</option>
+                  <option value="por">Portuguese (Português)</option>
+                  <option value="rus">Russian (Русский)</option>
+                  <option value="vie">Vietnamese (Tiếng Việt)</option>
                 </select>
               </div>
 
