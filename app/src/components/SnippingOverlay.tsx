@@ -11,6 +11,7 @@ export function SnippingOverlay({ image, onCrop, onClose }: Props) {
     const [startPos, setStartPos] = useState<{ x: number; y: number } | null>(null);
     const [currentPos, setCurrentPos] = useState<{ x: number; y: number } | null>(null);
     const [imgObj, setImgObj] = useState<HTMLImageElement | null>(null);
+    const [showToast, setShowToast] = useState(false);
 
     useEffect(() => {
         const img = new Image();
@@ -20,6 +21,17 @@ export function SnippingOverlay({ image, onCrop, onClose }: Props) {
             draw(img, null, null);
         };
     }, [image]);
+
+    // ESC key to cancel
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') {
+                onClose();
+            }
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [onClose]);
 
     useEffect(() => {
         if (imgObj) {
@@ -98,32 +110,18 @@ export function SnippingOverlay({ image, onCrop, onClose }: Props) {
                 canvas.height = h;
                 const ctx = canvas.getContext('2d');
                 if (ctx) {
-                    // We draw the source image onto the crop canvas
-                    // Source coord: (x, y) with w, h
-                    // But careful about scaling. If we drew full image to fit canvas.width (window), scaling factor is needed?
-                    // For "capture_full_screen", image usually matches logical pixels if handled right, or physical.
-                    // NOTE: xcap returns physical pixels. Window is logical.
-                    // We simplify by drawing what we see. 
-                    // Getting the pixels from the main canvas is safer to match WYSIWYG.
                     const mainCtx = canvasRef.current?.getContext('2d');
                     if (mainCtx) {
-                        mainCtx.getImageData(x, y, w, h);
-                        // This simple approach grabs the "dimmed" pixels if we are not careful?
-                        // No, because we redrew the clear image in the selection loop. 
-                        // But wait, the main canvas has the dim overlay painted on it except the hole?
-                        // Yes. But `getImageData` gets the final pixel values.
-                        // The hole has pure image.
-                        // So dragging from the hole is fine.
-
-                        // BUT: `getImageData` is affected by DPI on some browsers.
-                        // Better implementation: use original image obj and scale coords.
                         const scaleX = imgObj.naturalWidth / window.innerWidth;
                         const scaleY = imgObj.naturalHeight / window.innerHeight;
-
                         ctx.drawImage(imgObj, x * scaleX, y * scaleY, w * scaleX, h * scaleY, 0, 0, w, h);
                         onCrop(canvas.toDataURL('image/png'));
                     }
                 }
+            } else if (w > 2 || h > 2) {
+                // Show toast for too small selection
+                setShowToast(true);
+                setTimeout(() => setShowToast(false), 2000);
             }
             setStartPos(null);
             setCurrentPos(null);
@@ -138,12 +136,25 @@ export function SnippingOverlay({ image, onCrop, onClose }: Props) {
                 onMouseMove={handleMouseMove}
                 onMouseUp={handleMouseUp}
             />
+
+            {/* Cancel Button */}
             <button
                 onClick={onClose}
-                style={{ position: 'absolute', top: 10, right: 10, zIndex: 10000 }}
+                className="absolute top-4 right-4 px-4 py-2 bg-red-500/80 hover:bg-red-500 text-white rounded-lg backdrop-blur-md transition-colors text-sm font-medium shadow-lg"
+                style={{ zIndex: 10000 }}
             >
-                Cancel
+                Cancel (ESC)
             </button>
+
+            {/* Toast for small selection */}
+            {showToast && (
+                <div
+                    className="fixed bottom-8 left-1/2 transform -translate-x-1/2 px-6 py-3 bg-yellow-500/90 text-black rounded-lg shadow-lg backdrop-blur-md text-sm font-medium animate-pulse"
+                    style={{ zIndex: 10001 }}
+                >
+                    Selection too small. Please drag a larger area.
+                </div>
+            )}
         </div>
     );
 }

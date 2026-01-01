@@ -50,6 +50,34 @@ fn perform_ocr(base64_image: &str, langs: Option<String>) -> Result<String, Stri
 }
 
 #[tauri::command]
+fn scan_qr(base64_image: &str) -> Result<Option<String>, String> {
+    // Remove header if present
+    let base64_data = base64_image.split(",").last().unwrap_or(base64_image);
+    
+    let bytes = base64::engine::general_purpose::STANDARD
+        .decode(base64_data)
+        .map_err(|e| e.to_string())?;
+
+    // Load image
+    let img = image::load_from_memory(&bytes)
+        .map_err(|e| e.to_string())?
+        .to_luma8();
+
+    // Prepare image for rqrr
+    let mut prepared = rqrr::PreparedImage::prepare(img);
+    let grids = prepared.detect_grids();
+    
+    // Try to decode QR codes
+    for grid in grids {
+        if let Ok((_, content)) = grid.decode() {
+            return Ok(Some(content));
+        }
+    }
+    
+    Ok(None) // No QR code found
+}
+
+#[tauri::command]
 fn greet(name: &str) -> String {
     format!("Hello, {}! You've been greeted from Rust!", name)
 }
@@ -68,7 +96,7 @@ pub fn run() {
         })
         .plugin(tauri_plugin_global_shortcut::Builder::new().build())
         .plugin(tauri_plugin_opener::init())
-        .invoke_handler(tauri::generate_handler![greet, capture_full_screen, perform_ocr])
+        .invoke_handler(tauri::generate_handler![greet, capture_full_screen, perform_ocr, scan_qr])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

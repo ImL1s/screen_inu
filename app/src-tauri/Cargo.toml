@@ -26,6 +26,7 @@ rusty-tesseract = "1.1.10"
 xcap = "0.8.0"
 image = "0.25.9"
 base64 = "0.22.1"
+rqrr = "0.8"
 
 [target.'cfg(not(any(target_os = "android", target_os = "ios")))'.dependencies]
 tauri-plugin-global-shortcut = "2"
