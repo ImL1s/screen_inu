@@ -1,6 +1,9 @@
 import { X, Volume2, VolumeX, Copy, Check, Trash2, Scissors, EyeOff, Eye, Monitor } from "lucide-react";
 import { motion } from "framer-motion";
 
+// Detect Windows platform (Direct Snip not supported due to WebView2 transparency bug)
+const isWindows = typeof navigator !== 'undefined' && navigator.userAgent.includes('Windows');
+
 interface SettingsModalProps {
     isOpen: boolean;
     onClose: () => void;
@@ -64,24 +67,26 @@ export const SettingsModal = ({
                     {/* Section: Capture */}
                     <div className="text-[10px] font-black uppercase tracking-widest text-[#0a0a0a]/50 border-b border-[#0a0a0a]/10 pb-1">📸 Capture</div>
 
-                    {/* Direct Snip Toggle */}
-                    <div className="flex items-center justify-between group">
-                        <div className="flex items-center gap-3">
-                            <div className={`p-2 border-2 border-[#0a0a0a] ${directSnip ? 'bg-[#00ff88] text-[#0a0a0a]' : 'bg-white text-[#0a0a0a]'}`}>
-                                {directSnip ? <Scissors size={24} /> : <Monitor size={24} />}
+                    {/* Direct Snip Toggle - Hidden on Windows (transparency bug) */}
+                    {!isWindows && (
+                        <div className="flex items-center justify-between group">
+                            <div className="flex items-center gap-3">
+                                <div className={`p-2 border-2 border-[#0a0a0a] ${directSnip ? 'bg-[#00ff88] text-[#0a0a0a]' : 'bg-white text-[#0a0a0a]'}`}>
+                                    {directSnip ? <Scissors size={24} /> : <Monitor size={24} />}
+                                </div>
+                                <div>
+                                    <h3 className="font-black uppercase text-sm">Direct Snip</h3>
+                                    <p className="text-[10px] font-mono opacity-60">{directSnip ? "Snip desktop directly" : "Show full screenshot first"}</p>
+                                </div>
                             </div>
-                            <div>
-                                <h3 className="font-black uppercase text-sm">Direct Snip</h3>
-                                <p className="text-[10px] font-mono opacity-60">{directSnip ? "Snip desktop directly" : "Show full screenshot first"}</p>
-                            </div>
+                            <button
+                                onClick={() => setDirectSnip(!directSnip)}
+                                className={`w-12 h-6 border-2 border-[#0a0a0a] relative transition-colors ${directSnip ? 'bg-[#00ff88]' : 'bg-[#e8e4db]'}`}
+                            >
+                                <div className={`absolute top-0 bottom-0 w-6 bg-[#0a0a0a] transition-transform ${directSnip ? 'translate-x-6' : 'translate-x-0'}`}></div>
+                            </button>
                         </div>
-                        <button
-                            onClick={() => setDirectSnip(!directSnip)}
-                            className={`w-12 h-6 border-2 border-[#0a0a0a] relative transition-colors ${directSnip ? 'bg-[#00ff88]' : 'bg-[#e8e4db]'}`}
-                        >
-                            <div className={`absolute top-0 bottom-0 w-6 bg-[#0a0a0a] transition-transform ${directSnip ? 'translate-x-6' : 'translate-x-0'}`}></div>
-                        </button>
-                    </div>
+                    )}
 
                     {/* Silent Mode Toggle */}
                     <div className="flex items-center justify-between group">
