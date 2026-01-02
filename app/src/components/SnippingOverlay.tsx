@@ -70,12 +70,8 @@ export function SnippingOverlay({ image, onCrop, onClose, directMode = false }: 
 
         // 1. Background / Image
         if (directMode) {
-            // Dim the desktop behind
-            // IMPORTANT: Clear the canvas initially to be fully transparent so we can see desktop?
-            // No, we want to dim it. background-color is handled by container maybe?
-            // Let's draw semi-transparent black
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.3)'; // Dim effect
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            // Fully transparent - do nothing, just let the desktop show through
+            // Selection border will still be visible
         } else if (imgObj) {
             ctx.drawImage(imgObj, 0, 0);
             // Dim Overlay
