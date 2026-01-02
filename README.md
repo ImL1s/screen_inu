@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="app/public/images/hero.png" alt="Screen Inu Hero" width="100%" />
+  <img src="assets/demo.png" alt="Screen Inu Demo" width="100%" />
   
   <h1 style="font-size: 3rem; margin-top: 1rem;">Screen Inu 🐕</h1>
   

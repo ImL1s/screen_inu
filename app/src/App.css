@@ -1,7 +1,2 @@
-/* App.css is intentionally minimal to let Tailwind handle styling */
-#root {
-  width: 100%;
-  margin: 0;
-  padding: 0;
-  text-align: center;
-}
+/* Cleaned up for Tailwind CSS usage */
+/* All styles are now handled via utility classes in App.tsx and index.css */

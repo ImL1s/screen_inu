@@ -1,28 +1,112 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* Load distinctive fonts - Editorial/Neo-brutalist aesthetic */
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;500;600;700;800&display=swap');
+
+/* Custom CSS Variables for Neo-brutalist Theme */
+@theme {
+  --font-display: 'Syne', sans-serif;
+  --font-mono: 'Space Mono', monospace;
+
+  /* Bold, intentional color palette - Ink black with electric accents */
+  --color-ink: #0a0a0a;
+  --color-paper: #f5f2eb;
+  --color-electric: #00ff88;
+  --color-coral: #ff6b35;
+  --color-mist: #e8e4db;
+}
 
 :root {
-  font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
+html,
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
+  padding: 0;
   min-width: 320px;
   min-height: 100vh;
+  font-family: var(--font-mono);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Custom scrollbar - Editorial style */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-electric);
+  border-radius: 0;
+}
+
+/* Selection - Electric accent */
+::selection {
+  background: var(--color-electric);
+  color: var(--color-ink);
+}
+
+/* Neo-brutalist button reset */
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: inherit;
+}
+
+/* Staggered reveal animation */
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.reveal {
+  animation: reveal 0.6s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+
+.reveal-delay-1 {
+  animation-delay: 0.1s;
+}
+
+.reveal-delay-2 {
+  animation-delay: 0.2s;
+}
+
+.reveal-delay-3 {
+  animation-delay: 0.3s;
+}
+
+.reveal-delay-4 {
+  animation-delay: 0.4s;
+}
+
+.reveal-delay-5 {
+  animation-delay: 0.5s;
+}
+
+/* Hover lift effect */
+.hover-lift {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 8px 8px 0 var(--color-ink);
 }

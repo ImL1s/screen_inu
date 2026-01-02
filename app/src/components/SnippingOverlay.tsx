@@ -1,4 +1,6 @@
 import { useRef, useState, useEffect } from 'react';
+import { X, Crop, AlertCircle } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface Props {
     image: string;
@@ -12,114 +14,139 @@ export function SnippingOverlay({ image, onCrop, onClose }: Props) {
     const [currentPos, setCurrentPos] = useState<{ x: number; y: number } | null>(null);
     const [imgObj, setImgObj] = useState<HTMLImageElement | null>(null);
     const [showToast, setShowToast] = useState(false);
+    const [isDragging, setIsDragging] = useState(false);
 
+    // Initial load of image
     useEffect(() => {
         const img = new Image();
         img.src = image;
         img.onload = () => {
             setImgObj(img);
-            draw(img, null, null);
+            // Don't draw immediately here, wait for useEffect loop or force one
         };
     }, [image]);
 
-    // ESC key to cancel
+    // ESC key
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
-            if (e.key === 'Escape') {
-                onClose();
-            }
+            if (e.key === 'Escape') onClose();
         };
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
     }, [onClose]);
 
+    // Main Draw Loop
     useEffect(() => {
-        if (imgObj) {
-            draw(imgObj, startPos, currentPos);
-        }
-    }, [startPos, currentPos, imgObj]);
+        if (!imgObj || !canvasRef.current) return;
 
-    const draw = (
-        img: HTMLImageElement,
-        start: { x: number; y: number } | null,
-        current: { x: number; y: number } | null
-    ) => {
         const canvas = canvasRef.current;
-        if (!canvas) return;
         const ctx = canvas.getContext('2d');
         if (!ctx) return;
 
-        // Set canvas size to window size (or image size?)
-        // Usually full screen capture matches window size if full screen.
-        // Assuming prompt said "Global shortcut", likely transparent fullscreen window.
-        // For now, match window inner dimensions. 
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+        // CRITICAL FIX: Match canvas backing store to IMAGE size (Physical Pixels)
+        // This ensures 1:1 quality and correct aspect ratio
+        if (canvas.width !== imgObj.naturalWidth || canvas.height !== imgObj.naturalHeight) {
+            canvas.width = imgObj.naturalWidth;
+            canvas.height = imgObj.naturalHeight;
+        }
 
-        // Draw background image
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height); // Scaling might be an issue if DPI differs
-        // Overlay dimming
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+        // Clear
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // 1. Draw Original Image
+        ctx.drawImage(imgObj, 0, 0);
+
+        // 2. Dim Overlay (Brutalist dark)
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.75)';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        if (start && current) {
-            const x = Math.min(start.x, current.x);
-            const y = Math.min(start.y, current.y);
-            const w = Math.abs(current.x - start.x);
-            const h = Math.abs(current.y - start.y);
-
-            // Clear the selection area (show original image)
-            // We clip the path, clear the semi-transparent black, and redraw image segment?
-            // Easier: Draw image again clipped.
-            ctx.save();
-            ctx.beginPath();
-            ctx.rect(x, y, w, h);
-            ctx.clip();
-            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-            ctx.restore();
-
-            // Draw border
-            ctx.strokeStyle = '#00ff00';
-            ctx.lineWidth = 2;
-            ctx.strokeRect(x, y, w, h);
-        }
-    };
-
-    const handleMouseDown = (e: React.MouseEvent) => {
-        setStartPos({ x: e.clientX, y: e.clientY });
-        setCurrentPos({ x: e.clientX, y: e.clientY });
-    };
-
-    const handleMouseMove = (e: React.MouseEvent) => {
-        if (startPos) {
-            setCurrentPos({ x: e.clientX, y: e.clientY });
-        }
-    };
-
-    const handleMouseUp = () => {
-        if (startPos && currentPos && imgObj) {
-            // Crop logic
+        // 3. Selection
+        if (startPos && currentPos) {
             const x = Math.min(startPos.x, currentPos.x);
             const y = Math.min(startPos.y, currentPos.y);
             const w = Math.abs(currentPos.x - startPos.x);
             const h = Math.abs(currentPos.y - startPos.y);
 
-            if (w > 10 && h > 10) { // Minimal threshold
-                const canvas = document.createElement('canvas');
-                canvas.width = w;
-                canvas.height = h;
-                const ctx = canvas.getContext('2d');
+            // Cut out the selection (Show original)
+            ctx.save();
+            ctx.beginPath();
+            ctx.rect(x, y, w, h);
+            ctx.clip();
+            ctx.drawImage(imgObj, 0, 0);
+            ctx.restore();
+
+            // Border
+            ctx.strokeStyle = '#00ff88';
+            ctx.lineWidth = 4; // Thicker for high DPI visibility
+            ctx.strokeRect(x, y, w, h);
+
+            // Size Label
+            if (w > 20 && h > 20) {
+                const label = `${Math.round(w)} x ${Math.round(h)}`;
+                const fontSize = Math.max(24, canvas.width / 100); // Dynamic font size
+                ctx.font = `bold ${fontSize}px "Space Mono", monospace`;
+                const textMetrics = ctx.measureText(label);
+
+                // Label BG
+                ctx.fillStyle = '#0a0a0a';
+                ctx.fillRect(x, y - (fontSize * 1.5), textMetrics.width + 20, fontSize * 1.5);
+
+                // Label Text
+                ctx.fillStyle = '#00ff88';
+                ctx.fillText(label, x + 10, y - (fontSize * 0.4));
+            }
+        }
+
+    }, [imgObj, startPos, currentPos]);
+
+    // Helper: Map Client Cursor (Logical) to Canvas Image (Physical)
+    const mapCoordinates = (e: React.MouseEvent) => {
+        const canvas = canvasRef.current;
+        if (!canvas) return { x: 0, y: 0 };
+
+        const rect = canvas.getBoundingClientRect();
+        const scaleX = canvas.width / rect.width;
+        const scaleY = canvas.height / rect.height;
+
+        return {
+            x: (e.clientX - rect.left) * scaleX,
+            y: (e.clientY - rect.top) * scaleY
+        };
+    };
+
+    const handleMouseDown = (e: React.MouseEvent) => {
+        const coords = mapCoordinates(e);
+        setStartPos(coords);
+        setCurrentPos(coords);
+        setIsDragging(true);
+    };
+
+    const handleMouseMove = (e: React.MouseEvent) => {
+        if (startPos) {
+            setCurrentPos(mapCoordinates(e));
+        }
+    };
+
+    const handleMouseUp = () => {
+        setIsDragging(false);
+        if (startPos && currentPos && imgObj) {
+            const x = Math.min(startPos.x, currentPos.x);
+            const y = Math.min(startPos.y, currentPos.y);
+            const w = Math.abs(currentPos.x - startPos.x);
+            const h = Math.abs(currentPos.y - startPos.y);
+
+            // Min size threshold (in physical pixels)
+            if (w > 10 && h > 10) {
+                // Crop
+                const outputCanvas = document.createElement('canvas');
+                outputCanvas.width = w;
+                outputCanvas.height = h;
+                const ctx = outputCanvas.getContext('2d');
                 if (ctx) {
-                    const mainCtx = canvasRef.current?.getContext('2d');
-                    if (mainCtx) {
-                        const scaleX = imgObj.naturalWidth / window.innerWidth;
-                        const scaleY = imgObj.naturalHeight / window.innerHeight;
-                        ctx.drawImage(imgObj, x * scaleX, y * scaleY, w * scaleX, h * scaleY, 0, 0, w, h);
-                        onCrop(canvas.toDataURL('image/png'));
-                    }
+                    ctx.drawImage(imgObj, x, y, w, h, 0, 0, w, h);
+                    onCrop(outputCanvas.toDataURL('image/png'));
                 }
             } else if (w > 2 || h > 2) {
-                // Show toast for too small selection
                 setShowToast(true);
                 setTimeout(() => setShowToast(false), 2000);
             }
@@ -129,32 +156,46 @@ export function SnippingOverlay({ image, onCrop, onClose }: Props) {
     };
 
     return (
-        <div style={{ position: 'fixed', top: 0, left: 0, zIndex: 9999, cursor: 'crosshair' }}>
+        <div className="fixed inset-0 z-[9999] cursor-crosshair font-mono bg-black">
+            {/* Canvas fills the screen, object-fit contain preserves aspect if needed, but here we fill */}
             <canvas
                 ref={canvasRef}
+                className="w-full h-full block object-contain"
                 onMouseDown={handleMouseDown}
                 onMouseMove={handleMouseMove}
                 onMouseUp={handleMouseUp}
             />
 
-            {/* Cancel Button */}
+            {/* UI Overlay Elements (Guide, Cancel) */}
+            <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: isDragging ? 0.3 : 1, y: 0 }}
+                className="fixed top-8 left-1/2 transform -translate-x-1/2 flex items-center gap-3 px-6 py-3 bg-[#0a0a0a] text-[#00ff88] border-2 border-[#00ff88] shadow-[4px_4px_0px_white] z-[10000] pointer-events-none"
+            >
+                <Crop size={16} className="text-[#00ff88]" />
+                <span className="text-xs font-bold uppercase tracking-widest">DRAG TO CAPTURE</span>
+            </motion.div>
+
             <button
                 onClick={onClose}
-                className="absolute top-4 right-4 px-4 py-2 bg-red-500/80 hover:bg-red-500 text-white rounded-lg backdrop-blur-md transition-colors text-sm font-medium shadow-lg"
-                style={{ zIndex: 10000 }}
+                className="fixed top-6 right-6 p-3 bg-[#ff6b35] text-[#0a0a0a] border-2 border-[#0a0a0a] shadow-[4px_4px_0px_#0a0a0a] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_#0a0a0a] transition-all z-[10001]"
             >
-                Cancel (ESC)
+                <X size={20} strokeWidth={3} />
             </button>
 
-            {/* Toast for small selection */}
-            {showToast && (
-                <div
-                    className="fixed bottom-8 left-1/2 transform -translate-x-1/2 px-6 py-3 bg-yellow-500/90 text-black rounded-lg shadow-lg backdrop-blur-md text-sm font-medium animate-pulse"
-                    style={{ zIndex: 10001 }}
-                >
-                    Selection too small. Please drag a larger area.
-                </div>
-            )}
+            <AnimatePresence>
+                {showToast && (
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 20 }}
+                        className="fixed bottom-12 left-1/2 transform -translate-x-1/2 px-6 py-4 bg-[#ff6b35] text-[#0a0a0a] border-2 border-[#0a0a0a] shadow-[8px_8px_0px_#0a0a0a] z-[10002] flex items-center gap-3"
+                    >
+                        <AlertCircle size={20} strokeWidth={2.5} />
+                        <span className="text-xs font-bold uppercase tracking-wider">TOO SMALL</span>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     );
 }

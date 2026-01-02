@@ -14,13 +14,15 @@
     "windows": [
       {
         "title": "Screen Inu",
-        "width": 900,
-        "height": 600,
-        "decorations": false,
-        "transparent": true,
+        "width": 480,
+        "height": 640,
+        "decorations": true,
+        "transparent": false,
         "shadow": true,
-        "resizable": false,
-        "center": true
+        "resizable": true,
+        "center": true,
+        "minWidth": 400,
+        "minHeight": 500
       }
     ],
     "security": {
