@@ -3,40 +3,25 @@ import { invoke } from "@tauri-apps/api/core";
 import { register } from "@tauri-apps/plugin-global-shortcut";
 import { getCurrentWebviewWindow } from "@tauri-apps/api/webviewWindow";
 import { SnippingOverlay } from "./components/SnippingOverlay";
+import { ShibaLogo } from "./components/ShibaLogo";
+import { HistoryDrawer } from "./components/HistoryDrawer";
+import { SettingsModal } from "./components/SettingsModal";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Copy,
   Check,
   Globe,
-  Loader2,
-  Trash2,
   Command,
   X,
   Zap,
   Maximize2,
   Bone,
-  Dog
+  Settings
 } from "lucide-react";
 import { notifyOcrComplete } from "./utils/notification";
 import { addToHistory, getHistory, clearHistory, HistoryItem } from "./utils/history";
+import { soundManager } from "./utils/SoundManager";
 import "./App.css";
-
-// --- Brutalist Shiba Component ---
-const ShibaLogo = () => (
-  <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-[#0a0a0a]">
-    {/* Head Shape - Geometric */}
-    <path d="M12 16L4 8V24L12 32V40H36V32L44 24V8L36 16H30L24 10L18 16H12Z" fill="#f5f2eb" stroke="currentColor" strokeWidth="3" />
-    {/* Eyes - Electric Green */}
-    <rect x="14" y="24" width="4" height="4" fill="#00ff88" stroke="currentColor" strokeWidth="1" />
-    <rect x="30" y="24" width="4" height="4" fill="#00ff88" stroke="currentColor" strokeWidth="1" />
-    {/* Snout */}
-    <rect x="22" y="30" width="4" height="4" fill="currentColor" />
-    <path d="M22 34H26V36H22V34Z" fill="currentColor" />
-    {/* Ears */}
-    <path d="M4 8H12V16H4V8Z" fill="#ff6b35" stroke="currentColor" strokeWidth="2" />
-    <path d="M36 8H44V16H36V8Z" fill="#ff6b35" stroke="currentColor" strokeWidth="2" />
-  </svg>
-);
 
 function App() {
   // --- State ---
@@ -45,14 +30,27 @@ function App() {
   const [isCopied, setIsCopied] = useState(false);
   const [selectedLang, setSelectedLang] = useState("eng+chi_tra");
   const [autoCopy, setAutoCopy] = useState(false);
+  const [soundEnabled, setSoundEnabled] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
   const [historyItems, setHistoryItems] = useState<HistoryItem[]>([]);
 
   // --- Initialization ---
   useEffect(() => {
+    // Load persisted settings
     const savedAutoCopy = localStorage.getItem('autoCopy');
     if (savedAutoCopy) setAutoCopy(savedAutoCopy === 'true');
+
+    const savedSound = localStorage.getItem('soundEnabled');
+    if (savedSound) {
+      const enabled = savedSound === 'true';
+      setSoundEnabled(enabled);
+      soundManager.setEnabled(enabled);
+    }
+
+    // Load History
+    setHistoryItems(getHistory());
 
     const initShortcut = async () => {
       try {
@@ -69,14 +67,26 @@ function App() {
   }, []);
 
   // --- Actions ---
-  const toggleAutoCopy = () => {
-    const newValue = !autoCopy;
-    setAutoCopy(newValue);
-    localStorage.setItem('autoCopy', String(newValue));
+  const handleSetAutoCopy = (enabled: boolean) => {
+    setAutoCopy(enabled);
+    localStorage.setItem('autoCopy', String(enabled));
+  };
+
+  const handleSetSoundEnabled = (enabled: boolean) => {
+    setSoundEnabled(enabled);
+    soundManager.setEnabled(enabled);
+    localStorage.setItem('soundEnabled', String(enabled));
+  };
+
+  const handleClearHistory = () => {
+    clearHistory();
+    setHistoryItems([]);
+    setShowSettings(false);
   };
 
   async function captureScreen() {
     try {
+      soundManager.playShutter(); // 📸 SNAP!
       setOcrResult("");
       const window = getCurrentWebviewWindow();
       await window.hide();
@@ -88,6 +98,7 @@ function App() {
       await window.setFocus();
     } catch (e) {
       console.error("Failed to capture screen:", e);
+      soundManager.playError();
       const window = getCurrentWebviewWindow();
       await window.setFullscreen(false);
       await window.show();
@@ -117,18 +128,24 @@ function App() {
       setOcrResult(text || "__EMPTY__");
 
       if (text && text.trim()) {
+        soundManager.playBark(); // 🐕 WOOF!
         addToHistory(text, qrResult ? "QR" : selectedLang);
+        setHistoryItems(getHistory()); // Refresh history view
         notifyOcrComplete(text.length);
 
         if (autoCopy) {
           const textToCopy = qrResult || text;
           navigator.clipboard.writeText(textToCopy);
           setIsCopied(true);
+          soundManager.playSuccess(); // ✨ DING!
           setTimeout(() => setIsCopied(false), 2000);
         }
+      } else {
+        soundManager.playError();
       }
     } catch (e) {
       console.error("OCR Failed:", e);
+      soundManager.playError();
       setOcrResult("Error: " + e);
     } finally {
       setIsLoading(false);
@@ -142,6 +159,7 @@ function App() {
 
     navigator.clipboard.writeText(text);
     setIsCopied(true);
+    soundManager.playSuccess(); // ✨ DING!
     setTimeout(() => setIsCopied(false), 2000);
   };
 
@@ -159,7 +177,7 @@ function App() {
         <div className="fixed inset-0 pointer-events-none opacity-5 overflow-hidden z-0">
           <div className="absolute top-10 right-10 transform rotate-12"><Bone size={64} /></div>
           <div className="absolute bottom-20 left-10 transform -rotate-45"><Bone size={48} /></div>
-          <div className="absolute top-1/2 left-4 transform rotate-90"><Dog size={32} /></div>
+          <div className="absolute top-1/2 left-4 transform rotate-90"><Bone size={32} /></div>
         </div>
 
         {/* Border Frame */}
@@ -288,7 +306,7 @@ function App() {
           )}
 
           {/* Footer Controls */}
-          <div className="grid grid-cols-[1fr,auto] gap-4 z-10 reveal reveal-delay-4 mt-auto">
+          <div className="grid grid-cols-[1fr,auto,auto] gap-4 z-10 reveal reveal-delay-4 mt-auto">
             {/* Language Select - Brutalist input */}
             <div className="relative group">
               <div className="absolute inset-0 bg-[#0a0a0a] translate-x-1 translate-y-1 transition-transform group-hover:translate-x-1.5 group-hover:translate-y-1.5 pointer-events-none"></div>
@@ -311,6 +329,18 @@ function App() {
               </div>
             </div>
 
+            {/* Settings Toggle */}
+            <button
+              onClick={() => setShowSettings(true)}
+              className="relative group w-12 h-12"
+              title="Settings"
+            >
+              <div className="absolute inset-0 bg-[#0a0a0a] translate-x-1 translate-y-1 transition-transform group-hover:translate-x-1.5 group-hover:translate-y-1.5 pointer-events-none"></div>
+              <div className="relative bg-[#e8e4db] w-full h-full border-2 border-[#0a0a0a] flex items-center justify-center transition-colors hover:bg-white group-hover:bg-[#00ff88]">
+                <Settings size={22} className="text-[#0a0a0a]" />
+              </div>
+            </button>
+
             {/* History Toggle */}
             <button
               onClick={() => { setHistoryItems(getHistory()); setShowHistory(true); }}
@@ -324,81 +354,33 @@ function App() {
             </button>
           </div>
 
-          {/* Auto Copy Toggle Text */}
-          <div className="flex items-center gap-2 reveal reveal-delay-5 opacity-80 hover:opacity-100 transition-opacity cursor-pointer w-fit mx-auto bg-[#e8e4db] px-2 py-1 border border-transparent hover:border-[#0a0a0a]" onClick={toggleAutoCopy}>
-            <div className={`w-3 h-3 border-2 border-[#0a0a0a] ${autoCopy ? 'bg-[#ff6b35]' : 'bg-transparent'} transition-colors`}></div>
-            <span className="text-[10px] font-bold uppercase tracking-wider">AUTO-FETCH</span>
-          </div>
 
         </main>
 
-        {/* History Drawer - Brutalist Slide */}
+        <AnimatePresence>
+          {showSettings && (
+            <SettingsModal
+              isOpen={showSettings}
+              onClose={() => setShowSettings(false)}
+              soundEnabled={soundEnabled}
+              setSoundEnabled={handleSetSoundEnabled}
+              autoCopy={autoCopy}
+              setAutoCopy={handleSetAutoCopy}
+              onClearHistory={handleClearHistory}
+            />
+          )}
+        </AnimatePresence>
+
+        {/* History Drawer */}
         <AnimatePresence>
           {showHistory && (
-            <>
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                onClick={() => setShowHistory(false)}
-                className="fixed inset-0 bg-[#0a0a0a]/50 backdrop-blur-[2px] z-40"
-              />
-              <motion.div
-                initial={{ x: "100%" }}
-                animate={{ x: 0 }}
-                exit={{ x: "100%" }}
-                transition={{ type: "tween", ease: "circOut", duration: 0.3 }}
-                className="fixed top-0 right-0 h-full w-[90%] max-w-[320px] bg-[#f5f2eb] border-l-4 border-[#0a0a0a] z-50 flex flex-col shadow-[-20px_0_40px_rgba(0,0,0,0.2)]"
-              >
-                <div className="p-4 border-b-2 border-[#0a0a0a] flex items-center justify-between bg-[#0a0a0a] text-[#00ff88]">
-                  <h3 className="font-black text-lg font-display uppercase tracking-wider flex items-center gap-2">
-                    <Bone size={20} fill="#00ff88" className="text-[#0a0a0a]" />
-                    BONE STASH
-                  </h3>
-                  <button onClick={() => setShowHistory(false)} className="hover:rotate-90 transition-transform">
-                    <X size={24} />
-                  </button>
-                </div>
-
-                <div className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9IiMwMDAiIG9wYWNpdHk9IjAuMDUiLz48L3N2Zz4=')]">
-                  {historyItems.length === 0 ? (
-                    <div className="h-full flex flex-col items-center justify-center text-center opacity-60">
-                      <Dog size={64} className="mb-4 text-[#0a0a0a]" strokeWidth={1} />
-                      <p className="font-bold font-mono text-sm">NO BONES BURIED YET.</p>
-                      <p className="text-xs">Go fetch some text!</p>
-                    </div>
-                  ) : (
-                    <>
-                      <div className="flex justify-end mb-2">
-                        <button onClick={() => { clearHistory(); setHistoryItems([]); }} className="text-[10px] font-bold uppercase text-[#ff6b35] flex items-center gap-1 hover:bg-[#0a0a0a] hover:text-[#ff6b35] px-2 py-1 transition-colors">
-                          <Trash2 size={12} /> DIG UP ALL
-                        </button>
-                      </div>
-                      {historyItems.map((item) => (
-                        <div
-                          key={item.id}
-                          onClick={() => {
-                            navigator.clipboard.writeText(item.text);
-                            setIsCopied(true);
-                            setTimeout(() => setIsCopied(false), 1000);
-                          }}
-                          className="bg-white border-2 border-[#0a0a0a] p-3 shadow-[4px_4px_0px_#0a0a0a] hover:shadow-[4px_4px_0px_#00ff88] hover:-translate-y-1 transition-all cursor-pointer group relative overflow-hidden"
-                        >
-                          <div className="absolute top-0 right-0 w-4 h-4 bg-[#0a0a0a] transform rotate-45 translate-x-2 -translate-y-2"></div>
-                          <div className="flex justify-between items-start mb-2 border-b-2 border-dashed border-[#0a0a0a]/10 pb-1">
-                            <span className="text-[9px] font-black uppercase bg-[#00ff88] text-[#0a0a0a] px-1 border border-[#0a0a0a]">{item.lang}</span>
-                            <span className="text-[9px] font-mono opacity-50">{new Date(item.timestamp).toLocaleTimeString()}</span>
-                          </div>
-                          <p className="text-xs font-mono line-clamp-3 leading-relaxed opacity-100 group-hover:text-[#0a0a0a]">
-                            {item.text}
-                          </p>
-                        </div>
-                      ))}
-                    </>
-                  )}
-                </div>
-              </motion.div>
-            </>
+            <HistoryDrawer
+              isOpen={showHistory}
+              onClose={() => setShowHistory(false)}
+              historyItems={historyItems}
+              onClearHistory={() => { clearHistory(); setHistoryItems([]); }}
+              onCopyItem={() => { setIsCopied(true); setTimeout(() => setIsCopied(false), 1000); }}
+            />
           )}
         </AnimatePresence>
 
