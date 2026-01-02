@@ -64,6 +64,20 @@ function App() {
       }
     };
     initShortcut();
+
+    // Listen for tray capture event
+    const setupTrayListener = async () => {
+      const { listen } = await import("@tauri-apps/api/event");
+      const unlisten = await listen("tray-capture", () => {
+        captureScreen();
+      });
+      return unlisten;
+    };
+    const unlistenPromise = setupTrayListener();
+
+    return () => {
+      unlistenPromise.then(unlisten => unlisten());
+    };
   }, []);
 
   // --- Actions ---
@@ -201,7 +215,7 @@ function App() {
               </p>
             </div>
           </div>
-          <div className="reveal reveal-delay-2 hidden sm:block">
+          <div className="reveal reveal-delay-2">
             <div className="flex items-center gap-1 bg-[#e8e4db] px-2 py-1 border border-[#0a0a0a] shadow-[2px_2px_0px_#0a0a0a]">
               <Command size={12} />
               <span className="text-xs font-bold">SHIFT+X</span>

@@ -1,20 +1,28 @@
 use tauri::{
-    menu::{Menu, MenuItem},
-    tray::{MouseButton, TrayIcon, TrayIconBuilder, TrayIconEvent},
-    AppHandle, Manager, Runtime,
+    menu::{Menu, MenuItem, PredefinedMenuItem},
+    tray::{MouseButton, TrayIconBuilder, TrayIconEvent},
+    AppHandle, Emitter, Manager, Runtime,
 };
 
 pub fn create_tray<R: Runtime>(app: &AppHandle<R>) -> tauri::Result<()> {
-    let quit_i = MenuItem::with_id(app, "quit", "Quit Screen Inu", true, None::<&str>)?;
-    let show_i = MenuItem::with_id(app, "show", "Show Window", true, None::<&str>)?;
-    let menu = Menu::with_items(app, &[&show_i, &quit_i])?;
+    // Menu Items
+    let capture_i = MenuItem::with_id(app, "capture", "📸 Capture (Ctrl+Shift+X)", true, None::<&str>)?;
+    let show_i = MenuItem::with_id(app, "show", "🐕 Show Window", true, None::<&str>)?;
+    let separator = PredefinedMenuItem::separator(app)?;
+    let quit_i = MenuItem::with_id(app, "quit", "❌ Quit Screen Inu", true, None::<&str>)?;
+
+    let menu = Menu::with_items(app, &[&capture_i, &show_i, &separator, &quit_i])?;
 
     let _tray = TrayIconBuilder::with_id("tray")
         .menu(&menu)
+        .tooltip("Screen Inu - OCR Tool 🐕")
         .show_menu_on_left_click(false)
-        .on_menu_event(|app: &AppHandle<R>, event| match event.id.as_ref() {
-            "quit" => {
-                app.exit(0);
+        .on_menu_event(|app, event| match event.id.as_ref() {
+            "capture" => {
+                // Emit event to frontend to trigger capture
+                if let Some(window) = app.get_webview_window("main") {
+                    let _ = window.emit("tray-capture", ());
+                }
             }
             "show" => {
                 if let Some(window) = app.get_webview_window("main") {
@@ -22,9 +30,12 @@ pub fn create_tray<R: Runtime>(app: &AppHandle<R>) -> tauri::Result<()> {
                     let _ = window.set_focus();
                 }
             }
+            "quit" => {
+                app.exit(0);
+            }
             _ => {}
         })
-        .on_tray_icon_event(|tray: &TrayIcon<R>, event| match event {
+        .on_tray_icon_event(|tray, event| match event {
             TrayIconEvent::Click {
                 button: MouseButton::Left,
                 ..
@@ -42,3 +53,4 @@ pub fn create_tray<R: Runtime>(app: &AppHandle<R>) -> tauri::Result<()> {
 
     Ok(())
 }
+

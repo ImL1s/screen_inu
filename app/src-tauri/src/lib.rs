@@ -1,6 +1,7 @@
 use base64::Engine;
 use image::ImageFormat;
 use std::io::Cursor;
+use tauri::Manager;
 use xcap::Monitor;
 
 #[tauri::command]
@@ -93,6 +94,17 @@ pub fn run() {
             #[cfg(desktop)]
             {
                 tray::create_tray(app.handle())?;
+
+                // Intercept window close to minimize to tray instead of quitting
+                let window = app.get_webview_window("main").unwrap();
+                let window_clone = window.clone();
+                window.on_window_event(move |event| {
+                    if let tauri::WindowEvent::CloseRequested { api, .. } = event {
+                        // Prevent actual close and hide window instead
+                        api.prevent_close();
+                        let _ = window_clone.hide();
+                    }
+                });
             }
             Ok(())
         })
