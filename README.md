@@ -30,11 +30,13 @@
 </div>
 
 *   **Global Shortcut** (`Ctrl/⌘ + Shift + X`): Snap from anywhere, anytime.
-*   **High Accuracy OCR**: Powered by Tesseract engine with multi-language support (English, Traditional Chinese, Japanese).
+*   **Multi-language Support**: Fully localized interface in **English** and **Traditional Chinese (繁體中文)**.
+*   **High Accuracy OCR**: Powered by Tesseract engine, specialized for English and Chinese.
+*   **History Vault**: Automatically saves your recent snips and OCR results locally.
 *   **Auto-Copy**: Optionally text to clipboard automatically after recognition.
 *   **Dark/Light Theme**: Beautiful glassmorphism UI that adapts to your preference (Auto-saved).
 *   **System Tray Integration**: Stays quietly in your menu bar, ready when you are.
-*   **Modern UI**: Glassmorphism design with smooth Framer Motion animations.
+*   **Modern UI**: Brutalist "Inu" themed design with smooth Framer Motion animations.
 *   **Cross-Platform**: Built on Tauri, compatible with macOS, Windows, and Linux.
 
 ---
