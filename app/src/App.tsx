@@ -31,6 +31,8 @@ function App() {
   const [selectedLang, setSelectedLang] = useState("eng+chi_tra");
   const [autoCopy, setAutoCopy] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(true);
+  const [directSnip, setDirectSnip] = useState(false);
+  const [silentMode, setSilentMode] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
@@ -48,6 +50,12 @@ function App() {
       setSoundEnabled(enabled);
       soundManager.setEnabled(enabled);
     }
+
+    const savedDirectSnip = localStorage.getItem('directSnip');
+    if (savedDirectSnip) setDirectSnip(savedDirectSnip === 'true');
+
+    const savedSilentMode = localStorage.getItem('silentMode');
+    if (savedSilentMode) setSilentMode(savedSilentMode === 'true');
 
     // Load History
     setHistoryItems(getHistory());
@@ -96,6 +104,16 @@ function App() {
     clearHistory();
     setHistoryItems([]);
     setShowSettings(false);
+  };
+
+  const handleSetDirectSnip = (enabled: boolean) => {
+    setDirectSnip(enabled);
+    localStorage.setItem('directSnip', String(enabled));
+  };
+
+  const handleSetSilentMode = (enabled: boolean) => {
+    setSilentMode(enabled);
+    localStorage.setItem('silentMode', String(enabled));
   };
 
   async function captureScreen() {
@@ -153,6 +171,12 @@ function App() {
           setIsCopied(true);
           soundManager.playSuccess(); // ✨ DING!
           setTimeout(() => setIsCopied(false), 2000);
+
+          // Silent mode: hide window after successful OCR + copy
+          if (silentMode) {
+            const win = getCurrentWebviewWindow();
+            await win.hide();
+          }
         }
       } else {
         soundManager.playError();
@@ -380,6 +404,10 @@ function App() {
               setSoundEnabled={handleSetSoundEnabled}
               autoCopy={autoCopy}
               setAutoCopy={handleSetAutoCopy}
+              directSnip={directSnip}
+              setDirectSnip={handleSetDirectSnip}
+              silentMode={silentMode}
+              setSilentMode={handleSetSilentMode}
               onClearHistory={handleClearHistory}
             />
           )}
