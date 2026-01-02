@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { register } from "@tauri-apps/plugin-global-shortcut";
 import { getCurrentWebviewWindow } from "@tauri-apps/api/webviewWindow";
@@ -33,6 +33,10 @@ function App() {
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [directSnip, setDirectSnip] = useState(false);
   const [silentMode, setSilentMode] = useState(false);
+
+  // Refs to access current values in callbacks (avoid stale closures)
+  const directSnipRef = useRef(directSnip);
+  const silentModeRef = useRef(silentMode);
   const [isLoading, setIsLoading] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
@@ -52,10 +56,18 @@ function App() {
     }
 
     const savedDirectSnip = localStorage.getItem('directSnip');
-    if (savedDirectSnip) setDirectSnip(savedDirectSnip === 'true');
+    if (savedDirectSnip) {
+      const enabled = savedDirectSnip === 'true';
+      setDirectSnip(enabled);
+      directSnipRef.current = enabled;
+    }
 
     const savedSilentMode = localStorage.getItem('silentMode');
-    if (savedSilentMode) setSilentMode(savedSilentMode === 'true');
+    if (savedSilentMode) {
+      const enabled = savedSilentMode === 'true';
+      setSilentMode(enabled);
+      silentModeRef.current = enabled;
+    }
 
     // Load History
     setHistoryItems(getHistory());
@@ -108,11 +120,13 @@ function App() {
 
   const handleSetDirectSnip = (enabled: boolean) => {
     setDirectSnip(enabled);
+    directSnipRef.current = enabled; // Keep ref in sync
     localStorage.setItem('directSnip', String(enabled));
   };
 
   const handleSetSilentMode = (enabled: boolean) => {
     setSilentMode(enabled);
+    silentModeRef.current = enabled; // Keep ref in sync
     localStorage.setItem('silentMode', String(enabled));
   };
 
@@ -123,7 +137,7 @@ function App() {
 
       const window = getCurrentWebviewWindow();
 
-      if (directSnip) {
+      if (directSnipRef.current) {
         // Direct Snip Mode: Show transparent fullscreen immediately
         await window.setFullscreen(true);
         await window.show();
@@ -190,7 +204,7 @@ function App() {
           setTimeout(() => setIsCopied(false), 2000);
 
           // Silent mode: hide window after successful OCR + copy
-          if (silentMode) {
+          if (silentModeRef.current) {
             const win = getCurrentWebviewWindow();
             await win.hide();
           }
