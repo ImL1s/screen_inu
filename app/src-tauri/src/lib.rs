@@ -19,6 +19,23 @@ fn capture_full_screen() -> Result<String, String> {
     Ok(base64_str)
 }
 
+#[tauri::command]
+fn capture_region(x: i32, y: i32, width: u32, height: u32) -> Result<String, String> {
+    let monitors = Monitor::all().map_err(|e| e.to_string())?;
+    let monitor = monitors.first().ok_or("No monitor found")?;
+    let image = monitor.capture_image().map_err(|e| e.to_string())?;
+
+    let sub_image = image::imageops::crop_imm(&image, x as u32, y as u32, width, height);
+
+    let mut bytes: Vec<u8> = Vec::new();
+    image::DynamicImage::ImageRgba8(sub_image.to_image())
+        .write_to(&mut Cursor::new(&mut bytes), ImageFormat::Png)
+        .map_err(|e| e.to_string())?;
+
+    let base64_str = base64::engine::general_purpose::STANDARD.encode(&bytes);
+    Ok(base64_str)
+}
+
 use rusty_tesseract::{Args, Image};
 use std::fs::File;
 use std::io::Write;
@@ -113,6 +130,7 @@ pub fn run() {
         .invoke_handler(tauri::generate_handler![
             greet,
             capture_full_screen,
+            capture_region,
             perform_ocr,
             scan_qr
         ])

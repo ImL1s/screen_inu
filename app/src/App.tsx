@@ -120,14 +120,25 @@ function App() {
     try {
       soundManager.playShutter(); // 📸 SNAP!
       setOcrResult("");
+
       const window = getCurrentWebviewWindow();
-      await window.hide();
-      await new Promise(resolve => setTimeout(resolve, 300));
-      const base64: string = await invoke("capture_full_screen");
-      setScreenshot(`data:image/png;base64,${base64}`);
-      await window.setFullscreen(true);
-      await window.show();
-      await window.setFocus();
+
+      if (directSnip) {
+        // Direct Snip Mode: Show transparent fullscreen immediately
+        await window.setFullscreen(true);
+        await window.show();
+        await window.setFocus();
+        setScreenshot("DIRECT_MODE");
+      } else {
+        // Classic Mode: Hide -> Capture Full -> Show Preview
+        await window.hide();
+        await new Promise(resolve => setTimeout(resolve, 300));
+        const base64: string = await invoke("capture_full_screen");
+        setScreenshot(`data:image/png;base64,${base64}`);
+        await window.setFullscreen(true);
+        await window.show();
+        await window.setFocus();
+      }
     } catch (e) {
       console.error("Failed to capture screen:", e);
       soundManager.playError();
@@ -140,14 +151,20 @@ function App() {
   async function restoreWindow() {
     const window = getCurrentWebviewWindow();
     await window.setFullscreen(false);
+    // In Direct Mode, we might want to ensure we're not hidden if we cancel?
+    // Usually setFullscreen(false) is enough to go back to normal window
   }
 
   async function runOcr(base64: string) {
     setIsLoading(true);
     try {
+      // Hide window immediately during OCR if silent logic dictates, 
+      // but usually we want to see the loading state?
+      // Actually runOcr restores window size.
       const window = getCurrentWebviewWindow();
       await window.setFullscreen(false);
 
+      // ... rest of runOcr
       const qrResult: string | null = await invoke("scan_qr", { base64Image: base64 });
       let text: string;
 
@@ -225,7 +242,7 @@ function App() {
         <div className="fixed right-0 top-0 h-full w-1 bg-[#0a0a0a] z-50"></div>
 
         {/* Header */}
-        <header className="px-6 py-5 flex items-center justify-between z-10 w-full border-b-2 border-[#0a0a0a] bg-[#f5f2eb]">
+        <header data-tauri-drag-region className="px-6 py-5 flex items-center justify-center sm:justify-between z-10 w-full border-b-2 border-[#0a0a0a] bg-[#f5f2eb]">
           <div className="flex items-center gap-4 reveal reveal-delay-1 group">
             <div className="w-12 h-12 flex items-center justify-center transform group-hover:-rotate-12 transition-transform duration-300 origin-bottom-right">
               <ShibaLogo />
@@ -433,15 +450,30 @@ function App() {
       {
         screenshot && (
           <SnippingOverlay
-            image={screenshot}
+            image={screenshot === "DIRECT_MODE" ? undefined : screenshot}
+            directMode={screenshot === "DIRECT_MODE"}
             onClose={async () => {
               await restoreWindow();
               setScreenshot(null);
             }}
-            onCrop={async (croppedImage) => {
+            onCrop={async (result: any) => {
               await restoreWindow();
               setScreenshot(null);
-              runOcr(croppedImage);
+
+              if (typeof result === 'string') {
+                // Legacy mode: result is base64 image from frontend canvas
+                runOcr(result);
+              } else {
+                // Direct mode: result is {x, y, width, height}
+                // Call backend to capture this specific region
+                const regionBase64: string = await invoke("capture_region", {
+                  x: Math.round(result.x),
+                  y: Math.round(result.y),
+                  width: Math.round(result.width),
+                  height: Math.round(result.height)
+                });
+                runOcr(regionBase64);
+              }
             }}
           />
         )
