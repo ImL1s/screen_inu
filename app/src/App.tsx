@@ -7,6 +7,7 @@ import { ShibaLogo } from "./components/ShibaLogo";
 import { HistoryDrawer } from "./components/HistoryDrawer";
 import { SettingsModal } from "./components/SettingsModal";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import {
   Copy,
   Check,
@@ -24,6 +25,8 @@ import { soundManager } from "./utils/SoundManager";
 import "./App.css";
 
 function App() {
+  const { t } = useTranslation();
+
   // --- State ---
   const [screenshot, setScreenshot] = useState<string | null>(null);
   const [ocrResult, setOcrResult] = useState<string>("");
@@ -72,13 +75,23 @@ function App() {
     // Load History
     setHistoryItems(getHistory());
 
+    let shortcutRegistered = false;
     const initShortcut = async () => {
       try {
+        const { unregister } = await import("@tauri-apps/plugin-global-shortcut");
+        // Try to unregister first in case of hot reload
+        try {
+          await unregister("CommandOrControl+Shift+X");
+        } catch {
+          // Ignore if not registered
+        }
         await register("CommandOrControl+Shift+X", async (event) => {
           if (event.state === "Pressed") {
             await captureScreen();
           }
         });
+        shortcutRegistered = true;
+        console.log("✅ Global shortcut registered: Ctrl+Shift+X");
       } catch (err) {
         console.error("Failed to register shortcut:", err);
       }
@@ -97,6 +110,12 @@ function App() {
 
     return () => {
       unlistenPromise.then(unlisten => unlisten());
+      // Cleanup shortcut on unmount
+      if (shortcutRegistered) {
+        import("@tauri-apps/plugin-global-shortcut").then(({ unregister }) => {
+          unregister("CommandOrControl+Shift+X").catch(() => { });
+        });
+      }
     };
   }, []);
 
@@ -248,23 +267,23 @@ function App() {
         <div className="fixed right-0 top-0 h-full w-1 bg-[#0a0a0a] z-50"></div>
 
         {/* Header */}
-        <header data-tauri-drag-region className="px-6 py-5 flex items-center justify-center sm:justify-between z-10 w-full border-b-2 border-[#0a0a0a] bg-[#f5f2eb]">
+        <header data-tauri-drag-region className="px-6 py-5 flex items-center justify-center z-10 w-full border-b-2 border-[#0a0a0a] bg-[#f5f2eb]">
           <div className="flex items-center gap-4 reveal reveal-delay-1 group">
             <div className="w-12 h-12 flex items-center justify-center transform group-hover:-rotate-12 transition-transform duration-300 origin-bottom-right">
               <ShibaLogo />
             </div>
             <div>
               <h1 className="text-2xl font-black leading-none translate-y-0.5 tracking-tighter" style={{ fontFamily: 'Syne, sans-serif' }}>
-                SCREEN<span className="text-[#ff6b35]">_</span>INU
+                {t('app.title').split(' ')[0]}<span className="text-[#ff6b35]">_</span>{t('app.title').split(' ')[1] || 'INU'}
               </h1>
               <p className="text-[9px] uppercase tracking-[0.2em] font-bold bg-[#0a0a0a] text-[#00ff88] px-1 w-fit mt-1">
-                Official Doge OCR
+                {t('app.subtitle')}
               </p>
             </div>
           </div>
-          <div className="reveal reveal-delay-2">
-            <div className="flex items-center gap-1 bg-[#e8e4db] px-2 py-1 border border-[#0a0a0a] shadow-[2px_2px_0px_#0a0a0a]">
-              <Command size={12} />
+          <div className="reveal reveal-delay-2 ml-6">
+            <div className="hidden sm:flex items-center gap-1 bg-[#e8e4db] px-2 py-1 border border-[#0a0a0a] shadow-[2px_2px_0px_#0a0a0a]">
+              {navigator.userAgent.includes('Mac') ? <Command size={12} /> : <span className="text-[10px] font-black mr-0.5">CTRL</span>}
               <span className="text-xs font-bold">SHIFT+X</span>
             </div>
           </div>
@@ -294,18 +313,18 @@ function App() {
 
                   <Maximize2 size={48} className="text-[#0a0a0a] relative z-10" strokeWidth={2} />
                   <div className="bg-[#0a0a0a] text-[#f5f2eb] px-4 py-1 font-black text-sm tracking-widest uppercase transform -rotate-2 relative z-10 border border-[#f5f2eb]">
-                    FETCH TEXT
+                    {t('status.ready')}
                   </div>
                 </div>
               </button>
 
               <div className="space-y-4 max-w-[280px]">
-                <h2 className="text-3xl font-black leading-none uppercase italic" style={{ fontFamily: 'Syne, sans-serif' }}>
-                  SUCH PIXELS.<br />MANY TEXT.
+                <h2 className="text-3xl font-black leading-none uppercase italic whitespace-pre-line" style={{ fontFamily: 'Syne, sans-serif' }}>
+                  {t('app.doge_quote_1')}
                 </h2>
                 <div className="h-0.5 w-full bg-[#0a0a0a] mx-auto pattern-wavy"></div>
                 <p className="text-xs font-bold font-mono opacity-100 bg-[#e8e4db] p-2 border border-[#0a0a0a] shadow-[2px_2px_0px_#0a0a0a]">
-                  "Wow. Select region. Very extract."
+                  "{t('app.doge_quote_2')}"
                 </p>
               </div>
             </div>
@@ -318,7 +337,7 @@ function App() {
                   className="flex-1 flex flex-col items-center justify-center"
                 >
                   <div className="w-16 h-16 border-4 border-[#0a0a0a] border-t-[#ff6b35] rounded-none animate-spin mb-6 shadow-[4px_4px_0px_#0a0a0a]"></div>
-                  <p className="text-lg font-black blink uppercase bg-[#00ff88] px-2 text-[#0a0a0a]">SNIFFING DATA...</p>
+                  <p className="text-lg font-black blink uppercase bg-[#00ff88] px-2 text-[#0a0a0a]">{t('status.processing')}</p>
                 </motion.div>
               ) : (
                 <motion.div
@@ -331,13 +350,13 @@ function App() {
                   <div className="flex items-center justify-between p-3 border-b-2 border-[#0a0a0a] bg-[#00ff88]">
                     <div className="flex items-center gap-2">
                       <Zap size={16} className="text-black fill-white" />
-                      <span className="font-black text-sm uppercase tracking-wider">RETRIEVED BONE</span>
+                      <span className="font-black text-sm uppercase tracking-wider">{t('status.retrieved')}</span>
                     </div>
                     <div className="flex gap-2">
-                      <button onClick={handleCopy} className="p-1.5 bg-white border-2 border-[#0a0a0a] hover:bg-[#0a0a0a] hover:text-[#00ff88] transition-colors shadow-[2px_2px_0px_#0a0a0a] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px]" title="Copy">
+                      <button onClick={handleCopy} className="p-1.5 bg-white border-2 border-[#0a0a0a] hover:bg-[#0a0a0a] hover:text-[#00ff88] transition-colors shadow-[2px_2px_0px_#0a0a0a] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px]" title={t('status.copy')}>
                         {isCopied ? <Check size={16} strokeWidth={3} /> : <Copy size={16} strokeWidth={3} />}
                       </button>
-                      <button onClick={() => setOcrResult("")} className="p-1.5 bg-white border-2 border-[#0a0a0a] hover:bg-[#ff6b35] hover:text-white transition-colors shadow-[2px_2px_0px_#0a0a0a] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px]" title="Throw Away">
+                      <button onClick={() => setOcrResult("")} className="p-1.5 bg-white border-2 border-[#0a0a0a] hover:bg-[#ff6b35] hover:text-white transition-colors shadow-[2px_2px_0px_#0a0a0a] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px]" title={t('status.clear')}>
                         <X size={16} strokeWidth={3} />
                       </button>
                     </div>
@@ -346,9 +365,9 @@ function App() {
                   {/* Text Content */}
                   <div className="flex-1 overflow-y-auto p-4 custom-scrollbar bg-white font-mono text-xs leading-loose whitespace-pre-wrap selection:bg-[#ff6b35] selection:text-white">
                     {ocrResult === "__EMPTY__" ? (
-                      <span className="opacity-50 italic">Empty. Much sad.</span>
+                      <span className="opacity-50 italic">{t('status.empty')}</span>
                     ) : ocrResult.startsWith("Error:") ? (
-                      <span className="text-[#ff6b35] font-bold bg-[#0a0a0a] px-1 text-white">{ocrResult}</span>
+                      <span className="text-[#ff6b35] font-bold bg-[#0a0a0a] px-1 text-white">{t('status.error')} {ocrResult.replace("Error:", "")}</span>
                     ) : (
                       ocrResult
                     )}
@@ -380,11 +399,11 @@ function App() {
                   onChange={(e) => setSelectedLang(e.target.value)}
                   className="w-full bg-transparent border-none outline-none px-3 text-xs font-black uppercase cursor-pointer appearance-none tracking-wider"
                 >
-                  <option value="eng">English (Woof)</option>
-                  <option value="chi_tra+eng">Traditional Chinese</option>
-                  <option value="chi_sim+eng">Simplified Chinese</option>
-                  <option value="jpn+eng">Japanese</option>
-                  <option value="kor+eng">Korean</option>
+                  <option value="eng">{t('settings.language.en')}</option>
+                  <option value="chi_tra+eng">{t('settings.language.zh-TW')}</option>
+                  <option value="chi_sim+eng">{t('settings.language.chi_sim')}</option>
+                  <option value="jpn+eng">{t('settings.language.jpn')}</option>
+                  <option value="kor+eng">{t('settings.language.kor')}</option>
                 </select>
                 <div className="absolute right-3 pointer-events-none transform rotate-90 font-black text-lg">›</div>
               </div>
@@ -394,7 +413,7 @@ function App() {
             <button
               onClick={() => setShowSettings(true)}
               className="relative group w-12 h-12"
-              title="Settings"
+              title={t('settings.title')}
             >
               <div className="absolute inset-0 bg-[#0a0a0a] translate-x-1 translate-y-1 transition-transform group-hover:translate-x-1.5 group-hover:translate-y-1.5 pointer-events-none"></div>
               <div className="relative bg-[#e8e4db] w-full h-full border-2 border-[#0a0a0a] flex items-center justify-center transition-colors hover:bg-white group-hover:bg-[#00ff88]">
@@ -406,7 +425,7 @@ function App() {
             <button
               onClick={() => { setHistoryItems(getHistory()); setShowHistory(true); }}
               className="relative group w-12 h-12"
-              title="Open Bone Stash"
+              title={t('history.title')}
             >
               <div className="absolute inset-0 bg-[#0a0a0a] translate-x-1 translate-y-1 transition-transform group-hover:translate-x-1.5 group-hover:translate-y-1.5 pointer-events-none"></div>
               <div className="relative bg-[#ff6b35] w-full h-full border-2 border-[#0a0a0a] flex items-center justify-center transition-colors hover:bg-white">

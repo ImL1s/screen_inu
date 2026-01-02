@@ -1,0 +1,64 @@
+{
+    "app": {
+        "title": "Screen Inu",
+        "subtitle": "Official Doge OCR",
+        "doge_quote_1": "SUCH PIXELS.\nMANY TEXT.",
+        "doge_quote_2": "Wow. Select region. Very extract."
+    },
+    "status": {
+        "ready": "FETCH TEXT",
+        "processing": "SNIFFING DATA...",
+        "retrieved": "RETRIEVED BONE",
+        "copy": "Copy",
+        "clear": "Throw Away",
+        "empty": "Empty. Much sad.",
+        "error": "Error",
+        "copied": "COPIED!"
+    },
+    "history": {
+        "title": "BONE STASH",
+        "clear_all": "DIG UP ALL",
+        "empty_title": "NO BONES BURIED YET.",
+        "empty_subtitle": "Go fetch some text!",
+        "item_lang": "LANG"
+    },
+    "settings": {
+        "title": "SETTINGS",
+        "sound": {
+            "title": "SOUND EFFECTS",
+            "on": "Bark & Snap enabled",
+            "off": "Silent mode"
+        },
+        "auto_copy": {
+            "title": "AUTO COPY",
+            "on": "Copy text automatically",
+            "off": "Manual copy only"
+        },
+        "direct_snip": {
+            "title": "DIRECT SNIP",
+            "on": "Snip desktop directly",
+            "off": "Show full screenshot first"
+        },
+        "silent_mode": {
+            "title": "SILENT MODE",
+            "on": "Hide window after sniff",
+            "off": "Stay open after sniff"
+        },
+        "language": {
+            "title": "LANGUAGE",
+            "en": "English (Woof)",
+            "zh-TW": "Traditional Chinese",
+            "chi_sim": "Simplified Chinese",
+            "jpn": "Japanese",
+            "kor": "Korean"
+        },
+        "section": {
+            "capture": "📸 CAPTURE",
+            "app": "⚙️ APP"
+        }
+    },
+    "overlay": {
+        "drag_to_capture": "DRAG TO CAPTURE",
+        "too_small": "TOO SMALL"
+    }
+}

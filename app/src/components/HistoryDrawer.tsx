@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Bone, Dog, Trash2, X } from "lucide-react";
 import { HistoryItem } from "../utils/history";
 import { soundManager } from "../utils/SoundManager";
+import { useTranslation } from "react-i18next";
 
 interface HistoryDrawerProps {
     isOpen: boolean;
@@ -22,6 +23,8 @@ export const HistoryDrawer = ({
     onClearHistory,
     onCopyItem,
 }: HistoryDrawerProps) => {
+    const { t } = useTranslation();
+
     if (!isOpen) return null;
 
     const handleCopyItem = (text: string) => {
@@ -53,7 +56,7 @@ export const HistoryDrawer = ({
                 <div className="p-4 border-b-2 border-[#0a0a0a] flex items-center justify-between bg-[#0a0a0a] text-[#00ff88]">
                     <h3 className="font-black text-lg font-display uppercase tracking-wider flex items-center gap-2">
                         <Bone size={20} fill="#00ff88" className="text-[#0a0a0a]" />
-                        BONE STASH
+                        {t('history.title')}
                     </h3>
                     <button onClick={onClose} className="hover:rotate-90 transition-transform">
                         <X size={24} />
@@ -65,8 +68,8 @@ export const HistoryDrawer = ({
                     {historyItems.length === 0 ? (
                         <div className="h-full flex flex-col items-center justify-center text-center opacity-60">
                             <Dog size={64} className="mb-4 text-[#0a0a0a]" strokeWidth={1} />
-                            <p className="font-bold font-mono text-sm">NO BONES BURIED YET.</p>
-                            <p className="text-xs">Go fetch some text!</p>
+                            <p className="font-bold font-mono text-sm">{t('history.empty_title')}</p>
+                            <p className="text-xs">{t('history.empty_subtitle')}</p>
                         </div>
                     ) : (
                         <>
@@ -75,7 +78,7 @@ export const HistoryDrawer = ({
                                     onClick={onClearHistory}
                                     className="text-[10px] font-bold uppercase text-[#ff6b35] flex items-center gap-1 hover:bg-[#0a0a0a] hover:text-[#ff6b35] px-2 py-1 transition-colors"
                                 >
-                                    <Trash2 size={12} /> DIG UP ALL
+                                    <Trash2 size={12} /> {t('history.clear_all')}
                                 </button>
                             </div>
                             {historyItems.map((item) => (
@@ -105,3 +108,4 @@ export const HistoryDrawer = ({
         </>
     );
 };
+

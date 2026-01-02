@@ -1,6 +1,7 @@
 import { useRef, useState, useEffect } from 'react';
 import { X, Crop, AlertCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
     image: string;
@@ -9,6 +10,7 @@ interface Props {
 }
 
 export function SnippingOverlay({ image, onCrop, onClose }: Props) {
+    const { t } = useTranslation();
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const [startPos, setStartPos] = useState<{ x: number; y: number } | null>(null);
     const [currentPos, setCurrentPos] = useState<{ x: number; y: number } | null>(null);
@@ -165,7 +167,7 @@ export function SnippingOverlay({ image, onCrop, onClose }: Props) {
                 className="fixed top-8 left-1/2 transform -translate-x-1/2 flex items-center gap-3 px-6 py-3 bg-[#0a0a0a] text-[#00ff88] border-2 border-[#00ff88] shadow-[4px_4px_0px_white] z-[10000] pointer-events-none"
             >
                 <Crop size={16} className="text-[#00ff88]" />
-                <span className="text-xs font-bold uppercase tracking-widest">DRAG TO CAPTURE</span>
+                <span className="text-xs font-bold uppercase tracking-widest">{t('overlay.drag_to_capture')}</span>
             </motion.div>
 
             <button
@@ -184,7 +186,7 @@ export function SnippingOverlay({ image, onCrop, onClose }: Props) {
                         className="fixed bottom-12 left-1/2 transform -translate-x-1/2 px-6 py-4 bg-[#ff6b35] text-[#0a0a0a] border-2 border-[#0a0a0a] shadow-[8px_8px_0px_#0a0a0a] z-[10002] flex items-center gap-3"
                     >
                         <AlertCircle size={20} strokeWidth={2.5} />
-                        <span className="text-xs font-bold uppercase tracking-wider">TOO SMALL</span>
+                        <span className="text-xs font-bold uppercase tracking-wider">{t('overlay.too_small')}</span>
                     </motion.div>
                 )}
             </AnimatePresence>

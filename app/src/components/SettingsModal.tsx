@@ -1,5 +1,7 @@
-import { X, Volume2, VolumeX, Copy, Check, Trash2, Scissors, EyeOff, Eye, Monitor } from "lucide-react";
-import { motion } from "framer-motion";
+import { X, Volume2, VolumeX, Copy, Check, Trash2, Scissors, EyeOff, Eye, Monitor, Globe, ChevronDown } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useTranslation } from "react-i18next";
+import { useState } from "react";
 
 // Detect Windows platform (Direct Snip not supported due to WebView2 transparency bug)
 const isWindows = typeof navigator !== 'undefined' && navigator.userAgent.includes('Windows');
@@ -31,7 +33,15 @@ export const SettingsModal = ({
     setSilentMode,
     onClearHistory
 }: SettingsModalProps) => {
+    const { t, i18n } = useTranslation();
+    const [showLangMenu, setShowLangMenu] = useState(false);
+
     if (!isOpen) return null;
+
+    const changeLanguage = (lng: string) => {
+        i18n.changeLanguage(lng);
+        setShowLangMenu(false);
+    };
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -54,7 +64,7 @@ export const SettingsModal = ({
                 {/* Header */}
                 <div className="bg-[#0a0a0a] text-white p-4 flex justify-between items-center sticky top-0 z-10">
                     <h2 className="text-xl font-black uppercase tracking-widest flex items-center gap-2">
-                        Settings
+                        {t('settings.title')}
                     </h2>
                     <button onClick={onClose} className="hover:text-[#00ff88] transition-colors">
                         <X size={24} />
@@ -64,8 +74,48 @@ export const SettingsModal = ({
                 {/* Content */}
                 <div className="p-6 space-y-5">
 
+                    {/* Section: Language */}
+                    <div className="text-[10px] font-black uppercase tracking-widest text-[#0a0a0a]/50 border-b border-[#0a0a0a]/10 pb-1">{t('settings.language.title')}</div>
+
+                    <div className="relative">
+                        <button
+                            onClick={() => setShowLangMenu(!showLangMenu)}
+                            className="w-full flex items-center justify-between p-3 bg-white border-2 border-[#0a0a0a] hover:bg-[#e8e4db] transition-colors"
+                        >
+                            <div className="flex items-center gap-3">
+                                <Globe size={20} />
+                                <span className="font-bold">{t(`settings.language.${i18n.language}` as any) || i18n.language}</span>
+                            </div>
+                            <ChevronDown size={16} className={`transform transition-transform ${showLangMenu ? 'rotate-180' : ''}`} />
+                        </button>
+
+                        <AnimatePresence>
+                            {showLangMenu && (
+                                <motion.div
+                                    initial={{ opacity: 0, y: -10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -10 }}
+                                    className="absolute top-full left-0 right-0 mt-2 bg-white border-2 border-[#0a0a0a] shadow-[4px_4px_0px_#0a0a0a] z-20"
+                                >
+                                    <button
+                                        onClick={() => changeLanguage('en')}
+                                        className="w-full text-left p-3 hover:bg-[#00ff88] font-mono text-sm border-b border-[#0a0a0a]/10 last:border-0"
+                                    >
+                                        English
+                                    </button>
+                                    <button
+                                        onClick={() => changeLanguage('zh-TW')}
+                                        className="w-full text-left p-3 hover:bg-[#00ff88] font-mono text-sm"
+                                    >
+                                        繁體中文
+                                    </button>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+                    </div>
+
                     {/* Section: Capture */}
-                    <div className="text-[10px] font-black uppercase tracking-widest text-[#0a0a0a]/50 border-b border-[#0a0a0a]/10 pb-1">📸 Capture</div>
+                    <div className="text-[10px] font-black uppercase tracking-widest text-[#0a0a0a]/50 border-b border-[#0a0a0a]/10 pb-1 pt-2">{t('settings.section.capture')}</div>
 
                     {/* Direct Snip Toggle - Hidden on Windows (transparency bug) */}
                     {!isWindows && (
@@ -75,8 +125,8 @@ export const SettingsModal = ({
                                     {directSnip ? <Scissors size={24} /> : <Monitor size={24} />}
                                 </div>
                                 <div>
-                                    <h3 className="font-black uppercase text-sm">Direct Snip</h3>
-                                    <p className="text-[10px] font-mono opacity-60">{directSnip ? "Snip desktop directly" : "Show full screenshot first"}</p>
+                                    <h3 className="font-black uppercase text-sm">{t('settings.direct_snip.title')}</h3>
+                                    <p className="text-[10px] font-mono opacity-60">{directSnip ? t('settings.direct_snip.on') : t('settings.direct_snip.off')}</p>
                                 </div>
                             </div>
                             <button
@@ -95,8 +145,8 @@ export const SettingsModal = ({
                                 {silentMode ? <EyeOff size={24} /> : <Eye size={24} />}
                             </div>
                             <div>
-                                <h3 className="font-black uppercase text-sm">Silent Mode</h3>
-                                <p className="text-[10px] font-mono opacity-60">{silentMode ? "Copy & stay hidden" : "Show window after OCR"}</p>
+                                <h3 className="font-black uppercase text-sm">{t('settings.silent_mode.title')}</h3>
+                                <p className="text-[10px] font-mono opacity-60">{silentMode ? t('settings.silent_mode.on') : t('settings.silent_mode.off')}</p>
                             </div>
                         </div>
                         <button
@@ -108,7 +158,7 @@ export const SettingsModal = ({
                     </div>
 
                     {/* Section: Behavior */}
-                    <div className="text-[10px] font-black uppercase tracking-widest text-[#0a0a0a]/50 border-b border-[#0a0a0a]/10 pb-1 pt-2">🐕 Behavior</div>
+                    <div className="text-[10px] font-black uppercase tracking-widest text-[#0a0a0a]/50 border-b border-[#0a0a0a]/10 pb-1 pt-2">{t('settings.section.app')}</div>
 
                     {/* Sound Toggle */}
                     <div className="flex items-center justify-between group">
@@ -117,8 +167,8 @@ export const SettingsModal = ({
                                 {soundEnabled ? <Volume2 size={24} /> : <VolumeX size={24} />}
                             </div>
                             <div>
-                                <h3 className="font-black uppercase text-sm">Retro Sounds</h3>
-                                <p className="text-[10px] font-mono opacity-60">8-bit barks and beeps</p>
+                                <h3 className="font-black uppercase text-sm">{t('settings.sound.title')}</h3>
+                                <p className="text-[10px] font-mono opacity-60">{soundEnabled ? t('settings.sound.on') : t('settings.sound.off')}</p>
                             </div>
                         </div>
                         <button
@@ -136,8 +186,8 @@ export const SettingsModal = ({
                                 {autoCopy ? <Check size={24} strokeWidth={3} /> : <Copy size={24} />}
                             </div>
                             <div>
-                                <h3 className="font-black uppercase text-sm">Auto-Fetch</h3>
-                                <p className="text-[10px] font-mono opacity-60">Copy text automatically</p>
+                                <h3 className="font-black uppercase text-sm">{t('settings.auto_copy.title')}</h3>
+                                <p className="text-[10px] font-mono opacity-60">{autoCopy ? t('settings.auto_copy.on') : t('settings.auto_copy.off')}</p>
                             </div>
                         </div>
                         <button
@@ -155,7 +205,7 @@ export const SettingsModal = ({
                             className="w-full bg-white border-2 border-[#0a0a0a] p-3 flex items-center justify-center gap-2 hover:bg-[#ff6b35] hover:text-white hover:shadow-[4px_4px_0px_#0a0a0a] transition-all group"
                         >
                             <Trash2 size={18} />
-                            <span className="font-black uppercase text-sm">Burn History</span>
+                            <span className="font-black uppercase text-sm">{t('history.clear_all')}</span>
                         </button>
                     </div>
 
@@ -164,4 +214,3 @@ export const SettingsModal = ({
         </div>
     );
 };
-
