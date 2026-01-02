@@ -131,6 +131,10 @@ For other distros, consult your package manager.
     *   **Windows**: `.msi` or `.exe` (NSIS) in `src-tauri/target/release/bundle/`
     *   **Linux**: `.AppImage` or `.deb` in `src-tauri/target/release/bundle/`
 
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
 ---
 
 <div align="center">
