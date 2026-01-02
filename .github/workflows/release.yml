@@ -12,7 +12,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        platform: [macos-latest] # Add windows-latest, ubuntu-22.04 later when ready
+        platform: [macos-latest, windows-latest] # Added windows-latest
     runs-on: ${{ matrix.platform }}
 
     steps:
@@ -36,6 +36,10 @@ jobs:
       - name: Install Tesseract (macOS)
         if: matrix.platform == 'macos-latest'
         run: brew install tesseract leptonica
+
+      - name: Install Tesseract (Windows)
+        if: matrix.platform == 'windows-latest'
+        run: choco install tesseract
 
       - name: Install frontend dependencies
         working-directory: ./app
