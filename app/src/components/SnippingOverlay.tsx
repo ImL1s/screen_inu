@@ -2,21 +2,13 @@ import { useRef, useState, useEffect } from 'react';
 import { X, Crop, AlertCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-interface Region {
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-}
-
 interface Props {
-    image?: string; // Optional now
-    onCrop: (result: string | Region) => void;
+    image: string;
+    onCrop: (croppedImage: string) => void;
     onClose: () => void;
-    directMode?: boolean;
 }
 
-export function SnippingOverlay({ image, onCrop, onClose, directMode = false }: Props) {
+export function SnippingOverlay({ image, onCrop, onClose }: Props) {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const [startPos, setStartPos] = useState<{ x: number; y: number } | null>(null);
     const [currentPos, setCurrentPos] = useState<{ x: number; y: number } | null>(null);
@@ -24,9 +16,8 @@ export function SnippingOverlay({ image, onCrop, onClose, directMode = false }: 
     const [showToast, setShowToast] = useState(false);
     const [isDragging, setIsDragging] = useState(false);
 
-    // Initial load of image (only if provided)
+    // Initial load of image
     useEffect(() => {
-        if (!image) return;
         const img = new Image();
         img.src = image;
         img.onload = () => {
@@ -45,108 +36,78 @@ export function SnippingOverlay({ image, onCrop, onClose, directMode = false }: 
 
     // Main Draw Loop
     useEffect(() => {
+        if (!imgObj || !canvasRef.current) return;
+
         const canvas = canvasRef.current;
-        if (!canvas) return;
         const ctx = canvas.getContext('2d');
         if (!ctx) return;
 
-        // Size handling
-        if (directMode) {
-            // Match viewport exactly
-            if (canvas.width !== window.innerWidth || canvas.height !== window.innerHeight) {
-                canvas.width = window.innerWidth;
-                canvas.height = window.innerHeight;
-            }
-        } else if (imgObj) {
-            // Match image size
-            if (canvas.width !== imgObj.naturalWidth || canvas.height !== imgObj.naturalHeight) {
-                canvas.width = imgObj.naturalWidth;
-                canvas.height = imgObj.naturalHeight;
-            }
+        // Match canvas to image size
+        if (canvas.width !== imgObj.naturalWidth || canvas.height !== imgObj.naturalHeight) {
+            canvas.width = imgObj.naturalWidth;
+            canvas.height = imgObj.naturalHeight;
         }
 
         // Clear
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // 1. Background / Image
-        if (directMode) {
-            // Fully transparent - do nothing, just let the desktop show through
-            // Selection border will still be visible
-        } else if (imgObj) {
-            ctx.drawImage(imgObj, 0, 0);
-            // Dim Overlay
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.75)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-        }
+        // Draw image
+        ctx.drawImage(imgObj, 0, 0);
 
-        // 3. Selection
+        // Dim Overlay
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.75)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Selection
         if (startPos && currentPos) {
             const x = Math.min(startPos.x, currentPos.x);
             const y = Math.min(startPos.y, currentPos.y);
             const w = Math.abs(currentPos.x - startPos.x);
             const h = Math.abs(currentPos.y - startPos.y);
 
-            // Cut out the selection (Hole)
+            // Show original image in selection
             ctx.save();
             ctx.beginPath();
             ctx.rect(x, y, w, h);
-
-            if (directMode) {
-                // Make hole transparent to see desktop clearly
-                ctx.globalCompositeOperation = 'destination-out';
-                ctx.fill();
-            } else if (imgObj) {
-                // Show original image
-                ctx.clip();
-                ctx.drawImage(imgObj, 0, 0);
-            }
+            ctx.clip();
+            ctx.drawImage(imgObj, 0, 0);
             ctx.restore();
 
             // Border
             ctx.strokeStyle = '#00ff88';
-            ctx.lineWidth = 2;
+            ctx.lineWidth = 4;
             ctx.strokeRect(x, y, w, h);
 
             // Size Label
             if (w > 20 && h > 20) {
                 const label = `${Math.round(w)} x ${Math.round(h)}`;
-                const fontSize = 14;
+                const fontSize = Math.max(24, canvas.width / 100);
                 ctx.font = `bold ${fontSize}px "Space Mono", monospace`;
                 const textMetrics = ctx.measureText(label);
 
-                // Label BG
                 ctx.fillStyle = '#0a0a0a';
-                ctx.fillRect(x, y - 24, textMetrics.width + 10, 24);
+                ctx.fillRect(x, y - (fontSize * 1.5), textMetrics.width + 20, fontSize * 1.5);
 
-                // Label Text
                 ctx.fillStyle = '#00ff88';
-                ctx.fillText(label, x + 5, y - 7);
+                ctx.fillText(label, x + 10, y - (fontSize * 0.4));
             }
         }
 
-    }, [imgObj, startPos, currentPos, directMode]);
+    }, [imgObj, startPos, currentPos]);
 
-    // Helper: Map coordinates
+    // Map coordinates
     const mapCoordinates = (e: React.MouseEvent) => {
         const canvas = canvasRef.current;
         if (!canvas) return { x: 0, y: 0 };
 
         const rect = canvas.getBoundingClientRect();
+        const scaleX = canvas.width / rect.width;
+        const scaleY = canvas.height / rect.height;
 
-        if (directMode) {
-            // In direct mode (fullscreen window), client coords ARE canvas coords
-            return {
-                x: e.clientX,
-                y: e.clientY
-            };
-        } else {
-            const scaleX = canvas.width / rect.width;
-            const scaleY = canvas.height / rect.height;
-            return {
-                x: (e.clientX - rect.left) * scaleX,
-                y: (e.clientY - rect.top) * scaleY
-            };
-        }
+        return {
+            x: (e.clientX - rect.left) * scaleX,
+            y: (e.clientY - rect.top) * scaleY
+        };
     };
 
     const handleMouseDown = (e: React.MouseEvent) => {
@@ -164,36 +125,20 @@ export function SnippingOverlay({ image, onCrop, onClose, directMode = false }: 
 
     const handleMouseUp = () => {
         setIsDragging(false);
-        if (startPos && currentPos) {
+        if (startPos && currentPos && imgObj) {
             const x = Math.min(startPos.x, currentPos.x);
             const y = Math.min(startPos.y, currentPos.y);
             const w = Math.abs(currentPos.x - startPos.x);
             const h = Math.abs(currentPos.y - startPos.y);
 
-            // Min size threshold
             if (w > 10 && h > 10) {
-                if (directMode) {
-                    // Return coordinates directly
-                    // Adjust for DPI if needed? Backend takes pixels.
-                    // window.devicePixelRatio might be needed if Tauri uses logical pixels for window size but physical for screen capture.
-                    // Usually we multiply by dpr.
-                    const dpr = window.devicePixelRatio || 1;
-                    onCrop({
-                        x: Math.round(x * dpr),
-                        y: Math.round(y * dpr),
-                        width: Math.round(w * dpr),
-                        height: Math.round(h * dpr)
-                    });
-                } else if (imgObj) {
-                    // Crop image
-                    const outputCanvas = document.createElement('canvas');
-                    outputCanvas.width = w;
-                    outputCanvas.height = h;
-                    const ctx = outputCanvas.getContext('2d');
-                    if (ctx) {
-                        ctx.drawImage(imgObj, x, y, w, h, 0, 0, w, h);
-                        onCrop(outputCanvas.toDataURL('image/png'));
-                    }
+                const outputCanvas = document.createElement('canvas');
+                outputCanvas.width = w;
+                outputCanvas.height = h;
+                const ctx = outputCanvas.getContext('2d');
+                if (ctx) {
+                    ctx.drawImage(imgObj, x, y, w, h, 0, 0, w, h);
+                    onCrop(outputCanvas.toDataURL('image/png'));
                 }
             } else if (w > 2 || h > 2) {
                 setShowToast(true);
@@ -205,7 +150,7 @@ export function SnippingOverlay({ image, onCrop, onClose, directMode = false }: 
     };
 
     return (
-        <div className={`fixed inset-0 z-[9999] cursor-crosshair font-mono ${directMode ? 'bg-transparent' : 'bg-black'}`}>
+        <div className="fixed inset-0 z-[9999] cursor-crosshair font-mono bg-black">
             <canvas
                 ref={canvasRef}
                 className="w-full h-full block object-contain"
@@ -214,14 +159,13 @@ export function SnippingOverlay({ image, onCrop, onClose, directMode = false }: 
                 onMouseUp={handleMouseUp}
             />
 
-            {/* UI Overlay Elements (Guide, Cancel) */}
             <motion.div
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: isDragging ? 0.3 : 1, y: 0 }}
                 className="fixed top-8 left-1/2 transform -translate-x-1/2 flex items-center gap-3 px-6 py-3 bg-[#0a0a0a] text-[#00ff88] border-2 border-[#00ff88] shadow-[4px_4px_0px_white] z-[10000] pointer-events-none"
             >
                 <Crop size={16} className="text-[#00ff88]" />
-                <span className="text-xs font-bold uppercase tracking-widest">{directMode ? 'SELECT ON SCREEN' : 'DRAG TO CAPTURE'}</span>
+                <span className="text-xs font-bold uppercase tracking-widest">DRAG TO CAPTURE</span>
             </motion.div>
 
             <button

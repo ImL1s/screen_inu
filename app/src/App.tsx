@@ -137,22 +137,14 @@ function App() {
 
       const window = getCurrentWebviewWindow();
 
-      if (directSnipRef.current) {
-        // Direct Snip Mode: Show transparent fullscreen immediately
-        await window.setFullscreen(true);
-        await window.show();
-        await window.setFocus();
-        setScreenshot("DIRECT_MODE");
-      } else {
-        // Classic Mode: Hide -> Capture Full -> Show Preview
-        await window.hide();
-        await new Promise(resolve => setTimeout(resolve, 300));
-        const base64: string = await invoke("capture_full_screen");
-        setScreenshot(`data:image/png;base64,${base64}`);
-        await window.setFullscreen(true);
-        await window.show();
-        await window.setFocus();
-      }
+      // Freeze Mode: Hide -> Capture Full -> Show Preview
+      await window.hide();
+      await new Promise(resolve => setTimeout(resolve, 150)); // Reduced delay
+      const base64: string = await invoke("capture_full_screen");
+      setScreenshot(`data:image/png;base64,${base64}`);
+      await window.setFullscreen(true);
+      await window.show();
+      await window.setFocus();
     } catch (e) {
       console.error("Failed to capture screen:", e);
       soundManager.playError();
@@ -464,30 +456,15 @@ function App() {
       {
         screenshot && (
           <SnippingOverlay
-            image={screenshot === "DIRECT_MODE" ? undefined : screenshot}
-            directMode={screenshot === "DIRECT_MODE"}
+            image={screenshot}
             onClose={async () => {
               await restoreWindow();
               setScreenshot(null);
             }}
-            onCrop={async (result: any) => {
+            onCrop={async (croppedImage: string) => {
               await restoreWindow();
               setScreenshot(null);
-
-              if (typeof result === 'string') {
-                // Legacy mode: result is base64 image from frontend canvas
-                runOcr(result);
-              } else {
-                // Direct mode: result is {x, y, width, height}
-                // Call backend to capture this specific region
-                const regionBase64: string = await invoke("capture_region", {
-                  x: Math.round(result.x),
-                  y: Math.round(result.y),
-                  width: Math.round(result.width),
-                  height: Math.round(result.height)
-                });
-                runOcr(regionBase64);
-              }
+              runOcr(croppedImage);
             }}
           />
         )
