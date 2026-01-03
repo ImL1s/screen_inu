@@ -63,6 +63,15 @@ jobs:
         working-directory: ./app/e2e
         run: npm install
 
+      - name: Install Tesseract language data
+        run: |
+          sudo mkdir -p /usr/share/tessdata
+          sudo wget -O /usr/share/tessdata/eng.traineddata https://github.com/tesseract-ocr/tessdata_best/raw/main/eng.traineddata
+        
+      - name: Build Tauri app (Debug)
+        working-directory: ./app
+        run: npm run tauri build -- --debug --no-bundle
+
       - name: Run E2E tests with xvfb
         working-directory: ./app/e2e
         run: xvfb-run --auto-servernum npm test
