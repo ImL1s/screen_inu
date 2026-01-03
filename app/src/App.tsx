@@ -17,7 +17,8 @@ import {
   Zap,
   Maximize2,
   Bone,
-  Settings
+  Settings,
+  Search
 } from "lucide-react";
 import { notifyOcrComplete } from "./utils/notification";
 import { addToHistory, getHistory, clearHistory, HistoryItem } from "./utils/history";
@@ -243,6 +244,28 @@ function App() {
     setTimeout(() => setIsCopied(false), 2000);
   };
 
+  const handleSearch = async () => {
+    const text = ocrResult.startsWith("[QR Code]")
+      ? ocrResult.replace("[QR Code]\n", "")
+      : ocrResult;
+
+    if (!text || text === "__EMPTY__" || text.startsWith("Error:")) return;
+
+    const searchQuery = encodeURIComponent(text.trim().substring(0, 200));
+    const searchUrl = `https://www.google.com/search?q=${searchQuery}`;
+
+    // Use Tauri's opener plugin to open the URL in the default browser
+    try {
+      const { openUrl } = await import("@tauri-apps/plugin-opener");
+      await openUrl(searchUrl);
+      soundManager.playSuccess();
+    } catch (e) {
+      console.error("Failed to open search:", e);
+      // Fallback to window.open
+      window.open(searchUrl, "_blank");
+    }
+  };
+
   // --- Design Tokens (mapped from CSS vars) ---
   // Background: --color-paper (#f5f2eb)
   // Text: --color-ink (#0a0a0a)
@@ -355,6 +378,9 @@ function App() {
                     <div className="flex gap-2">
                       <button onClick={handleCopy} className="p-1.5 bg-white border-2 border-[#0a0a0a] hover:bg-[#0a0a0a] hover:text-[#00ff88] transition-colors shadow-[2px_2px_0px_#0a0a0a] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px]" title={t('status.copy')}>
                         {isCopied ? <Check size={16} strokeWidth={3} /> : <Copy size={16} strokeWidth={3} />}
+                      </button>
+                      <button onClick={handleSearch} className="p-1.5 bg-white border-2 border-[#0a0a0a] hover:bg-[#0a0a0a] hover:text-[#00ff88] transition-colors shadow-[2px_2px_0px_#0a0a0a] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px]" title={t('status.search')}>
+                        <Search size={16} strokeWidth={3} />
                       </button>
                       <button onClick={() => setOcrResult("")} className="p-1.5 bg-white border-2 border-[#0a0a0a] hover:bg-[#ff6b35] hover:text-white transition-colors shadow-[2px_2px_0px_#0a0a0a] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px]" title={t('status.clear')}>
                         <X size={16} strokeWidth={3} />
