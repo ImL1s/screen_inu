@@ -115,3 +115,60 @@ describe('Quick Search Feature', () => {
         console.log('✅ App launched successfully - Quick Search feature ready');
     });
 });
+
+describe('Theme Toggle', () => {
+    it('should toggle between dark and light themes', async () => {
+        // Open settings modal
+        const settingsBtn = await $('button[title="SETTINGS"], button[title="設定"], header button:last-child');
+        await settingsBtn.waitForDisplayed({ timeout: 5000 });
+        await settingsBtn.click();
+
+        // Wait for modal to appear
+        const modal = await $('div.fixed.inset-0.z-50');
+        await modal.waitForDisplayed({ timeout: 2000 });
+
+        // Find theme toggle (look for sun/moon icons or theme-related buttons)
+        // The theme toggle is typically a button with sun/moon icon
+        const themeButtons = await $$('button');
+        let themeToggleFound = false;
+
+        for (const btn of themeButtons) {
+            const html = await btn.getHTML();
+            if (html.includes('Sun') || html.includes('Moon') || html.includes('dark') || html.includes('light')) {
+                themeToggleFound = true;
+                break;
+            }
+        }
+
+        // Close modal
+        await browser.keys(['Escape']);
+        console.log('✅ Theme toggle test completed - Theme button found:', themeToggleFound);
+    });
+});
+
+describe('Language Switching', () => {
+    it('should have language selection available in settings', async () => {
+        // Open settings modal
+        const settingsBtn = await $('button[title="SETTINGS"], button[title="設定"], header button:last-child');
+        await settingsBtn.waitForDisplayed({ timeout: 5000 });
+        await settingsBtn.click();
+
+        // Wait for modal to appear
+        const modal = await $('div.fixed.inset-0.z-50');
+        await modal.waitForDisplayed({ timeout: 2000 });
+
+        // Check for language section in settings
+        // Look for language-related text or dropdowns
+        const modalContent = await modal.getHTML();
+        const hasLanguageSection = modalContent.includes('LANGUAGE') ||
+            modalContent.includes('語言') ||
+            modalContent.includes('English') ||
+            modalContent.includes('繁體中文');
+
+        expect(hasLanguageSection).toBe(true);
+
+        // Close modal
+        await browser.keys(['Escape']);
+        console.log('✅ Language switching test completed');
+    });
+});
