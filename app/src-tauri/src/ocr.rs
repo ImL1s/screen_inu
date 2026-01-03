@@ -219,9 +219,15 @@ pub fn get_tesseract_path() -> Result<std::path::PathBuf, String> {
     
     // Final fallback: try system tesseract
     if cfg!(windows) {
-        let program_files = std::path::PathBuf::from("C:\\Program Files\\Tesseract-OCR\\tesseract.exe");
-        if program_files.exists() {
-            return Ok(program_files);
+        let paths = [
+            "C:\\Program Files\\Tesseract-OCR\\tesseract.exe",
+            "C:\\Program Files (x86)\\Tesseract-OCR\\tesseract.exe",
+        ];
+        for p in paths {
+            let pb = std::path::PathBuf::from(p);
+            if pb.exists() {
+                return Ok(pb);
+            }
         }
     }
     

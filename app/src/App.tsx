@@ -282,7 +282,11 @@ function App() {
     } catch (e) {
       console.error("Failed to open search:", e);
       // Fallback to window.open
-      window.open(searchUrl, "_blank");
+      const win = window.open(searchUrl, "_blank");
+      if (!win) {
+        console.error("Popup blocked or window.open failed");
+        // We can use a general console error for now or a better UI feedback
+      }
     }
   };
 
