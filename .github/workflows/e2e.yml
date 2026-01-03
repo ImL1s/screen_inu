@@ -34,6 +34,7 @@ jobs:
             libleptonica-dev \
             clang \
             libpipewire-0.3-dev \
+            libgbm-dev \
             webkit2gtk-driver \
             xvfb
 
