@@ -38,8 +38,11 @@
 </div>
 
 *   **전역 단축키** (`Ctrl/⌘ + Shift + X`): 언제 어디서나 스크린샷을 찍을 수 있습니다.
+*   **멀티 엔진 OCR**:
+    *   **자동 스마트 선택**: 언어에 따라 최적의 엔진을 자동으로 선택합니다 (Windows 플랫폼의 CJK는 Windows OCR, 기타는 Tesseract).
+    *   **Windows 전용 OCR**: Windows Media OCR을 통합하여 한중일 인식 정확도에서 뛰어난 성능을 발휘합니다.
+    *   **Tesseract 5 (내장)**: 수동 설치가 필요 없습니다! 최적화된 `tessdata_best` 모델이 포함되어 있습니다.
 *   **다국어 지원**: **영어** 및 **중국어 번체** 인터페이스를 완벽하게 지원합니다.
-*   **고정밀 OCR**: 영어와 중국어 인식에 특화된 Tesseract 엔진으로 구동됩니다.
 *   **히스토리 저장소**: 최근 캡처 및 OCR 결과를 로컬에 자동으로 저장합니다.
 *   **자동 복사**: 인식 완료 후 텍스트를 클립보드에 자동으로 복사하는 옵션.
 *   **다크/라이트 테마**: 선호도에 따라 자동으로 조정되는 아름다운 글래스모피즘 UI (자동 저장).
@@ -75,41 +78,20 @@ Screen Inu는 **Tauri 2.0**의 강력한 기능을 활용하여 가볍고 안전
 
 ---
 
-## 🛠️ 시작하기
-
 ### 전제 조건
 *   **Node.js** (v18+)
 *   **Rust** (최신 안정 버전)
-*   **Tesseract OCR** (언어 팩 포함)
-
-#### 플랫폼별 Tesseract 설치 가이드
-
-<details>
-<summary><strong>macOS</strong></summary>
-
-```bash
-brew install tesseract tesseract-lang
-```
-**시스템 설정 > 개인정보 보호 및 보안 > 화면 기록**에서 화면 기록 권한을 부여하세요.
-</details>
+*   *(선택 사항)* **Tesseract OCR**: Linux/macOS에서 시스템에 설치된 Tesseract를 사용하려는 경우에만 필요합니다.
+    *   **Windows**: 자동으로 내장되어 있습니다! 설치가 필요 없습니다.
+    *   **macOS/Linux**: 앱은 내장된 바이너리를 사용하려고 시도하지만, 시스템 버전을 설치해 두는 것이 좋은 백업이 됩니다.
 
 <details>
-<summary><strong>Windows</strong></summary>
+<summary><strong>수동 Tesseract 설치 가이드 (선택 사항)</strong></summary>
 
-1. [UB Mannheim](https://github.com/UB-Mannheim/tesseract/wiki)에서 설치 프로그램을 다운로드합니다.
-2. 설치 중 **Additional language data**(예: Chinese Traditional, Japanese)를 선택합니다.
-3. Tesseract를 `PATH` 환경 변수에 추가합니다(설치 프로그램에서 보통 이 옵션을 제공함).
-4. 확인: `tesseract --version`
-</details>
+*   **macOS**: `brew install tesseract tesseract-lang`
+*   **Linux**: `sudo apt install tesseract-ocr tesseract-ocr-chi-tra tesseract-ocr-jpn`
+*   **Windows**: 필요 없음 (내장됨).
 
-<details>
-<summary><strong>Linux (Debian/Ubuntu)</strong></summary>
-
-```bash
-sudo apt update
-sudo apt install tesseract-ocr tesseract-ocr-chi-tra tesseract-ocr-jpn
-```
-다른 배포판의 경우 패키지 관리자를 참조하세요.
 </details>
 
 ---

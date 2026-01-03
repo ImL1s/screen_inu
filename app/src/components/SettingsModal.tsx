@@ -1,4 +1,4 @@
-import { X, Volume2, VolumeX, Copy, Check, Trash2, Scissors, EyeOff, Eye, Monitor, Globe, ChevronDown } from "lucide-react";
+import { X, Volume2, VolumeX, Copy, Check, Trash2, Scissors, EyeOff, Eye, Monitor, Globe, ChevronDown, Cpu } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
@@ -17,6 +17,9 @@ interface SettingsModalProps {
     setDirectSnip: (enabled: boolean) => void;
     silentMode: boolean;
     setSilentMode: (enabled: boolean) => void;
+    ocrEngine: string;
+    setOcrEngine: (engine: string) => void;
+    availableEngines: string[];
     onClearHistory: () => void;
 }
 
@@ -31,10 +34,21 @@ export const SettingsModal = ({
     setDirectSnip,
     silentMode,
     setSilentMode,
+    ocrEngine,
+    setOcrEngine,
+    availableEngines,
     onClearHistory
 }: SettingsModalProps) => {
     const { t, i18n } = useTranslation();
     const [showLangMenu, setShowLangMenu] = useState(false);
+    const [showEngineMenu, setShowEngineMenu] = useState(false);
+
+    const engineLabels: Record<string, string> = {
+        'auto': t('settings.ocr_engine.auto') || 'Auto (Smart Selection)',
+        'tesseract': 'Tesseract OCR',
+        'windows': 'Windows OCR',
+        'apple': 'Apple Vision'
+    };
 
     if (!isOpen) return null;
 
@@ -109,6 +123,43 @@ export const SettingsModal = ({
                                     >
                                         繁體中文
                                     </button>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+                    </div>
+
+                    {/* OCR Engine Selection */}
+                    <div className="text-[10px] font-black uppercase tracking-widest text-[#0a0a0a]/50 border-b border-[#0a0a0a]/10 pb-1 pt-2">{t('settings.ocr_engine.title') || 'OCR Engine'}</div>
+
+                    <div className="relative">
+                        <button
+                            onClick={() => setShowEngineMenu(!showEngineMenu)}
+                            className="w-full flex items-center justify-between p-3 bg-white border-2 border-[#0a0a0a] hover:bg-[#e8e4db] transition-colors"
+                        >
+                            <div className="flex items-center gap-3">
+                                <Cpu size={20} />
+                                <span className="font-bold">{engineLabels[ocrEngine] || ocrEngine}</span>
+                            </div>
+                            <ChevronDown size={16} className={`transform transition-transform ${showEngineMenu ? 'rotate-180' : ''}`} />
+                        </button>
+
+                        <AnimatePresence>
+                            {showEngineMenu && (
+                                <motion.div
+                                    initial={{ opacity: 0, y: -10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -10 }}
+                                    className="absolute top-full left-0 right-0 mt-2 bg-white border-2 border-[#0a0a0a] shadow-[4px_4px_0px_#0a0a0a] z-20"
+                                >
+                                    {availableEngines.map((engine) => (
+                                        <button
+                                            key={engine}
+                                            onClick={() => { setOcrEngine(engine); setShowEngineMenu(false); }}
+                                            className={`w-full text-left p-3 hover:bg-[#00ff88] font-mono text-sm border-b border-[#0a0a0a]/10 last:border-0 ${ocrEngine === engine ? 'bg-[#e8e4db]' : ''}`}
+                                        >
+                                            {engineLabels[engine] || engine}
+                                        </button>
+                                    ))}
                                 </motion.div>
                             )}
                         </AnimatePresence>

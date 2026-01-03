@@ -38,8 +38,11 @@
 </div>
 
 *   **Global Shortcut** (`Ctrl/⌘ + Shift + X`): Snap from anywhere, anytime.
+*   **Multi-Engine OCR**:
+    *   **Auto-Smart Selection**: Automatically picks the best engine for the language (Windows OCR for CJK, Tesseract for others).
+    *   **Windows Native OCR**: Integrated Windows Media OCR for superior accuracy in Chinese/Japanese/Korean.
+    *   **Tesseract 5 (Bundled)**: No installation required! Optimized `tessdata_best` models included.
 *   **Multi-language Support**: Fully localized interface in **English** and **Traditional Chinese (繁體中文)**.
-*   **High Accuracy OCR**: Powered by Tesseract engine, specialized for English and Chinese.
 *   **History Vault**: Automatically saves your recent snips and OCR results locally.
 *   **Auto-Copy**: Optionally text to clipboard automatically after recognition.
 *   **Dark/Light Theme**: Beautiful glassmorphism UI that adapts to your preference (Auto-saved).
@@ -80,36 +83,17 @@ Screen Inu leverages the power of **Tauri 2.0** for a lightweight, secure, and p
 ### Prerequisites
 *   **Node.js** (v18+)
 *   **Rust** (latest stable)
-*   **Tesseract OCR** with language packs
-
-#### Tesseract Installation by Platform
-
-<details>
-<summary><strong>macOS</strong></summary>
-
-```bash
-brew install tesseract tesseract-lang
-```
-Grant Screen Recording permission in **System Settings > Privacy & Security > Screen Recording**.
-</details>
+*   *(Optional)* **Tesseract OCR**: Only needed if you want to use system-installed Tesseract on Linux/macOS. 
+    *   **Windows**: Bundled automatically! No install needed.
+    *   **macOS/Linux**: The app tries to use bundled binary, but having system Tesseract is a good fallback.
 
 <details>
-<summary><strong>Windows</strong></summary>
+<summary><strong>Manual Tesseract Installation (Optional)</strong></summary>
 
-1. Download installer from [UB Mannheim](https://github.com/UB-Mannheim/tesseract/wiki).
-2. During install, select **Additional language data** (e.g., Chinese Traditional, Japanese).
-3. Add Tesseract to your `PATH` (installer usually offers this option).
-4. Verify: `tesseract --version`
-</details>
+*   **macOS**: `brew install tesseract tesseract-lang`
+*   **Linux**: `sudo apt install tesseract-ocr tesseract-ocr-chi-tra tesseract-ocr-jpn`
+*   **Windows**: Not required (Bundled).
 
-<details>
-<summary><strong>Linux (Debian/Ubuntu)</strong></summary>
-
-```bash
-sudo apt update
-sudo apt install tesseract-ocr tesseract-ocr-chi-tra tesseract-ocr-jpn
-```
-For other distros, consult your package manager.
 </details>
 
 ---

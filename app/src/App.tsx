@@ -17,7 +17,8 @@ import {
   Zap,
   Maximize2,
   Bone,
-  Settings
+  Settings,
+  Search
 } from "lucide-react";
 import { notifyOcrComplete } from "./utils/notification";
 import { addToHistory, getHistory, clearHistory, HistoryItem } from "./utils/history";
@@ -36,6 +37,8 @@ function App() {
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [directSnip, setDirectSnip] = useState(false);
   const [silentMode, setSilentMode] = useState(false);
+  const [ocrEngine, setOcrEngine] = useState("auto");
+  const [availableEngines, setAvailableEngines] = useState<string[]>(["auto", "tesseract"]);
 
   // Refs to access current values in callbacks (avoid stale closures)
   const directSnipRef = useRef(directSnip);
@@ -71,6 +74,17 @@ function App() {
       setSilentMode(enabled);
       silentModeRef.current = enabled;
     }
+
+    // Load OCR Engine preference
+    const savedOcrEngine = localStorage.getItem('ocrEngine');
+    if (savedOcrEngine) setOcrEngine(savedOcrEngine);
+
+    // Fetch available OCR engines from backend
+    invoke<string[]>("get_ocr_engines").then(engines => {
+      if (engines && engines.length > 0) {
+        setAvailableEngines(engines);
+      }
+    }).catch(e => console.error("Failed to get OCR engines:", e));
 
     // Load History
     setHistoryItems(getHistory());
@@ -149,6 +163,11 @@ function App() {
     localStorage.setItem('silentMode', String(enabled));
   };
 
+  const handleSetOcrEngine = (engine: string) => {
+    setOcrEngine(engine);
+    localStorage.setItem('ocrEngine', engine);
+  };
+
   async function captureScreen() {
     try {
       soundManager.playShutter(); // 📸 SNAP!
@@ -196,7 +215,9 @@ function App() {
       if (qrResult) {
         text = `[QR Code]\n${qrResult}`;
       } else {
-        text = await invoke("perform_ocr", { base64Image: base64, langs: selectedLang });
+        // Use the selected OCR engine from settings
+        // When "auto": CJK languages → Windows OCR (on Windows), other → Tesseract
+        text = await invoke("perform_ocr", { base64Image: base64, langs: selectedLang, engine: ocrEngine });
       }
 
       setOcrResult(text || "__EMPTY__");
@@ -241,6 +262,32 @@ function App() {
     setIsCopied(true);
     soundManager.playSuccess(); // ✨ DING!
     setTimeout(() => setIsCopied(false), 2000);
+  };
+
+  const handleSearch = async () => {
+    const text = ocrResult.startsWith("[QR Code]")
+      ? ocrResult.replace("[QR Code]\n", "")
+      : ocrResult;
+
+    if (!text || text === "__EMPTY__" || text.trim().length === 0 || text.startsWith("Error:")) return;
+
+    const searchQuery = encodeURIComponent(text.trim().substring(0, 200));
+    const searchUrl = `https://www.google.com/search?q=${searchQuery}`;
+
+    // Use Tauri's opener plugin to open the URL in the default browser
+    try {
+      const { openUrl } = await import("@tauri-apps/plugin-opener");
+      await openUrl(searchUrl);
+      soundManager.playSuccess();
+    } catch (e) {
+      console.error("Failed to open search:", e);
+      // Fallback to window.open
+      const win = window.open(searchUrl, "_blank");
+      if (!win) {
+        console.error("Popup blocked or window.open failed");
+        // We can use a general console error for now or a better UI feedback
+      }
+    }
   };
 
   // --- Design Tokens (mapped from CSS vars) ---
@@ -356,6 +403,9 @@ function App() {
                       <button onClick={handleCopy} className="p-1.5 bg-white border-2 border-[#0a0a0a] hover:bg-[#0a0a0a] hover:text-[#00ff88] transition-colors shadow-[2px_2px_0px_#0a0a0a] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px]" title={t('status.copy')}>
                         {isCopied ? <Check size={16} strokeWidth={3} /> : <Copy size={16} strokeWidth={3} />}
                       </button>
+                      <button onClick={handleSearch} className="p-1.5 bg-white border-2 border-[#0a0a0a] hover:bg-[#0a0a0a] hover:text-[#00ff88] transition-colors shadow-[2px_2px_0px_#0a0a0a] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px]" title={t('status.search')}>
+                        <Search size={16} strokeWidth={3} />
+                      </button>
                       <button onClick={() => setOcrResult("")} className="p-1.5 bg-white border-2 border-[#0a0a0a] hover:bg-[#ff6b35] hover:text-white transition-colors shadow-[2px_2px_0px_#0a0a0a] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px]" title={t('status.clear')}>
                         <X size={16} strokeWidth={3} />
                       </button>
@@ -450,6 +500,9 @@ function App() {
               setDirectSnip={handleSetDirectSnip}
               silentMode={silentMode}
               setSilentMode={handleSetSilentMode}
+              ocrEngine={ocrEngine}
+              setOcrEngine={handleSetOcrEngine}
+              availableEngines={availableEngines}
               onClearHistory={handleClearHistory}
             />
           )}

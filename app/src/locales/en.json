@@ -10,6 +10,7 @@
         "processing": "SNIFFING DATA...",
         "retrieved": "RETRIEVED BONE",
         "copy": "Copy",
+        "search": "Search Web",
         "clear": "Throw Away",
         "empty": "Empty. Much sad.",
         "error": "Error",
@@ -55,6 +56,10 @@
         "section": {
             "capture": "📸 CAPTURE",
             "app": "⚙️ APP"
+        },
+        "ocr_engine": {
+            "title": "OCR ENGINE",
+            "auto": "Auto (Smart Selection)"
         }
     },
     "overlay": {

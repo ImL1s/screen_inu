@@ -1,0 +1,17 @@
+{"conclusion":"success","name":"Set up job","status":"completed"}
+{"conclusion":"success","name":"Checkout repository","status":"completed"}
+{"conclusion":"success","name":"Install Linux dependencies","status":"completed"}
+{"conclusion":"success","name":"Setup Node.js","status":"completed"}
+{"conclusion":"success","name":"Install Rust","status":"completed"}
+{"conclusion":"success","name":"Rust cache","status":"completed"}
+{"conclusion":"success","name":"Install tauri-driver","status":"completed"}
+{"conclusion":"success","name":"Install frontend dependencies","status":"completed"}
+{"conclusion":"success","name":"Install E2E test dependencies","status":"completed"}
+{"conclusion":"success","name":"Install Tesseract language data","status":"completed"}
+{"conclusion":"success","name":"Prepare dummy Tesseract sidecars","status":"completed"}
+{"conclusion":"failure","name":"Build Tauri app (Debug)","status":"completed"}
+{"conclusion":"skipped","name":"Run E2E tests with xvfb","status":"completed"}
+{"conclusion":"skipped","name":"Post Rust cache","status":"completed"}
+{"conclusion":"skipped","name":"Post Setup Node.js","status":"completed"}
+{"conclusion":"success","name":"Post Checkout repository","status":"completed"}
+{"conclusion":"success","name":"Complete job","status":"completed"}
