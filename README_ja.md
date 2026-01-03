@@ -38,8 +38,11 @@
 </div>
 
 *   **グローバルショートカット** (`Ctrl/⌘ + Shift + X`): いつでもどこでもスクリーンショット。
+*   **マルチエンジン OCR**:
+    *   **自動スマート選択**: 言語に基づいて最適なエンジンを自動的に選択します (Windows プラットフォームの CJK は Windows OCR、その他は Tesseract)。
+    *   **Windows ネイティブ OCR**: Windows Media OCR を統合し、中日韓の認識精度において優れたパフォーマンスを発揮します。
+    *   **Tesseract 5 (内蔵)**: 手動インストールは不要です！最適化された `tessdata_best` モデルが含まれています。
 *   **多言語サポート**: **英語**と**繁体字中国語**のインターフェースに完全対応。
-*   **高精度 OCR**: Tesseract エンジンを搭載し、英語と中国語に特化。
 *   **履歴保管庫**: 最近の切り取りと OCR 結果をローカルに自動保存。
 *   **自動コピー**: 認識後にテキストをクリップボードに自動コピーするオプション。
 *   **ダーク/ライトテーマ**: 好みに合わせて自動調整される美しいグラスモーフィズム UI (自動保存)。
@@ -80,36 +83,17 @@ Screen Inu は **Tauri 2.0** のパワーを活用し、軽量で安全、かつ
 ### 前提条件
 *   **Node.js** (v18+)
 *   **Rust** (最新の安定版)
-*   **Tesseract OCR** (言語パック付き)
-
-#### プラットフォーム別 Tesseract インストールガイド
-
-<details>
-<summary><strong>macOS</strong></summary>
-
-```bash
-brew install tesseract tesseract-lang
-```
-**システム設定 > プライバシーとセキュリティ > 画面収録** で画面収録の許可を与えてください。
-</details>
+*   *(オプション)* **Tesseract OCR**: Linux/macOS でシステムにインストールされた Tesseract を使用したい場合にのみ必要です。
+    *   **Windows**: 自動的に内蔵されています！インストールは不要です。
+    *   **macOS/Linux**: アプリは内蔵のバイナリを使用しようとしますが、システム版をインストールしておくと良いバックアップになります。
 
 <details>
-<summary><strong>Windows</strong></summary>
+<summary><strong>手動 Tesseract インストールガイド (オプション)</strong></summary>
 
-1. [UB Mannheim](https://github.com/UB-Mannheim/tesseract/wiki) からインストーラーをダウンロードします。
-2. インストール中に **Additional language data** (例: Chinese Traditional, Japanese) を選択します。
-3. Tesseract を `PATH` 環境変数に追加します (インストーラーが通常このオプションを提供します)。
-4. 確認: `tesseract --version`
-</details>
+*   **macOS**: `brew install tesseract tesseract-lang`
+*   **Linux**: `sudo apt install tesseract-ocr tesseract-ocr-chi-tra tesseract-ocr-jpn`
+*   **Windows**: 不要 (内蔵済み)。
 
-<details>
-<summary><strong>Linux (Debian/Ubuntu)</strong></summary>
-
-```bash
-sudo apt update
-sudo apt install tesseract-ocr tesseract-ocr-chi-tra tesseract-ocr-jpn
-```
-他のディストリビューションについては、パッケージマネージャーを参照してください。
 </details>
 
 ---

@@ -38,8 +38,11 @@
 </div>
 
 *   **全局快捷键** (`Ctrl/⌘ + Shift + X`): 随时随地进行截屏。
+*   **多引擎 OCR**:
+    *   **自动智慧选择**: 根据语言自动选择最佳引擎 (Windows 平台 CJK 使用 Windows OCR，其余使用 Tesseract)。
+    *   **Windows 原生 OCR**: 整合 Windows Media OCR，在中日韩识别精度上表现优异。
+    *   **Tesseract 5 (内置)**: 无需手动安装！已包含优化的 `tessdata_best` 模型。
 *   **多语言支持**: 完整支持 **英文** 和 **繁体中文** 界面。
-*   **高精度 OCR**: 由 Tesseract 引擎驱动，专精于中英文识别。
 *   **历史金库**: 自动将您最近的截图和 OCR 结果保存在本地。
 *   **自动复制**: 识别完成后可选择自动将文本复制到剪贴板。
 *   **深色/浅色主题**: 根据您的喜好自动适应的精美玻璃拟态 UI (自动保存)。
@@ -80,36 +83,17 @@ Screen Inu 利用 **Tauri 2.0** 的强大功能，提供轻量、安全且高性
 ### 先决条件
 *   **Node.js** (v18+)
 *   **Rust** (最新稳定版)
-*   **Tesseract OCR** (需安装语言包)
-
-#### 各平台 Tesseract 安装指南
-
-<details>
-<summary><strong>macOS</strong></summary>
-
-```bash
-brew install tesseract tesseract-lang
-```
-在 **系统设置 > 隐私与安全性 > 屏幕录制** 中授予屏幕录制权限。
-</details>
+*   *(可选)* **Tesseract OCR**: 仅当您想在 Linux/macOS 上使用系统安装的 Tesseract 时才需要。
+    *   **Windows**: 自动内置！不需要手动安装。
+    *   **macOS/Linux**: 应用程序会尝试使用内置二进制文件，但安装系统版本可作为良好的备用。
 
 <details>
-<summary><strong>Windows</strong></summary>
+<summary><strong>手动安装 Tesseract 指南 (选配)</strong></summary>
 
-1. 从 [UB Mannheim](https://github.com/UB-Mannheim/tesseract/wiki) 下载安装程序。
-2. 安装过程中，选择 **Additional language data** (例如：Chinese Traditional, Japanese)。
-3. 将 Tesseract 加入您的 `PATH` 环境变量 (安装程序通常会提供此选项)。
-4. 验证：`tesseract --version`
-</details>
+*   **macOS**: `brew install tesseract tesseract-lang`
+*   **Linux**: `sudo apt install tesseract-ocr tesseract-ocr-chi-tra tesseract-ocr-jpn`
+*   **Windows**: 不需要 (已内置)。
 
-<details>
-<summary><strong>Linux (Debian/Ubuntu)</strong></summary>
-
-```bash
-sudo apt update
-sudo apt install tesseract-ocr tesseract-ocr-chi-tra tesseract-ocr-jpn
-```
-其他发行版请参考您的包管理器。
 </details>
 
 ---
