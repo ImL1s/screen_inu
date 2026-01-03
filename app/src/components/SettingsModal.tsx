@@ -134,13 +134,16 @@ export const SettingsModal = ({
                 animate={{ scale: 1, opacity: 1, rotate: 0 }}
                 exit={{ scale: 0.9, opacity: 0 }}
                 className="relative bg-[#f5f2eb] border-2 border-[#0a0a0a] w-full max-w-md shadow-[8px_8px_0px_#00ff88] max-h-[90vh] overflow-y-auto"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="settings-title"
             >
                 {/* Header */}
                 <div className="bg-[#0a0a0a] text-white p-4 flex justify-between items-center sticky top-0 z-10">
-                    <h2 className="text-xl font-black uppercase tracking-widest flex items-center gap-2">
+                    <h2 id="settings-title" className="text-xl font-black uppercase tracking-widest flex items-center gap-2">
                         {t('settings.title')}
                     </h2>
-                    <button onClick={onClose} className="hover:text-[#00ff88] transition-colors">
+                    <button onClick={onClose} className="hover:text-[#00ff88] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#00ff88] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a0a] rounded-sm" aria-label="Close settings">
                         <X size={24} />
                     </button>
                 </div>
@@ -154,7 +157,10 @@ export const SettingsModal = ({
                     <div className="relative">
                         <button
                             onClick={() => setShowLangMenu(!showLangMenu)}
-                            className="w-full flex items-center justify-between p-3 bg-white border-2 border-[#0a0a0a] hover:bg-[#e8e4db] transition-colors"
+                            className="w-full flex items-center justify-between p-3 bg-white border-2 border-[#0a0a0a] hover:bg-[#e8e4db] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0a0a0a] focus-visible:ring-offset-2"
+                            aria-haspopup="true"
+                            aria-expanded={showLangMenu}
+                            aria-label={t('settings.language.title')}
                         >
                             <div className="flex items-center gap-3">
                                 <Globe size={20} />
@@ -194,7 +200,10 @@ export const SettingsModal = ({
                     <div className="relative">
                         <button
                             onClick={() => setShowEngineMenu(!showEngineMenu)}
-                            className="w-full flex items-center justify-between p-3 bg-white border-2 border-[#0a0a0a] hover:bg-[#e8e4db] transition-colors"
+                            className="w-full flex items-center justify-between p-3 bg-white border-2 border-[#0a0a0a] hover:bg-[#e8e4db] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0a0a0a] focus-visible:ring-offset-2"
+                            aria-haspopup="true"
+                            aria-expanded={showEngineMenu}
+                            aria-label={t('settings.ocr_engine.title') || 'OCR Engine'}
                         >
                             <div className="flex items-center gap-3">
                                 <Cpu size={20} />
@@ -296,7 +305,10 @@ export const SettingsModal = ({
                         </div>
                         <button
                             onClick={() => setSilentMode(!silentMode)}
-                            className={`w-12 h-6 border-2 border-[#0a0a0a] relative transition-colors ${silentMode ? 'bg-[#00ff88]' : 'bg-[#e8e4db]'}`}
+                            className={`w-12 h-6 border-2 border-[#0a0a0a] relative transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0a0a0a] focus-visible:ring-offset-2 ${silentMode ? 'bg-[#00ff88]' : 'bg-[#e8e4db]'}`}
+                            role="switch"
+                            aria-checked={silentMode}
+                            aria-label={t('settings.silent_mode.title')}
                         >
                             <div className={`absolute top-0 bottom-0 w-6 bg-[#0a0a0a] transition-transform ${silentMode ? 'translate-x-6' : 'translate-x-0'}`}></div>
                         </button>
@@ -321,7 +333,10 @@ export const SettingsModal = ({
                         </div>
                         <button
                             onClick={() => setTranslateEnabled(!translateEnabled)}
-                            className={`w-12 h-6 border-2 border-[#0a0a0a] relative transition-colors ${translateEnabled ? 'bg-[#00ff88]' : 'bg-[#e8e4db]'}`}
+                            className={`w-12 h-6 border-2 border-[#0a0a0a] relative transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0a0a0a] focus-visible:ring-offset-2 ${translateEnabled ? 'bg-[#00ff88]' : 'bg-[#e8e4db]'}`}
+                            role="switch"
+                            aria-checked={translateEnabled}
+                            aria-label={t('settings.translate.title') || 'Enable Translation'}
                         >
                             <div className={`absolute top-0 bottom-0 w-6 bg-[#0a0a0a] transition-transform ${translateEnabled ? 'translate-x-6' : 'translate-x-0'}`}></div>
                         </button>
@@ -334,7 +349,8 @@ export const SettingsModal = ({
                             <select
                                 value={targetLang}
                                 onChange={(e) => setTargetLang(e.target.value)}
-                                className="px-3 py-1 border-2 border-[#0a0a0a] bg-white text-sm font-mono"
+                                className="px-3 py-1 border-2 border-[#0a0a0a] bg-white text-sm font-mono focus:outline-none focus:ring-2 focus:ring-[#0a0a0a]"
+                                aria-label={t('settings.translate.target_lang') || 'Target Language'}
                             >
                                 {targetLanguages.map((lang) => (
                                     <option key={lang.code} value={lang.code}>
@@ -354,7 +370,10 @@ export const SettingsModal = ({
                             </div>
                             <button
                                 onClick={() => setAutoTranslate(!autoTranslate)}
-                                className={`w-12 h-6 border-2 border-[#0a0a0a] relative transition-colors ${autoTranslate ? 'bg-[#00ff88]' : 'bg-[#e8e4db]'}`}
+                                className={`w-12 h-6 border-2 border-[#0a0a0a] relative transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0a0a0a] focus-visible:ring-offset-2 ${autoTranslate ? 'bg-[#00ff88]' : 'bg-[#e8e4db]'}`}
+                                role="switch"
+                                aria-checked={autoTranslate}
+                                aria-label={t('settings.translate.auto') || 'Auto-Translate'}
                             >
                                 <div className={`absolute top-0 bottom-0 w-6 bg-[#0a0a0a] transition-transform ${autoTranslate ? 'translate-x-6' : 'translate-x-0'}`}></div>
                             </button>
@@ -377,7 +396,10 @@ export const SettingsModal = ({
                         </div>
                         <button
                             onClick={() => setSoundEnabled(!soundEnabled)}
-                            className={`w-12 h-6 border-2 border-[#0a0a0a] relative transition-colors ${soundEnabled ? 'bg-[#00ff88]' : 'bg-[#e8e4db]'}`}
+                            className={`w-12 h-6 border-2 border-[#0a0a0a] relative transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0a0a0a] focus-visible:ring-offset-2 ${soundEnabled ? 'bg-[#00ff88]' : 'bg-[#e8e4db]'}`}
+                            role="switch"
+                            aria-checked={soundEnabled}
+                            aria-label={t('settings.sound.title')}
                         >
                             <div className={`absolute top-0 bottom-0 w-6 bg-[#0a0a0a] transition-transform ${soundEnabled ? 'translate-x-6' : 'translate-x-0'}`}></div>
                         </button>
@@ -396,7 +418,10 @@ export const SettingsModal = ({
                         </div>
                         <button
                             onClick={() => setAutoCopy(!autoCopy)}
-                            className={`w-12 h-6 border-2 border-[#0a0a0a] relative transition-colors ${autoCopy ? 'bg-[#00ff88]' : 'bg-[#e8e4db]'}`}
+                            className={`w-12 h-6 border-2 border-[#0a0a0a] relative transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0a0a0a] focus-visible:ring-offset-2 ${autoCopy ? 'bg-[#00ff88]' : 'bg-[#e8e4db]'}`}
+                            role="switch"
+                            aria-checked={autoCopy}
+                            aria-label={t('settings.auto_copy.title')}
                         >
                             <div className={`absolute top-0 bottom-0 w-6 bg-[#0a0a0a] transition-transform ${autoCopy ? 'translate-x-6' : 'translate-x-0'}`}></div>
                         </button>

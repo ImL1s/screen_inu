@@ -31,7 +31,10 @@
   },
   "bundle": {
     "active": true,
-    "targets": "all",
+    "targets": [
+      "nsis",
+      "msi"
+    ],
     "externalBin": [
       "binaries/tesseract"
     ],
@@ -47,6 +50,9 @@
       "icons/app_icon_v12_bone.ico"
     ],
     "windows": {
+      "wix": {
+        "language": "en-US"
+      },
       "nsis": {
         "installMode": "currentUser"
       }

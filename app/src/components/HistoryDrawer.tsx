@@ -51,14 +51,21 @@ export const HistoryDrawer = ({
                 exit={{ x: "100%" }}
                 transition={{ type: "tween", ease: "circOut", duration: 0.3 }}
                 className="fixed top-0 right-0 h-full w-[90%] max-w-[320px] bg-[#f5f2eb] border-l-4 border-[#0a0a0a] z-50 flex flex-col shadow-[-20px_0_40px_rgba(0,0,0,0.2)]"
+                role="dialog"
+                aria-modal="true"
+                aria-label={t('history.title')}
             >
                 {/* Header */}
-                <div className="p-4 border-b-2 border-[#0a0a0a] flex items-center justify-between bg-[#0a0a0a] text-[#00ff88]">
-                    <h3 className="font-black text-lg font-display uppercase tracking-wider flex items-center gap-2">
+                <div
+                    className="p-4 border-b-2 border-[#0a0a0a] flex items-center justify-between bg-[#0a0a0a] text-[#00ff88]"
+                    role="heading"
+                    aria-level={2}
+                >
+                    <div className="font-black text-lg font-display uppercase tracking-wider flex items-center gap-2">
                         <Bone size={20} fill="#00ff88" className="text-[#0a0a0a]" />
                         {t('history.title')}
-                    </h3>
-                    <button onClick={onClose} className="hover:rotate-90 transition-transform">
+                    </div>
+                    <button onClick={onClose} className="hover:rotate-90 transition-transform focus:outline-none focus-visible:ring-2 focus-visible:ring-[#00ff88] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a0a]" aria-label={t('history.close') || 'Close History'}>
                         <X size={24} />
                     </button>
                 </div>
@@ -76,7 +83,8 @@ export const HistoryDrawer = ({
                             <div className="flex justify-end mb-2">
                                 <button
                                     onClick={onClearHistory}
-                                    className="text-[10px] font-bold uppercase text-[#ff6b35] flex items-center gap-1 hover:bg-[#0a0a0a] hover:text-[#ff6b35] px-2 py-1 transition-colors"
+                                    className="text-[10px] font-bold uppercase text-[#ff6b35] flex items-center gap-1 hover:bg-[#0a0a0a] hover:text-[#ff6b35] px-2 py-1 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff6b35] focus-visible:ring-offset-2"
+                                    aria-label={t('history.clear_all')}
                                 >
                                     <Trash2 size={12} /> {t('history.clear_all')}
                                 </button>
@@ -85,7 +93,16 @@ export const HistoryDrawer = ({
                                 <div
                                     key={item.id}
                                     onClick={() => handleCopyItem(item.text)}
-                                    className="bg-white border-2 border-[#0a0a0a] p-3 shadow-[4px_4px_0px_#0a0a0a] hover:shadow-[4px_4px_0px_#00ff88] hover:-translate-y-1 transition-all cursor-pointer group relative overflow-hidden"
+                                    role="button"
+                                    tabIndex={0}
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter' || e.key === ' ') {
+                                            e.preventDefault();
+                                            handleCopyItem(item.text);
+                                        }
+                                    }}
+                                    className="bg-white border-2 border-[#0a0a0a] p-3 shadow-[4px_4px_0px_#0a0a0a] hover:shadow-[4px_4px_0px_#00ff88] hover:-translate-y-1 transition-all cursor-pointer group relative overflow-hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-[#00ff88] focus-visible:ring-offset-2"
+                                    aria-label={`Copy: ${item.text.substring(0, 50)}...`}
                                 >
                                     <div className="absolute top-0 right-0 w-4 h-4 bg-[#0a0a0a] transform rotate-45 translate-x-2 -translate-y-2"></div>
                                     <div className="flex justify-between items-start mb-2 border-b-2 border-dashed border-[#0a0a0a]/10 pb-1">

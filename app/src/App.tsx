@@ -417,10 +417,11 @@ function App() {
             <div className="flex-1 flex flex-col items-center justify-center text-center space-y-8 reveal reveal-delay-3 pb-8">
 
               <button
-                className="relative group cursor-pointer z-[100] pointer-events-auto focus:outline-none"
+                className="relative group cursor-pointer z-[100] pointer-events-auto focus:outline-none focus-visible:ring-4 focus-visible:ring-[#00ff88] focus-visible:ring-offset-4 focus-visible:ring-offset-[#f5f2eb] rounded-sm"
                 onClick={() => {
                   captureScreen();
                 }}
+                aria-label={t('status.ready')}
               >
                 {/* Brutalist Shadow Box */}
                 <div className="absolute inset-0 bg-[#0a0a0a] translate-x-3 translate-y-3 transition-transform group-hover:translate-x-5 group-hover:translate-y-5 pointer-events-none"></div>
@@ -472,23 +473,24 @@ function App() {
                       <span className="font-black text-sm uppercase tracking-wider">{t('status.retrieved')}</span>
                     </div>
                     <div className="flex gap-2">
-                      <button onClick={handleCopy} className="p-1.5 bg-white border-2 border-[#0a0a0a] hover:bg-[#0a0a0a] hover:text-[#00ff88] transition-colors shadow-[2px_2px_0px_#0a0a0a] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px]" title={t('status.copy')}>
+                      <button onClick={handleCopy} className="p-1.5 bg-white border-2 border-[#0a0a0a] hover:bg-[#0a0a0a] hover:text-[#00ff88] transition-colors shadow-[2px_2px_0px_#0a0a0a] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0a0a0a] focus-visible:ring-offset-2" title={t('status.copy')} aria-label={t('status.copy')}>
                         {isCopied ? <Check size={16} strokeWidth={3} /> : <Copy size={16} strokeWidth={3} />}
                       </button>
-                      <button onClick={handleSearch} className="p-1.5 bg-white border-2 border-[#0a0a0a] hover:bg-[#0a0a0a] hover:text-[#00ff88] transition-colors shadow-[2px_2px_0px_#0a0a0a] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px]" title={t('status.search')}>
+                      <button onClick={handleSearch} className="p-1.5 bg-white border-2 border-[#0a0a0a] hover:bg-[#0a0a0a] hover:text-[#00ff88] transition-colors shadow-[2px_2px_0px_#0a0a0a] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0a0a0a] focus-visible:ring-offset-2" title={t('status.search')} aria-label={t('status.search')}>
                         <Search size={16} strokeWidth={3} />
                       </button>
                       {translateEnabled && (
                         <button
                           onClick={handleTranslate}
                           disabled={isTranslating}
-                          className={`p-1.5 border-2 border-[#0a0a0a] transition-colors shadow-[2px_2px_0px_#0a0a0a] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] ${isTranslating ? 'bg-[#00ff88] animate-pulse' : 'bg-white hover:bg-[#0a0a0a] hover:text-[#00ff88]'}`}
+                          className={`p-1.5 border-2 border-[#0a0a0a] transition-colors shadow-[2px_2px_0px_#0a0a0a] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0a0a0a] focus-visible:ring-offset-2 ${isTranslating ? 'bg-[#00ff88] animate-pulse' : 'bg-white hover:bg-[#0a0a0a] hover:text-[#00ff88]'}`}
                           title={t('status.translate') || 'Translate'}
+                          aria-label={t('status.translate') || 'Translate'}
                         >
                           <Languages size={16} strokeWidth={3} />
                         </button>
                       )}
-                      <button onClick={() => { setOcrResult(""); setTranslatedText(""); }} className="p-1.5 bg-white border-2 border-[#0a0a0a] hover:bg-[#ff6b35] hover:text-white transition-colors shadow-[2px_2px_0px_#0a0a0a] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px]" title={t('status.clear')}>
+                      <button onClick={() => { setOcrResult(""); setTranslatedText(""); }} className="p-1.5 bg-white border-2 border-[#0a0a0a] hover:bg-[#ff6b35] hover:text-white transition-colors shadow-[2px_2px_0px_#0a0a0a] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0a0a0a] focus-visible:ring-offset-2" title={t('status.clear')} aria-label={t('status.clear')}>
                         <X size={16} strokeWidth={3} />
                       </button>
                     </div>
@@ -522,8 +524,9 @@ function App() {
 
                   {/* Fab to Retake - Dog paw style? No, keep it functional but styled */}
                   <button
-                    className="absolute bottom-4 right-4 bg-[#0a0a0a] text-[#00ff88] p-3 shadow-[4px_4px_0px_#ff6b35] hover:shadow-[2px_2px_0px_#ff6b35] hover:translate-y-[2px] hover:translate-x-[2px] border-2 border-[#00ff88] transition-all"
+                    className="absolute bottom-4 right-4 bg-[#0a0a0a] text-[#00ff88] p-3 shadow-[4px_4px_0px_#ff6b35] hover:shadow-[2px_2px_0px_#ff6b35] hover:translate-y-[2px] hover:translate-x-[2px] border-2 border-[#00ff88] transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-[#00ff88] focus-visible:ring-offset-2"
                     onClick={captureScreen}
+                    aria-label={t('overlay.drag_to_capture') + ' (Retake)'}
                   >
                     <Maximize2 size={24} strokeWidth={2.5} />
                   </button>
@@ -544,7 +547,8 @@ function App() {
                 <select
                   value={selectedLang}
                   onChange={(e) => setSelectedLang(e.target.value)}
-                  className="w-full bg-transparent border-none outline-none px-3 text-xs font-black uppercase cursor-pointer appearance-none tracking-wider"
+                  className="w-full bg-transparent border-none outline-none px-3 text-xs font-black uppercase cursor-pointer appearance-none tracking-wider focus:ring-2 focus:ring-inset focus:ring-[#0a0a0a]"
+                  aria-label={t('settings.language.title')}
                 >
                   <option value="eng">{t('settings.language.en')}</option>
                   <option value="chi_tra+eng">{t('settings.language.zh-TW')}</option>
@@ -559,8 +563,9 @@ function App() {
             {/* Settings Toggle */}
             <button
               onClick={() => setShowSettings(true)}
-              className="relative group w-12 h-12"
+              className="relative group w-12 h-12 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0a0a0a] focus-visible:ring-offset-2 rounded-sm"
               title={t('settings.title')}
+              aria-label={t('settings.title')}
             >
               <div className="absolute inset-0 bg-[#0a0a0a] translate-x-1 translate-y-1 transition-transform group-hover:translate-x-1.5 group-hover:translate-y-1.5 pointer-events-none"></div>
               <div className="relative bg-[#e8e4db] w-full h-full border-2 border-[#0a0a0a] flex items-center justify-center transition-colors hover:bg-white group-hover:bg-[#00ff88]">
@@ -571,8 +576,9 @@ function App() {
             {/* History Toggle */}
             <button
               onClick={() => { setHistoryItems(getHistory()); setShowHistory(true); }}
-              className="relative group w-12 h-12"
+              className="relative group w-12 h-12 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0a0a0a] focus-visible:ring-offset-2 rounded-sm"
               title={t('history.title')}
+              aria-label={t('history.title')}
             >
               <div className="absolute inset-0 bg-[#0a0a0a] translate-x-1 translate-y-1 transition-transform group-hover:translate-x-1.5 group-hover:translate-y-1.5 pointer-events-none"></div>
               <div className="relative bg-[#ff6b35] w-full h-full border-2 border-[#0a0a0a] flex items-center justify-center transition-colors hover:bg-white">
