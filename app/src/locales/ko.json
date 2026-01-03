@@ -1,0 +1,69 @@
+{
+    "app": {
+        "title": "Screen Inu",
+        "subtitle": "공식 시바견 OCR",
+        "doge_quote_1": "와! 픽셀 많다.\n텍스트도 많다.",
+        "doge_quote_2": "와우. 영역 선택. 추출 완료."
+    },
+    "status": {
+        "ready": "텍스트 가져오기",
+        "processing": "데이터 스캔 중...",
+        "retrieved": "뼈다귀 획득",
+        "copy": "복사",
+        "search": "웹 검색",
+        "clear": "버리기",
+        "empty": "비어있음. 슬프다.",
+        "error": "오류",
+        "copied": "복사됨!"
+    },
+    "history": {
+        "title": "뼈다귀 창고",
+        "clear_all": "모두 꺼내기",
+        "empty_title": "아직 뼈다귀가 없습니다.",
+        "empty_subtitle": "텍스트를 가져오러 가자!",
+        "item_lang": "언어"
+    },
+    "settings": {
+        "title": "설정",
+        "sound": {
+            "title": "효과음",
+            "on": "짖는 소리 & 셔터음",
+            "off": "무음 모드"
+        },
+        "auto_copy": {
+            "title": "자동 복사",
+            "on": "텍스트 자동 복사",
+            "off": "수동 복사만"
+        },
+        "direct_snip": {
+            "title": "바로 캡처",
+            "on": "바탕화면 바로 선택",
+            "off": "전체 화면 먼저 표시"
+        },
+        "silent_mode": {
+            "title": "무음 모드",
+            "on": "스캔 후 창 숨기기",
+            "off": "스캔 후 열어두기"
+        },
+        "language": {
+            "title": "언어",
+            "en": "English",
+            "zh-TW": "繁體中文",
+            "chi_sim": "简体中文",
+            "jpn": "日本語",
+            "kor": "한국어"
+        },
+        "section": {
+            "capture": "📸 캡처",
+            "app": "⚙️ 앱"
+        },
+        "ocr_engine": {
+            "title": "OCR 엔진",
+            "auto": "자동 (스마트 선택)"
+        }
+    },
+    "overlay": {
+        "drag_to_capture": "드래그하여 캡처",
+        "too_small": "너무 작음"
+    }
+}

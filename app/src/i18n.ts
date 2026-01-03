@@ -4,6 +4,9 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 
 import en from './locales/en.json';
 import zhTW from './locales/zh-TW.json';
+import zhCN from './locales/zh-CN.json';
+import ja from './locales/ja.json';
+import ko from './locales/ko.json';
 
 i18n
     // detect user language
@@ -26,15 +29,21 @@ i18n
             'zh-TW': {
                 translation: zhTW
             },
-            // Map other Chinese locales to zh-TW
+            'zh-CN': {
+                translation: zhCN
+            },
+            // Map other Chinese locales
             'zh': {
-                translation: zhTW
+                translation: zhCN
             },
             'zh-HK': {
                 translation: zhTW
             },
-            'zh-CN': {
-                translation: zhTW // For now fallback to TW
+            'ja': {
+                translation: ja
+            },
+            'ko': {
+                translation: ko
             }
         }
     });

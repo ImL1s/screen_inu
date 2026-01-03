@@ -1,0 +1,69 @@
+{
+    "app": {
+        "title": "Screen Inu",
+        "subtitle": "公式柴犬OCR",
+        "doge_quote_1": "すごいピクセル。\nたくさんテキスト。",
+        "doge_quote_2": "ワオ。範囲を選択。抽出します。"
+    },
+    "status": {
+        "ready": "テキストを取得",
+        "processing": "データを嗅ぎ中...",
+        "retrieved": "骨を取得しました",
+        "copy": "コピー",
+        "search": "ウェブ検索",
+        "clear": "捨てる",
+        "empty": "空です。悲しい。",
+        "error": "エラー",
+        "copied": "コピーしました！"
+    },
+    "history": {
+        "title": "骨の倉庫",
+        "clear_all": "すべて掘り出す",
+        "empty_title": "まだ骨がありません。",
+        "empty_subtitle": "テキストを取得しに行こう！",
+        "item_lang": "言語"
+    },
+    "settings": {
+        "title": "設定",
+        "sound": {
+            "title": "サウンド効果",
+            "on": "鳴き声＆シャッター音",
+            "off": "サイレントモード"
+        },
+        "auto_copy": {
+            "title": "自動コピー",
+            "on": "テキストを自動コピー",
+            "off": "手動コピーのみ"
+        },
+        "direct_snip": {
+            "title": "ダイレクトスニップ",
+            "on": "デスクトップを直接選択",
+            "off": "フルスクリーンを先に表示"
+        },
+        "silent_mode": {
+            "title": "サイレントモード",
+            "on": "取得後にウィンドウを隠す",
+            "off": "取得後も開いたまま"
+        },
+        "language": {
+            "title": "言語",
+            "en": "English",
+            "zh-TW": "繁體中文",
+            "chi_sim": "简体中文",
+            "jpn": "日本語",
+            "kor": "한국어"
+        },
+        "section": {
+            "capture": "📸 キャプチャ",
+            "app": "⚙️ アプリ"
+        },
+        "ocr_engine": {
+            "title": "OCRエンジン",
+            "auto": "自動（スマート選択）"
+        }
+    },
+    "overlay": {
+        "drag_to_capture": "ドラッグしてキャプチャ",
+        "too_small": "小さすぎます"
+    }
+}

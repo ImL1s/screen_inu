@@ -10,7 +10,10 @@
 
   <p>
     <a href="README.md">English</a> •
-    <a href="README_zh-TW.md">繁體中文</a>
+    <a href="README_zh-TW.md">繁體中文</a> •
+    <a href="README_zh-CN.md">简体中文</a> •
+    <a href="README_ja.md">日本語</a> •
+    <a href="README_ko.md">한국어</a>
   </p>
 
   <p>

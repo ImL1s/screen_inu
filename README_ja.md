@@ -4,8 +4,8 @@
   <h1 style="font-size: 3rem; margin-top: 1rem;">Screen Inu 🐕</h1>
   
   <p>
-    <strong>パシャッ。認識。コピー。</strong> <br />
-    Rust と Tauri を搭載した現代的なクロスプラットフォーム・スクリーンショット OCR ツール。
+    <strong>快照。識別。複製。</strong> <br />
+    一款由 Rust 和 Tauri 驅動的現代跨平台螢幕截圖 OCR 工具。
   </p>
 
   <p>
@@ -17,10 +17,10 @@
   </p>
 
   <p>
-    <a href="#機能">機能</a> •
-    <a href="#ワークフロー">ワークフロー</a> •
-    <a href="#アーキテクチャ">アーキテクチャ</a> •
-    <a href="#はじめに">はじめに</a>
+    <a href="#功能">功能</a> •
+    <a href="#工作流程">工作流程</a> •
+    <a href="#架構">架構</a> •
+    <a href="#開始使用">開始使用</a>
   </p>
 
   <img src="https://img.shields.io/badge/Built%20With-Tauri%202.0-blue?style=for-the-badge&logo=tauri" />
@@ -31,103 +31,103 @@
 
 <br />
 
-## ✨ 機能
+## ✨ 功能
 
 <div align="center">
   <img src="app/public/images/features.png" alt="Screen Inu Features" width="80%" />
 </div>
 
-*   **グローバルショートカット** (`Ctrl/⌘ + Shift + X`): いつでもどこでもスクリーンショット。
-*   **マルチエンジン OCR**:
-    *   **自動スマート選択**: 言語に基づいて最適なエンジンを自動的に選択します (Windows プラットフォームの CJK は Windows OCR、その他は Tesseract)。
-    *   **Windows ネイティブ OCR**: Windows Media OCR を統合し、中日韓の認識精度において優れたパフォーマンスを発揮します。
-    *   **Tesseract 5 (内蔵)**: 手動インストールは不要です！最適化された `tessdata_best` モデルが含まれています。
-*   **多言語サポート**: **英語**と**繁体字中国語**のインターフェースに完全対応。
-*   **履歴保管庫**: 最近の切り取りと OCR 結果をローカルに自動保存。
-*   **自動コピー**: 認識後にテキストをクリップボードに自動コピーするオプション。
-*   **ダーク/ライトテーマ**: 好みに合わせて自動調整される美しいグラスモーフィズム UI (自動保存)。
-*   **システムトレイ統合**: メニューバーに静かに常駐し、いつでも使用可能。
-*   **モダン UI**: スムーズな Framer Motion アニメーションを備えたブルータリスト "Inu" テーマのデザイン。
-*   **クロスプラットフォーム**: Tauri ベースで構築され、macOS、Windows、Linux と互換性があります。
+*   **全局快捷鍵** (`Ctrl/⌘ + Shift + X`): 隨時隨地進行截圖。
+*   **多引擎 OCR**:
+    *   **自動智慧選擇**: 根據語言自動選擇最佳引擎 (Windows 平台 CJK 使用 Windows OCR，其餘使用 Tesseract)。
+    *   **Windows 原生 OCR**: 整合 Windows Media OCR，在中日韓識別精度上表現優異。
+    *   **Tesseract 5 (內建)**: 無需手動安裝！已包含優化的 `tessdata_best` 模型。
+*   **多語言支援**: 完整支援 **英文** 和 **繁體中文** 介面。
+*   **歷史金庫**: 自動將您最近的截圖和 OCR 結果儲存在本地。
+*   **自動複製**: 識別完成後可選擇自動將文字複製到剪貼簿。
+*   **深色/淺色主題**: 根據您的喜好自動適應的精美玻璃擬態 UI (自動儲存)。
+*   **系統托盤整合**: 安靜地常駐在選單列，隨時待命。
+*   **現代 UI**: 帶有流暢 Framer Motion 動畫的 Brutalist "Inu" 主題設計。
+*   **跨平台**: 基於 Tauri 構建，相容 macOS、Windows 和 Linux。
 
 ---
 
-## 🚀 ワークフロー
+## 🚀 工作流程
 
 <div align="center">
   <img src="app/public/images/flow.png" alt="Screen Inu Workflow" width="80%" />
 </div>
 
-1.  **キャプチャ**: グローバルショートカットをトリガーして画面をフリーズします。
-2.  **選択**: テキストを含む領域をドラッグして選択します。
-3.  **認識**: アプリが統合された OCR エンジンを使用してテキストを自動的に抽出します。
-4.  **コピー**: クリックすると結果が即座にクリップボードにコピーされます。
+1.  **截取**: 觸發全局快捷鍵以凍結螢幕。
+2.  **選擇**: 拖曳以選擇包含文字的區域。
+3.  **識別**: 應用程式使用整合的 OCR 引擎自動提取文字。
+4.  **複製**: 點擊即可立即將結果複製到剪貼簿。
 
 ---
 
-## 🏗️ アーキテクチャ
+## 🏗️ 架構
 
 <div align="center">
   <img src="app/public/images/architecture.png" alt="Screen Inu Architecture" width="60%" />
 </div>
 
-Screen Inu は **Tauri 2.0** のパワーを活用し、軽量で安全、かつ高性能なデスクトップ体験を提供します。
-*   **フロントエンド**: React + TypeScript + TailwindCSS でレスポンシブで美しいインターフェースを構築。
-*   **ブリッジ**: Tauri の IPC により、UI とシステムレベルの操作間のシームレスな通信が可能。
-*   **バックエンド**: Rust が重労働—画面キャプチャ (`xcap`)、画像処理、OCR (`rusty-tesseract`)—を処理します。
+Screen Inu 利用 **Tauri 2.0** 的強大功能，提供輕量、安全且高效能的桌面體驗。
+*   **前端**: React + TypeScript + TailwindCSS 打造響應式且美觀的介面。
+*   **橋接**: Tauri 的 IPC 允許 UI 與系統層級操作之間的無縫通訊。
+*   **後端**: Rust 處理繁重工作—螢幕截取 (`xcap`)、影像處理和 OCR (`rusty-tesseract`)。
 
 ---
 
-## 🛠️ はじめに
+## 🛠️ 開始使用
 
-### 前提条件
+### 先決條件
 *   **Node.js** (v18+)
-*   **Rust** (最新の安定版)
-*   *(オプション)* **Tesseract OCR**: Linux/macOS でシステムにインストールされた Tesseract を使用したい場合にのみ必要です。
-    *   **Windows**: 自動的に内蔵されています！インストールは不要です。
-    *   **macOS/Linux**: アプリは内蔵のバイナリを使用しようとしますが、システム版をインストールしておくと良いバックアップになります。
+*   **Rust** (最新穩定版)
+*   *(可選)* **Tesseract OCR**: 僅當您想在 Linux/macOS 上使用系統安裝的 Tesseract 時才需要。
+    *   **Windows**: 自動內建！不需要手動安裝。
+    *   **macOS/Linux**: 應用程式會嘗試使用內建二進制檔，但安裝系統版本可作為良好的備援。
 
 <details>
-<summary><strong>手動 Tesseract インストールガイド (オプション)</strong></summary>
+<summary><strong>手動安裝 Tesseract 指南 (選配)</strong></summary>
 
 *   **macOS**: `brew install tesseract tesseract-lang`
 *   **Linux**: `sudo apt install tesseract-ocr tesseract-ocr-chi-tra tesseract-ocr-jpn`
-*   **Windows**: 不要 (内蔵済み)。
+*   **Windows**: 不需要 (已內建)。
 
 </details>
 
 ---
 
-### インストール
+### 安裝
 
-1.  **リポジトリのクローン**
+1.  **複製儲存庫**
     ```bash
     git clone https://github.com/ImL1s/screen_inu.git
     cd screen_inu
     ```
 
-2.  **依存関係のインストール**
+2.  **安裝依賴**
     ```bash
     cd app
     npm install
     ```
 
-3.  **開発モードで実行**
+3.  **在開發模式下運行**
     ```bash
     npm run tauri dev
     ```
 
-4.  **本番用ビルド**
+4.  **構建生產版本**
     ```bash
     npm run tauri build
     ```
-    *   **macOS**: `.app` と `.dmg` は `src-tauri/target/release/bundle/` に
-    *   **Windows**: `.msi` または `.exe` (NSIS) は `src-tauri/target/release/bundle/` に
-    *   **Linux**: `.AppImage` または `.deb` は `src-tauri/target/release/bundle/` に
+    *   **macOS**: `.app` 和 `.dmg` 位於 `src-tauri/target/release/bundle/`
+    *   **Windows**: `.msi` 或 `.exe` (NSIS) 位於 `src-tauri/target/release/bundle/`
+    *   **Linux**: `.AppImage` 或 `.deb` 位於 `src-tauri/target/release/bundle/`
 
-## 📄 ライセンス
+## 📄 授權
 
-このプロジェクトは MIT ライセンスの下でライセンスされています - 詳細は [LICENSE](LICENSE) ファイルを参照してください。
+本專案採用 MIT 授權條款 - 詳情請參閱 [LICENSE](LICENSE) 文件。
 
 ---
 
