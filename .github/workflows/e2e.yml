@@ -33,6 +33,7 @@ jobs:
             libtesseract-dev \
             libleptonica-dev \
             clang \
+            libpipewire-0.3-dev \
             webkit2gtk-driver \
             xvfb
 
@@ -68,6 +69,12 @@ jobs:
           sudo mkdir -p /usr/share/tessdata
           sudo wget -O /usr/share/tessdata/eng.traineddata https://github.com/tesseract-ocr/tessdata_best/raw/main/eng.traineddata
         
+      - name: Prepare dummy Tesseract sidecars
+        run: |
+          mkdir -p app/src-tauri/binaries
+          touch app/src-tauri/binaries/tesseract-x86_64-unknown-linux-gnu
+          chmod +x app/src-tauri/binaries/tesseract-x86_64-unknown-linux-gnu
+
       - name: Build Tauri app (Debug)
         working-directory: ./app
         run: npm run tauri build -- --debug --no-bundle

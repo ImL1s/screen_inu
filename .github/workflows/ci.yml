@@ -41,13 +41,20 @@ jobs:
         with:
           workspaces: "./app/src-tauri -> target"
 
-      - name: Install Tesseract (macOS)
-        if: matrix.platform == 'macos-latest'
-        run: brew install tesseract leptonica
-
-      - name: Install Tesseract (Windows)
-        if: matrix.platform == 'windows-latest'
-        run: choco install tesseract
+      - name: Prepare dummy Tesseract sidecars
+        run: |
+          mkdir -p app/src-tauri/binaries
+          if [ "${{ matrix.platform }}" = "macos-latest" ]; then
+            touch app/src-tauri/binaries/tesseract-aarch64-apple-darwin
+            touch app/src-tauri/binaries/tesseract-x86_64-apple-darwin
+            chmod +x app/src-tauri/binaries/tesseract-aarch64-apple-darwin
+            chmod +x app/src-tauri/binaries/tesseract-x86_64-apple-darwin
+          elif [ "${{ matrix.platform }}" = "windows-latest" ]; then
+            # Windows sidecars are often .exe, but externalBin config just says 'binaries/tesseract'
+            # Looking at ocr.rs, it expects platform specific names.
+            touch app/src-tauri/binaries/tesseract-x86_64-pc-windows-msvc.exe
+          fi
+        shell: bash
 
       - name: Install frontend dependencies
         working-directory: ./app
