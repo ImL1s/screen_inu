@@ -33,6 +33,9 @@ tauri-plugin-process = "2"
 tauri-plugin-global-shortcut = "2"
 tauri-plugin-updater = "2"
 
+[target.'cfg(target_os = "macos")'.dependencies]
+# Reserved for future native OCR support on macOS (Apple Vision Framework)
+
 [target.'cfg(windows)'.dependencies]
 windows = { version = "0.58", features = [
     "Media_Ocr",

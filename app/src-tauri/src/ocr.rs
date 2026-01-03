@@ -267,18 +267,22 @@ pub fn perform_tesseract_ocr(image_bytes: &[u8], lang: &str) -> Result<String, S
     
     let output = cmd.output().map_err(|e| {
         format!(
-            "Failed to execute tesseract at '{}': {}. Please check installation path!",
-            tesseract_path.display(),
+            "Failed to execute OCR engine: {}. Please ensure Tesseract is correctly installed.",
             e
         )
     })?;
 
-    if !output.status.success() {
+    let result = if !output.status.success() {
         let stderr = String::from_utf8_lossy(&output.stderr);
-        return Err(format!("Tesseract error: {}", stderr));
-    }
+        Err(format!("Tesseract error: {}", stderr))
+    } else {
+        Ok(String::from_utf8_lossy(&output.stdout).to_string())
+    };
 
-    Ok(String::from_utf8_lossy(&output.stdout).to_string())
+    // Cleanup temporary file
+    let _ = std::fs::remove_file(&temp_path);
+
+    result
 }
 
 /// Main OCR function that selects the appropriate engine

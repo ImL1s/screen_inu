@@ -269,7 +269,7 @@ function App() {
       ? ocrResult.replace("[QR Code]\n", "")
       : ocrResult;
 
-    if (!text || text === "__EMPTY__" || text.startsWith("Error:")) return;
+    if (!text || text === "__EMPTY__" || text.trim().length === 0 || text.startsWith("Error:")) return;
 
     const searchQuery = encodeURIComponent(text.trim().substring(0, 200));
     const searchUrl = `https://www.google.com/search?q=${searchQuery}`;
