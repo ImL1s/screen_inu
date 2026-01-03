@@ -1,4 +1,4 @@
-import { X, Volume2, VolumeX, Copy, Check, Trash2, Scissors, EyeOff, Eye, Monitor, Globe, ChevronDown, Cpu } from "lucide-react";
+import { X, Volume2, VolumeX, Copy, Check, Trash2, Scissors, EyeOff, Eye, Monitor, Globe, ChevronDown, Cpu, Keyboard, Languages } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
@@ -21,6 +21,16 @@ interface SettingsModalProps {
     setOcrEngine: (engine: string) => void;
     availableEngines: string[];
     onClearHistory: () => void;
+    customShortcut: string;
+    setCustomShortcut: (shortcut: string) => Promise<void>;
+    // Translation settings
+    translateEnabled: boolean;
+    setTranslateEnabled: (enabled: boolean) => void;
+    autoTranslate: boolean;
+    setAutoTranslate: (enabled: boolean) => void;
+    targetLang: string;
+    setTargetLang: (lang: string) => void;
+    targetLanguages: { code: string; name: string; flag: string }[];
 }
 
 export const SettingsModal = ({
@@ -37,11 +47,22 @@ export const SettingsModal = ({
     ocrEngine,
     setOcrEngine,
     availableEngines,
-    onClearHistory
+    onClearHistory,
+    customShortcut,
+    setCustomShortcut,
+    translateEnabled,
+    setTranslateEnabled,
+    autoTranslate,
+    setAutoTranslate,
+    targetLang,
+    setTargetLang,
+    targetLanguages
 }: SettingsModalProps) => {
     const { t, i18n } = useTranslation();
     const [showLangMenu, setShowLangMenu] = useState(false);
     const [showEngineMenu, setShowEngineMenu] = useState(false);
+    const [isRecordingShortcut, setIsRecordingShortcut] = useState(false);
+    const [shortcutError, setShortcutError] = useState<string | null>(null);
 
     const engineLabels: Record<string, string> = {
         'auto': t('settings.ocr_engine.auto') || 'Auto (Smart Selection)',
@@ -55,6 +76,45 @@ export const SettingsModal = ({
     const changeLanguage = (lng: string) => {
         i18n.changeLanguage(lng);
         setShowLangMenu(false);
+    };
+
+    const handleShortcutKeyDown = async (e: React.KeyboardEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        // Build shortcut string
+        const modifiers: string[] = [];
+        if (e.ctrlKey || e.metaKey) modifiers.push('CommandOrControl');
+        if (e.altKey) modifiers.push('Alt');
+        if (e.shiftKey) modifiers.push('Shift');
+
+        // Get the key (ignore modifier-only keys)
+        const key = e.key;
+        if (['Control', 'Alt', 'Shift', 'Meta'].includes(key)) return;
+
+        // Format key properly
+        let formattedKey = key.length === 1 ? key.toUpperCase() : key;
+        // Handle special keys
+        if (formattedKey === ' ') formattedKey = 'Space';
+        if (formattedKey === 'Escape') {
+            setIsRecordingShortcut(false);
+            return;
+        }
+
+        const newShortcut = [...modifiers, formattedKey].join('+');
+
+        if (modifiers.length === 0) {
+            setShortcutError('Shortcut must include Ctrl/Cmd, Alt, or Shift');
+            return;
+        }
+
+        try {
+            setShortcutError(null);
+            await setCustomShortcut(newShortcut);
+            setIsRecordingShortcut(false);
+        } catch {
+            setShortcutError('Failed to register shortcut. It may be in use.');
+        }
     };
 
     return (
@@ -168,6 +228,40 @@ export const SettingsModal = ({
                     {/* Section: Capture */}
                     <div className="text-[10px] font-black uppercase tracking-widest text-[#0a0a0a]/50 border-b border-[#0a0a0a]/10 pb-1 pt-2">{t('settings.section.capture')}</div>
 
+                    {/* Custom Shortcut */}
+                    <div className="flex items-center justify-between group">
+                        <div className="flex items-center gap-3">
+                            <div className="p-2 border-2 border-[#0a0a0a] bg-white text-[#0a0a0a]">
+                                <Keyboard size={24} />
+                            </div>
+                            <div>
+                                <h3 className="font-black uppercase text-sm">{t('settings.shortcut.title') || 'Capture Shortcut'}</h3>
+                                <p className="text-[10px] font-mono opacity-60">{t('settings.shortcut.desc') || 'Global hotkey to capture screen'}</p>
+                            </div>
+                        </div>
+                        {isRecordingShortcut ? (
+                            <input
+                                type="text"
+                                readOnly
+                                autoFocus
+                                className="w-32 px-2 py-1 border-2 border-[#00ff88] bg-[#00ff88]/10 text-sm font-mono text-center animate-pulse focus:outline-none"
+                                placeholder="Press keys..."
+                                onKeyDown={handleShortcutKeyDown}
+                                onBlur={() => setIsRecordingShortcut(false)}
+                            />
+                        ) : (
+                            <button
+                                onClick={() => { setIsRecordingShortcut(true); setShortcutError(null); }}
+                                className="px-3 py-1 border-2 border-[#0a0a0a] bg-white hover:bg-[#e8e4db] text-sm font-mono transition-colors"
+                            >
+                                {customShortcut.replace('CommandOrControl', 'Ctrl')}
+                            </button>
+                        )}
+                    </div>
+                    {shortcutError && (
+                        <p className="text-[10px] font-mono text-[#ff6b35] -mt-2">{shortcutError}</p>
+                    )}
+
                     {/* Direct Snip Toggle - Hidden on Windows (transparency bug) */}
                     {!isWindows && (
                         <div className="flex items-center justify-between group">
@@ -207,6 +301,65 @@ export const SettingsModal = ({
                             <div className={`absolute top-0 bottom-0 w-6 bg-[#0a0a0a] transition-transform ${silentMode ? 'translate-x-6' : 'translate-x-0'}`}></div>
                         </button>
                     </div>
+
+                    {/* Section: Translation */}
+                    <div className="text-[10px] font-black uppercase tracking-widest text-[#0a0a0a]/50 border-b border-[#0a0a0a]/10 pb-1 pt-2">
+                        <Languages size={12} className="inline mr-1" />
+                        {t('settings.section.translation') || 'Translation'}
+                    </div>
+
+                    {/* Enable Translation Toggle */}
+                    <div className="flex items-center justify-between group">
+                        <div className="flex items-center gap-3">
+                            <div className={`p-2 border-2 border-[#0a0a0a] ${translateEnabled ? 'bg-[#00ff88] text-[#0a0a0a]' : 'bg-white text-[#0a0a0a]'}`}>
+                                <Languages size={24} />
+                            </div>
+                            <div>
+                                <h3 className="font-black uppercase text-sm">{t('settings.translate.title') || 'Enable Translation'}</h3>
+                                <p className="text-[10px] font-mono opacity-60">{translateEnabled ? t('settings.translate.on') || 'Show translate button' : t('settings.translate.off') || 'Hidden'}</p>
+                            </div>
+                        </div>
+                        <button
+                            onClick={() => setTranslateEnabled(!translateEnabled)}
+                            className={`w-12 h-6 border-2 border-[#0a0a0a] relative transition-colors ${translateEnabled ? 'bg-[#00ff88]' : 'bg-[#e8e4db]'}`}
+                        >
+                            <div className={`absolute top-0 bottom-0 w-6 bg-[#0a0a0a] transition-transform ${translateEnabled ? 'translate-x-6' : 'translate-x-0'}`}></div>
+                        </button>
+                    </div>
+
+                    {/* Target Language Selector */}
+                    {translateEnabled && (
+                        <div className="flex items-center justify-between">
+                            <span className="font-bold text-sm">{t('settings.translate.target_lang') || 'Target Language'}</span>
+                            <select
+                                value={targetLang}
+                                onChange={(e) => setTargetLang(e.target.value)}
+                                className="px-3 py-1 border-2 border-[#0a0a0a] bg-white text-sm font-mono"
+                            >
+                                {targetLanguages.map((lang) => (
+                                    <option key={lang.code} value={lang.code}>
+                                        {lang.flag} {lang.name}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                    )}
+
+                    {/* Auto Translate Toggle */}
+                    {translateEnabled && (
+                        <div className="flex items-center justify-between group">
+                            <div>
+                                <h3 className="font-bold text-sm">{t('settings.translate.auto') || 'Auto-Translate'}</h3>
+                                <p className="text-[10px] font-mono opacity-60">{autoTranslate ? t('settings.translate.auto_on') || 'Translate after OCR' : t('settings.translate.auto_off') || 'Manual'}</p>
+                            </div>
+                            <button
+                                onClick={() => setAutoTranslate(!autoTranslate)}
+                                className={`w-12 h-6 border-2 border-[#0a0a0a] relative transition-colors ${autoTranslate ? 'bg-[#00ff88]' : 'bg-[#e8e4db]'}`}
+                            >
+                                <div className={`absolute top-0 bottom-0 w-6 bg-[#0a0a0a] transition-transform ${autoTranslate ? 'translate-x-6' : 'translate-x-0'}`}></div>
+                            </button>
+                        </div>
+                    )}
 
                     {/* Section: Behavior */}
                     <div className="text-[10px] font-black uppercase tracking-widest text-[#0a0a0a]/50 border-b border-[#0a0a0a]/10 pb-1 pt-2">{t('settings.section.app')}</div>

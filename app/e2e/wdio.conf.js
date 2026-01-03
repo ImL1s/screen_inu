@@ -32,7 +32,7 @@ export const config = {
     capabilities: [
         {
             maxInstances: 1,
-            browserName: 'edge', // Required by WDIO, ignored by Tauri
+            // browserName: 'wry', // Removed to follow Tauri 2 documentation and avoid capability mismatch on Linux
             'tauri:options': {
                 application: getBinaryPath(),
             },
