@@ -171,7 +171,7 @@ mod tests {
         let b64 = base64::engine::general_purpose::STANDARD.encode(&buffer);
         let data_url = format!("data:image/png;base64,{}", b64);
 
-        let result = perform_ocr(&data_url, Some("eng".to_string()));
+        let result = perform_ocr(&data_url, Some("eng".to_string()), None);
         match result {
             Ok(text) => {
                 println!("OCR Output: {}", text);
@@ -238,7 +238,7 @@ mod tests {
 
         for lang in languages {
             println!("Testing language loading for: {}", lang);
-            let result = perform_ocr(&data_url, Some(lang.to_string()));
+            let result = perform_ocr(&data_url, Some(lang.to_string()), None);
             match result {
                 Ok(_) => println!("Successfully initialized and ran OCR for {}", lang),
                 Err(e) => panic!("Failed to run OCR with language '{}': {}", lang, e),
