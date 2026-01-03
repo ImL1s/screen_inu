@@ -18,11 +18,13 @@ import {
   Maximize2,
   Bone,
   Settings,
-  Search
+  Search,
+  Languages
 } from "lucide-react";
 import { notifyOcrComplete } from "./utils/notification";
 import { addToHistory, getHistory, clearHistory, HistoryItem } from "./utils/history";
 import { soundManager } from "./utils/SoundManager";
+import { translateText, COMMON_TARGET_LANGUAGES } from "./utils/translate";
 import "./App.css";
 
 function App() {
@@ -40,6 +42,11 @@ function App() {
   const [ocrEngine, setOcrEngine] = useState("auto");
   const [availableEngines, setAvailableEngines] = useState<string[]>(["auto", "tesseract"]);
 
+  // Custom Shortcut
+  const DEFAULT_SHORTCUT = "CommandOrControl+Shift+X";
+  const [customShortcut, setCustomShortcut] = useState(DEFAULT_SHORTCUT);
+  const customShortcutRef = useRef(customShortcut);
+
   // Refs to access current values in callbacks (avoid stale closures)
   const directSnipRef = useRef(directSnip);
   const silentModeRef = useRef(silentMode);
@@ -47,6 +54,13 @@ function App() {
   const [showHistory, setShowHistory] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [historyItems, setHistoryItems] = useState<HistoryItem[]>([]);
+
+  // Translation state
+  const [translatedText, setTranslatedText] = useState("");
+  const [isTranslating, setIsTranslating] = useState(false);
+  const [translateEnabled, setTranslateEnabled] = useState(true);
+  const [autoTranslate, setAutoTranslate] = useState(false);
+  const [targetLang, setTargetLang] = useState('zh'); // Default to Chinese
 
   // --- Initialization ---
   useEffect(() => {
@@ -79,6 +93,13 @@ function App() {
     const savedOcrEngine = localStorage.getItem('ocrEngine');
     if (savedOcrEngine) setOcrEngine(savedOcrEngine);
 
+    // Load custom shortcut
+    const savedShortcut = localStorage.getItem('customShortcut');
+    if (savedShortcut) {
+      setCustomShortcut(savedShortcut);
+      customShortcutRef.current = savedShortcut;
+    }
+
     // Fetch available OCR engines from backend
     invoke<string[]>("get_ocr_engines").then(engines => {
       if (engines && engines.length > 0) {
@@ -90,22 +111,25 @@ function App() {
     setHistoryItems(getHistory());
 
     let shortcutRegistered = false;
+    let currentRegisteredShortcut = "";
     const initShortcut = async () => {
       try {
         const { unregister } = await import("@tauri-apps/plugin-global-shortcut");
+        const shortcutToRegister = customShortcutRef.current || DEFAULT_SHORTCUT;
         // Try to unregister first in case of hot reload
         try {
-          await unregister("CommandOrControl+Shift+X");
+          await unregister(shortcutToRegister);
         } catch {
           // Ignore if not registered
         }
-        await register("CommandOrControl+Shift+X", async (event) => {
+        await register(shortcutToRegister, async (event) => {
           if (event.state === "Pressed") {
             await captureScreen();
           }
         });
         shortcutRegistered = true;
-        console.log("✅ Global shortcut registered: Ctrl+Shift+X");
+        currentRegisteredShortcut = shortcutToRegister;
+        console.log(`✅ Global shortcut registered: ${shortcutToRegister}`);
       } catch (err) {
         console.error("Failed to register shortcut:", err);
       }
@@ -125,9 +149,9 @@ function App() {
     return () => {
       unlistenPromise.then(unlisten => unlisten());
       // Cleanup shortcut on unmount
-      if (shortcutRegistered) {
+      if (shortcutRegistered && currentRegisteredShortcut) {
         import("@tauri-apps/plugin-global-shortcut").then(({ unregister }) => {
-          unregister("CommandOrControl+Shift+X").catch(() => { });
+          unregister(currentRegisteredShortcut).catch(() => { });
         });
       }
     };
@@ -163,9 +187,57 @@ function App() {
     localStorage.setItem('silentMode', String(enabled));
   };
 
+  const handleSetCustomShortcut = async (newShortcut: string) => {
+    if (!newShortcut || newShortcut === customShortcut) return;
+
+    try {
+      const { unregister } = await import("@tauri-apps/plugin-global-shortcut");
+      // Unregister old shortcut
+      try {
+        await unregister(customShortcutRef.current);
+      } catch {
+        // Ignore if not registered
+      }
+      // Register new shortcut
+      await register(newShortcut, async (event) => {
+        if (event.state === "Pressed") {
+          await captureScreen();
+        }
+      });
+      // Update state and persist
+      setCustomShortcut(newShortcut);
+      customShortcutRef.current = newShortcut;
+      localStorage.setItem('customShortcut', newShortcut);
+      console.log(`✅ Shortcut updated to: ${newShortcut}`);
+    } catch (err) {
+      console.error("Failed to update shortcut:", err);
+      throw err; // Let UI handle the error
+    }
+  };
+
   const handleSetOcrEngine = (engine: string) => {
     setOcrEngine(engine);
     localStorage.setItem('ocrEngine', engine);
+  };
+
+  const handleTranslate = async () => {
+    if (!ocrResult.trim() || isTranslating) return;
+
+    setIsTranslating(true);
+    setTranslatedText("");
+    try {
+      const result = await translateText({
+        text: ocrResult,
+        targetLang: targetLang,
+      });
+      setTranslatedText(result.translatedText);
+      soundManager.playSuccess();
+    } catch (error) {
+      console.error("Translation failed:", error);
+      soundManager.playError();
+    } finally {
+      setIsTranslating(false);
+    }
   };
 
   async function captureScreen() {
@@ -406,7 +478,17 @@ function App() {
                       <button onClick={handleSearch} className="p-1.5 bg-white border-2 border-[#0a0a0a] hover:bg-[#0a0a0a] hover:text-[#00ff88] transition-colors shadow-[2px_2px_0px_#0a0a0a] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px]" title={t('status.search')}>
                         <Search size={16} strokeWidth={3} />
                       </button>
-                      <button onClick={() => setOcrResult("")} className="p-1.5 bg-white border-2 border-[#0a0a0a] hover:bg-[#ff6b35] hover:text-white transition-colors shadow-[2px_2px_0px_#0a0a0a] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px]" title={t('status.clear')}>
+                      {translateEnabled && (
+                        <button
+                          onClick={handleTranslate}
+                          disabled={isTranslating}
+                          className={`p-1.5 border-2 border-[#0a0a0a] transition-colors shadow-[2px_2px_0px_#0a0a0a] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] ${isTranslating ? 'bg-[#00ff88] animate-pulse' : 'bg-white hover:bg-[#0a0a0a] hover:text-[#00ff88]'}`}
+                          title={t('status.translate') || 'Translate'}
+                        >
+                          <Languages size={16} strokeWidth={3} />
+                        </button>
+                      )}
+                      <button onClick={() => { setOcrResult(""); setTranslatedText(""); }} className="p-1.5 bg-white border-2 border-[#0a0a0a] hover:bg-[#ff6b35] hover:text-white transition-colors shadow-[2px_2px_0px_#0a0a0a] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px]" title={t('status.clear')}>
                         <X size={16} strokeWidth={3} />
                       </button>
                     </div>
@@ -420,6 +502,21 @@ function App() {
                       <span className="text-[#ff6b35] font-bold bg-[#0a0a0a] px-1 text-white">{t('status.error')} {ocrResult.replace("Error:", "")}</span>
                     ) : (
                       ocrResult
+                    )}
+
+                    {/* Translation Result */}
+                    {translatedText && (
+                      <div className="mt-4 pt-4 border-t-2 border-dashed border-[#0a0a0a]/20">
+                        <div className="flex items-center gap-2 mb-2">
+                          <Languages size={14} className="text-[#00ff88]" />
+                          <span className="text-[10px] font-black uppercase tracking-widest text-[#0a0a0a]/50">
+                            {t('status.translated') || 'Translated'}
+                          </span>
+                        </div>
+                        <div className="bg-[#00ff88]/10 p-2 border border-[#00ff88]">
+                          {translatedText}
+                        </div>
+                      </div>
                     )}
                   </div>
 
@@ -504,6 +601,15 @@ function App() {
               setOcrEngine={handleSetOcrEngine}
               availableEngines={availableEngines}
               onClearHistory={handleClearHistory}
+              customShortcut={customShortcut}
+              setCustomShortcut={handleSetCustomShortcut}
+              translateEnabled={translateEnabled}
+              setTranslateEnabled={setTranslateEnabled}
+              autoTranslate={autoTranslate}
+              setAutoTranslate={setAutoTranslate}
+              targetLang={targetLang}
+              setTargetLang={setTargetLang}
+              targetLanguages={COMMON_TARGET_LANGUAGES}
             />
           )}
         </AnimatePresence>
