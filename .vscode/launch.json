@@ -1,0 +1,48 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "🧪 Run E2E Tests",
+            "cwd": "${workspaceFolder}/app/e2e",
+            "runtimeExecutable": "npm",
+            "runtimeArgs": [
+                "test"
+            ],
+            "console": "integratedTerminal",
+            "skipFiles": [
+                "<node_internals>/**"
+            ]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "🚀 Dev Server (Tauri)",
+            "cwd": "${workspaceFolder}/app",
+            "runtimeExecutable": "npm",
+            "runtimeArgs": [
+                "run",
+                "tauri",
+                "dev"
+            ],
+            "console": "integratedTerminal"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "📦 Build Tauri (Debug)",
+            "cwd": "${workspaceFolder}/app",
+            "runtimeExecutable": "npm",
+            "runtimeArgs": [
+                "run",
+                "tauri",
+                "--",
+                "build",
+                "--debug",
+                "--no-bundle"
+            ],
+            "console": "integratedTerminal"
+        }
+    ]
+}

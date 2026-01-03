@@ -56,6 +56,10 @@
         "section": {
             "capture": "📸 CAPTURE",
             "app": "⚙️ APP"
+        },
+        "ocr_engine": {
+            "title": "OCR ENGINE",
+            "auto": "Auto (Smart Selection)"
         }
     },
     "overlay": {

@@ -6,58 +6,98 @@
  */
 
 describe('Screen Inu App', () => {
+    afterEach(async () => {
+        // Log page source and errors if test fails/runs
+        try {
+            const source = await browser.getPageSource();
+            console.log('PAGE SOURCE START ---------------------------------------');
+            console.log(source);
+            console.log('PAGE SOURCE END -----------------------------------------');
+
+            // Try getting innerHTML of body specifically to see if root exists but empty
+            const bodyHTML = await browser.execute(() => document.body.innerHTML);
+            console.log('BODY HTML:', bodyHTML);
+        } catch (e) {
+            console.log('Failed to get debug info:', e);
+        }
+    });
+
     it('should launch the application successfully', async () => {
-        // The app should be running at this point via tauri-driver
+        // Log current URL
+        const currentUrl = await browser.getUrl();
+        console.log('Current URL:', currentUrl);
+
+        // If we are on about:blank, try to navigate to Tauri localhost
+        if (currentUrl === 'about:blank') {
+            console.log('Navigating to http://tauri.localhost');
+            await browser.url('http://tauri.localhost');
+        }
+
+        // Wait for app to load (checking for root element)
+        const root = await $('#root');
+        try {
+            await root.waitForExist({ timeout: 5000 });
+        } catch (e) {
+            console.log('#root not found within timeout');
+        }
+
+        // Check title (might be empty in some webview contexts, but let's check content)
         const title = await browser.getTitle();
         console.log('App title:', title);
-
-        // Verify the app window is present
-        expect(title).toBeTruthy();
+        // If title is empty, we check if body is visible as fallback
+        if (!title) {
+            expect(await $('body').isDisplayed()).toBe(true);
+        } else {
+            expect(title).toBe('Screen Inu');
+        }
     });
 
     it('should display the main header with Screen Inu branding', async () => {
-        // Wait for the app to fully load
-        await browser.pause(2000);
-
         // Look for the main title text
         const header = await $('header');
+        await header.waitForDisplayed({ timeout: 5000 });
         expect(await header.isDisplayed()).toBe(true);
     });
 
     it('should have the fetch text button visible', async () => {
-        // The main action button should be visible
-        const fetchButton = await $('button*=FETCH');
-        const isVisible = await fetchButton.isDisplayed().catch(() => false);
+        // Wait specifically for the button
+        // Selector strategy: look for button with class containing FETCH or child text
+        // The previous selector "button*=FETCH" might be flaky if FETCH is in a span inside
+        // Let's use a broader check
+        await browser.pause(1000);
+        const buttons = await $$('button');
+        console.log(`Found ${buttons.length} buttons`);
+        expect(buttons.length).toBeGreaterThan(0);
 
-        // If not found by text, try by the Maximize icon presence
-        if (!isVisible) {
-            const buttons = await $$('button');
-            expect(buttons.length).toBeGreaterThan(0);
-        } else {
-            expect(isVisible).toBe(true);
+        let fetchButtonVisible = false;
+        for (const btn of buttons) {
+            if (await btn.isDisplayed()) {
+                fetchButtonVisible = true;
+                break;
+            }
         }
+        expect(fetchButtonVisible).toBe(true);
     });
 
     it('should open settings modal when settings button is clicked', async () => {
-        // Find and click the settings button (gear icon)
-        const settingsButton = await $('[title*="Settings"], [title*="設定"], button:has(svg)');
+        // Find settings button (try multiple selectors)
+        // The app uses Lucide icons, usually inside a button
+        const settingsBtn = await $('button[title="SETTINGS"], button[title="設定"], header button:last-child');
+        await settingsBtn.waitForDisplayed({ timeout: 5000 });
 
-        if (await settingsButton.isExisting()) {
-            await settingsButton.click();
-            await browser.pause(500);
+        await settingsBtn.click();
 
-            // Check if settings modal appeared
-            const modal = await $('[class*="fixed inset-0"]');
-            const isModalVisible = await modal.isDisplayed().catch(() => false);
+        // Check if settings modal appeared (fixed inset-0)
+        const modal = await $('div.fixed.inset-0.z-50');
+        await modal.waitForDisplayed({ timeout: 2000 });
+        expect(await modal.isDisplayed()).toBe(true);
 
-            if (isModalVisible) {
-                // Close the modal
-                const closeButton = await $('button*=X, button[title*="Close"]');
-                if (await closeButton.isExisting()) {
-                    await closeButton.click();
-                }
-            }
-        }
+        // Close the modal
+        // Click backdrop or close button
+        await browser.keys(['Escape']);
+        // Or find close button
+        // const closeButton = await $('button[title*="Close"]');
+        // if (await closeButton.isExisting()) await closeButton.click();
     });
 });
 

@@ -36,12 +36,10 @@ fn capture_region(x: i32, y: i32, width: u32, height: u32) -> Result<String, Str
     Ok(base64_str)
 }
 
-use rusty_tesseract::{Args, Image};
-use std::fs::File;
-use std::io::Write;
+mod ocr;
 
 #[tauri::command]
-fn perform_ocr(base64_image: &str, langs: Option<String>) -> Result<String, String> {
+fn perform_ocr(base64_image: &str, langs: Option<String>, engine: Option<String>) -> Result<String, String> {
     // Remove header if present
     let base64_data = base64_image.split(",").last().unwrap_or(base64_image);
 
@@ -49,21 +47,35 @@ fn perform_ocr(base64_image: &str, langs: Option<String>) -> Result<String, Stri
         .decode(base64_data)
         .map_err(|e| e.to_string())?;
 
-    let temp_path = std::env::temp_dir().join("ocr_input.png");
-    let mut file = File::create(&temp_path).map_err(|e| e.to_string())?;
-    file.write_all(&bytes).map_err(|e| e.to_string())?;
+    let lang = langs.unwrap_or("eng".to_string());
+    
+    // Parse engine selection
+    let ocr_engine = match engine.as_deref() {
+        Some("tesseract") => ocr::OcrEngine::Tesseract,
+        #[cfg(windows)]
+        Some("windows") => ocr::OcrEngine::WindowsOcr,
+        #[cfg(target_os = "macos")]
+        Some("apple") => ocr::OcrEngine::AppleVision,
+        _ => ocr::OcrEngine::Auto,
+    };
+    
+    ocr::perform_ocr_with_engine(&bytes, &lang, ocr_engine)
+}
 
-    let img = Image::from_path(temp_path.to_str().unwrap()).map_err(|e| e.to_string())?;
-
-    let mut args = Args::default();
-    // Default to English + Traditional Chinese if not specified
-    // Note: User must have tesseract-lang installed
-    args.lang = langs.unwrap_or("eng+chi_tra".to_string());
-    args.psm = Some(6);
-
-    let text = rusty_tesseract::image_to_string(&img, &args).map_err(|e| e.to_string())?;
-
-    Ok(text)
+/// Get available OCR engines for the current platform
+#[tauri::command]
+fn get_ocr_engines() -> Vec<String> {
+    ocr::get_available_engines()
+        .iter()
+        .map(|e| match e {
+            ocr::OcrEngine::Tesseract => "tesseract".to_string(),
+            #[cfg(windows)]
+            ocr::OcrEngine::WindowsOcr => "windows".to_string(),
+            #[cfg(target_os = "macos")]
+            ocr::OcrEngine::AppleVision => "apple".to_string(),
+            ocr::OcrEngine::Auto => "auto".to_string(),
+        })
+        .collect()
 }
 
 #[tauri::command]
@@ -132,7 +144,8 @@ pub fn run() {
             capture_full_screen,
             capture_region,
             perform_ocr,
-            scan_qr
+            scan_qr,
+            get_ocr_engines
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

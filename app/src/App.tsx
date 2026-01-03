@@ -37,6 +37,8 @@ function App() {
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [directSnip, setDirectSnip] = useState(false);
   const [silentMode, setSilentMode] = useState(false);
+  const [ocrEngine, setOcrEngine] = useState("auto");
+  const [availableEngines, setAvailableEngines] = useState<string[]>(["auto", "tesseract"]);
 
   // Refs to access current values in callbacks (avoid stale closures)
   const directSnipRef = useRef(directSnip);
@@ -72,6 +74,17 @@ function App() {
       setSilentMode(enabled);
       silentModeRef.current = enabled;
     }
+
+    // Load OCR Engine preference
+    const savedOcrEngine = localStorage.getItem('ocrEngine');
+    if (savedOcrEngine) setOcrEngine(savedOcrEngine);
+
+    // Fetch available OCR engines from backend
+    invoke<string[]>("get_ocr_engines").then(engines => {
+      if (engines && engines.length > 0) {
+        setAvailableEngines(engines);
+      }
+    }).catch(e => console.error("Failed to get OCR engines:", e));
 
     // Load History
     setHistoryItems(getHistory());
@@ -150,6 +163,11 @@ function App() {
     localStorage.setItem('silentMode', String(enabled));
   };
 
+  const handleSetOcrEngine = (engine: string) => {
+    setOcrEngine(engine);
+    localStorage.setItem('ocrEngine', engine);
+  };
+
   async function captureScreen() {
     try {
       soundManager.playShutter(); // 📸 SNAP!
@@ -197,7 +215,9 @@ function App() {
       if (qrResult) {
         text = `[QR Code]\n${qrResult}`;
       } else {
-        text = await invoke("perform_ocr", { base64Image: base64, langs: selectedLang });
+        // Use the selected OCR engine from settings
+        // When "auto": CJK languages → Windows OCR (on Windows), other → Tesseract
+        text = await invoke("perform_ocr", { base64Image: base64, langs: selectedLang, engine: ocrEngine });
       }
 
       setOcrResult(text || "__EMPTY__");
@@ -476,6 +496,9 @@ function App() {
               setDirectSnip={handleSetDirectSnip}
               silentMode={silentMode}
               setSilentMode={handleSetSilentMode}
+              ocrEngine={ocrEngine}
+              setOcrEngine={handleSetOcrEngine}
+              availableEngines={availableEngines}
               onClearHistory={handleClearHistory}
             />
           )}

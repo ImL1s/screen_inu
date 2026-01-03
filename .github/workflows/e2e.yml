@@ -3,8 +3,14 @@ name: E2E Tests
 on:
   push:
     branches: [develop, main]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
   pull_request:
     branches: [develop]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
   workflow_dispatch:
 
 jobs:
@@ -34,6 +40,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: 'npm'
+          cache-dependency-path: app/package-lock.json
 
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
@@ -43,18 +51,21 @@ jobs:
         with:
           workspaces: "./app/src-tauri -> target"
 
+      - name: Cache tauri-driver
+        id: cache-tauri-driver
+        uses: actions/cache@v3
+        with:
+          path: ~/.cargo/bin/tauri-driver
+          key: ${{ runner.os }}-tauri-driver-0.1
+
       - name: Install tauri-driver
+        if: steps.cache-tauri-driver.outputs.cache-hit != 'true'
         run: cargo install tauri-driver --locked
 
       - name: Install frontend dependencies
         working-directory: ./app
         run: npm install
 
-      - name: Build Tauri app (release)
-        working-directory: ./app
-        run: npm run tauri build -- --no-bundle
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install E2E test dependencies
         working-directory: ./app/e2e

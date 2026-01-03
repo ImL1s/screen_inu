@@ -11,7 +11,7 @@ let tauriDriver;
 
 // Determine the correct binary name based on platform
 const getBinaryPath = () => {
-    const basePath = path.resolve(__dirname, '../src-tauri/target/release');
+    const basePath = path.resolve(__dirname, '../src-tauri/target/debug');
     if (process.platform === 'win32') {
         return path.join(basePath, 'screen-inu.exe');
     } else if (process.platform === 'darwin') {
@@ -22,11 +22,17 @@ const getBinaryPath = () => {
 };
 
 export const config = {
+    // Connection settings for tauri-driver
+    hostname: '127.0.0.1',
+    port: 4444,
+    path: '/',
+
     specs: ['./specs/**/*.js'],
     maxInstances: 1,
     capabilities: [
         {
             maxInstances: 1,
+            browserName: 'edge', // Required by WDIO, ignored by Tauri
             'tauri:options': {
                 application: getBinaryPath(),
             },
@@ -41,9 +47,10 @@ export const config = {
 
     // Ensure the Rust project is built before running tests
     onPrepare: () => {
-        console.log('🔨 Building Tauri app for E2E tests...');
-        const result = spawnSync('cargo', ['build', '--release'], {
-            cwd: path.resolve(__dirname, '../src-tauri'),
+        console.log('🔨 Building Tauri app for E2E tests (DEBUG)...');
+        // Run specific tauri build command to ensure assets are bundled correctly
+        const result = spawnSync('npm', ['run', 'tauri', '--', 'build', '--debug', '--no-bundle'], {
+            cwd: path.resolve(__dirname, '..'),
             stdio: 'inherit',
             shell: true,
         });
@@ -59,7 +66,13 @@ export const config = {
             : path.resolve(os.homedir(), '.cargo', 'bin', 'tauri-driver');
 
         console.log('🚀 Starting tauri-driver...');
-        tauriDriver = spawn(tauriDriverPath, [], {
+        const args = [];
+        if (process.platform === 'win32') {
+            const driverPath = path.resolve(__dirname, '../../msedgedriver.exe');
+            args.push('--native-driver', driverPath);
+        }
+
+        tauriDriver = spawn(tauriDriverPath, args, {
             stdio: [null, process.stdout, process.stderr],
         });
 
