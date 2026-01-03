@@ -44,7 +44,7 @@
       "icons/128x128.png",
       "icons/128x128@2x.png",
       "icons/icon.icns",
-      "icons/icon.ico"
+      "icons/app_icon_v12_bone.ico"
     ],
     "windows": {
       "nsis": {
