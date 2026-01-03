@@ -1,0 +1,67 @@
+name: E2E Tests
+
+on:
+  push:
+    branches: [develop, main]
+  pull_request:
+    branches: [develop]
+  workflow_dispatch:
+
+jobs:
+  e2e-test:
+    name: E2E WebDriver Tests
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Linux dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libwebkit2gtk-4.1-dev \
+            libayatana-appindicator3-dev \
+            librsvg2-dev \
+            patchelf \
+            libtesseract-dev \
+            libleptonica-dev \
+            clang \
+            webkit2gtk-driver \
+            xvfb
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Rust cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: "./app/src-tauri -> target"
+
+      - name: Install tauri-driver
+        run: cargo install tauri-driver --locked
+
+      - name: Install frontend dependencies
+        working-directory: ./app
+        run: npm install
+
+      - name: Build Tauri app (release)
+        working-directory: ./app
+        run: npm run tauri build -- --no-bundle
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install E2E test dependencies
+        working-directory: ./app/e2e
+        run: npm install
+
+      - name: Run E2E tests with xvfb
+        working-directory: ./app/e2e
+        run: xvfb-run --auto-servernum npm test
+        env:
+          CI: true
