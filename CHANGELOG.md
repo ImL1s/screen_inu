@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Development roadmap for future improvements
 
-## [0.2.0] - 2026-01-04
+## [0.2.1] - 2026-01-04
 
 ### Added
 - **Offline OCR Model Management**: Dedicated UI to browse, download, and manage Tesseract language packs (`.traineddata`) for offline use.
@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - **CI/CD Reliability**: Implemented Rust crate caching (`rust-cache`) and optimized E2E build timeouts to fix persistent CI failures.
+- **Release Build (macOS)**: Fixed missing Tesseract sidecar step in release workflow that caused v0.2.0 build failure.
 - **E2E Tests**: Fixed locator timeout issues by aligning test configuration with CI performance constraints.
 
 ---
