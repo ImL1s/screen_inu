@@ -90,5 +90,16 @@
     "overlay": {
         "drag_to_capture": "拖曳以擷取",
         "too_small": "太小了"
-    }
+    },
+    "batch_mode": "批次模式",
+    "batch_drop_hint": "拖放圖片至此處或點擊選擇",
+    "batch_formats": "支援 PNG、JPG、WebP",
+    "batch_files_selected": "個檔案已選擇",
+    "batch_start": "開始辨識",
+    "batch_clear": "清除",
+    "batch_processing": "處理中...",
+    "batch_results": "辨識結果",
+    "batch_no_text": "未偵測到文字",
+    "batch_new": "處理新批次",
+    "copy_all": "複製全部"
 }

@@ -90,5 +90,16 @@
     "overlay": {
         "drag_to_capture": "DRAG TO CAPTURE",
         "too_small": "TOO SMALL"
-    }
+    },
+    "batch_mode": "Batch Mode",
+    "batch_drop_hint": "Drop images here or click to select",
+    "batch_formats": "Supports PNG, JPG, WebP",
+    "batch_files_selected": "files selected",
+    "batch_start": "Start OCR",
+    "batch_clear": "Clear",
+    "batch_processing": "Processing...",
+    "batch_results": "Results",
+    "batch_no_text": "No text detected",
+    "batch_new": "Process New Batch",
+    "copy_all": "Copy All"
 }

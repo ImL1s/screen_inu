@@ -6,6 +6,7 @@ import { SnippingOverlay } from "./components/SnippingOverlay";
 import { ShibaLogo } from "./components/ShibaLogo";
 import { HistoryDrawer } from "./components/HistoryDrawer";
 import { SettingsModal } from "./components/SettingsModal";
+import BatchProcessor from "./components/BatchProcessor";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import {
@@ -19,7 +20,8 @@ import {
   Bone,
   Settings,
   Search,
-  Languages
+  Languages,
+  Layers
 } from "lucide-react";
 import { notifyOcrComplete } from "./utils/notification";
 import { addToHistoryAsync, getHistoryAsync, clearHistoryAsync, HistoryItem } from "./utils/history";
@@ -53,6 +55,7 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [showBatchMode, setShowBatchMode] = useState(false);
   const [historyItems, setHistoryItems] = useState<HistoryItem[]>([]);
 
   // Translation state
@@ -447,6 +450,16 @@ function App() {
                   "{t('app.doge_quote_2')}"
                 </p>
               </div>
+
+              {/* Batch Mode Button */}
+              <button
+                onClick={() => setShowBatchMode(true)}
+                className="flex items-center gap-2 px-4 py-2 bg-zinc-800 text-amber-400 border-2 border-zinc-700 hover:border-amber-400 rounded-lg font-bold transition-all hover:scale-105"
+                aria-label={t('batch_mode')}
+              >
+                <Layers size={18} />
+                {t('batch_mode')}
+              </button>
             </div>
           ) : (
             // Result / Loading State
@@ -653,6 +666,15 @@ function App() {
           />
         )
       }
+
+      {/* Batch Processor Modal */}
+      {showBatchMode && (
+        <BatchProcessor
+          ocrLang={selectedLang}
+          ocrEngine={ocrEngine}
+          onClose={() => setShowBatchMode(false)}
+        />
+      )}
     </div >
   );
 }

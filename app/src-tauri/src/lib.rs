@@ -63,6 +63,61 @@ fn perform_ocr(base64_image: &str, langs: Option<String>, engine: Option<String>
     ocr::perform_ocr_with_engine(&bytes, &lang, ocr_engine)
 }
 
+/// Result of a single image in a batch OCR operation
+#[derive(serde::Serialize)]
+struct BatchOcrResult {
+    index: usize,
+    text: Option<String>,
+    error: Option<String>,
+}
+
+/// Perform OCR on multiple images in parallel using Rayon
+#[tauri::command]
+fn perform_batch_ocr(
+    images: Vec<String>,
+    langs: Option<String>,
+    engine: Option<String>,
+) -> Vec<BatchOcrResult> {
+    use rayon::prelude::*;
+
+    let lang = langs.unwrap_or_else(|| "eng".to_string());
+    let ocr_engine = match engine.as_deref() {
+        Some("tesseract") => ocr::OcrEngine::Tesseract,
+        #[cfg(windows)]
+        Some("windows") => ocr::OcrEngine::WindowsOcr,
+        #[cfg(target_os = "macos")]
+        Some("apple") => ocr::OcrEngine::AppleVision,
+        _ => ocr::OcrEngine::Auto,
+    };
+
+    images
+        .par_iter()
+        .enumerate()
+        .map(|(index, base64_image)| {
+            let base64_data = base64_image.split(',').last().unwrap_or(base64_image);
+            match base64::engine::general_purpose::STANDARD.decode(base64_data) {
+                Ok(bytes) => match ocr::perform_ocr_with_engine(&bytes, &lang, ocr_engine.clone()) {
+                    Ok(text) => BatchOcrResult {
+                        index,
+                        text: Some(text),
+                        error: None,
+                    },
+                    Err(e) => BatchOcrResult {
+                        index,
+                        text: None,
+                        error: Some(e),
+                    },
+                },
+                Err(e) => BatchOcrResult {
+                    index,
+                    text: None,
+                    error: Some(format!("Base64 decode error: {}", e)),
+                },
+            }
+        })
+        .collect()
+}
+
 /// Get available OCR engines for the current platform
 #[tauri::command]
 fn get_ocr_engines() -> Vec<String> {
@@ -163,6 +218,7 @@ pub fn run() {
             capture_full_screen,
             capture_region,
             perform_ocr,
+            perform_batch_ocr,
             scan_qr,
             get_ocr_engines,
             list_ocr_models,
