@@ -1,9 +1,11 @@
 import { X, Volume2, VolumeX, Copy, Check, Trash2, Scissors, EyeOff, Eye, Monitor, Globe, ChevronDown, Cpu, Keyboard, Languages, Download, Upload } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "react-i18next";
-import { useState } from "react";
-import { exportHistory, importHistory } from "../utils/history";
-import { message } from "@tauri-apps/plugin-dialog";
+import { useState, useEffect } from "react";
+import { exportHistory, importHistory, migrateToFileStorage, migrateToLocalStorage } from "../utils/history";
+import { message, open } from "@tauri-apps/plugin-dialog";
+import { getDataDirectory, setDataDirectory } from "../utils/settings";
+import { FolderEdit, RotateCcw } from "lucide-react";
 
 // Detect Windows platform (Direct Snip not supported due to WebView2 transparency bug)
 const isWindows = typeof navigator !== 'undefined' && navigator.userAgent.includes('Windows');
@@ -65,6 +67,12 @@ export const SettingsModal = ({
     const [showEngineMenu, setShowEngineMenu] = useState(false);
     const [isRecordingShortcut, setIsRecordingShortcut] = useState(false);
     const [shortcutError, setShortcutError] = useState<string | null>(null);
+    const [dataDirectory, setDataDirectoryState] = useState<string | null>(null);
+
+    // Load data directory on mount
+    useEffect(() => {
+        getDataDirectory().then(setDataDirectoryState);
+    }, [isOpen]);
 
     const engineLabels: Record<string, string> = {
         'auto': t('settings.ocr_engine.auto') || 'Auto (Smart Selection)',
@@ -446,6 +454,76 @@ export const SettingsModal = ({
                             <Upload size={18} />
                             <span className="font-bold text-xs uppercase">{t('settings.data.import')}</span>
                         </button>
+                    </div>
+
+                    {/* Storage Location */}
+                    <div className="flex items-center justify-between group">
+                        <div className="flex items-center gap-3">
+                            <div className="p-2 border-2 border-[#0a0a0a] bg-white text-[#0a0a0a]">
+                                <FolderEdit size={24} />
+                            </div>
+                            <div className="flex flex-col min-w-0">
+                                <h3 className="font-black uppercase text-sm">{t('settings.data.location')}</h3>
+                                <div className="text-[10px] font-mono opacity-60 truncate max-w-[200px]" title={dataDirectory || t('settings.data.default_location')}>
+                                    {dataDirectory || t('settings.data.default_location')}
+                                </div>
+                            </div>
+                        </div>
+                        <div className="flex gap-2">
+                            {dataDirectory && (
+                                <button
+                                    onClick={async () => {
+                                        try {
+                                            const success = await migrateToLocalStorage();
+                                            if (success) {
+                                                await setDataDirectory(null);
+                                                setDataDirectoryState(null);
+                                                await message(t('settings.data.location_changed'), { title: t('app.title'), kind: 'info' });
+                                                window.location.reload();
+                                            }
+                                        } catch (e) {
+                                            console.error(e);
+                                        }
+                                    }}
+                                    className="p-1 border-2 border-[#0a0a0a] bg-white hover:bg-[#ff6b35] hover:text-white transition-colors"
+                                    title={t('settings.data.reset_location')}
+                                >
+                                    <RotateCcw size={16} />
+                                </button>
+                            )}
+                            <button
+                                onClick={async () => {
+                                    try {
+                                        const selected = await open({
+                                            directory: true,
+                                            multiple: false,
+                                            defaultPath: dataDirectory || undefined
+                                        });
+
+                                        if (selected && typeof selected === 'string') {
+                                            // 1. Set new directory
+                                            await setDataDirectory(selected);
+                                            setDataDirectoryState(selected);
+
+                                            // 2. Offer to migrate (auto for now per requirement simplicity)
+                                            await message(t('settings.data.migrating'), { title: t('app.title'), kind: 'info' });
+                                            const success = await migrateToFileStorage();
+
+                                            // 3. Notify and Reload
+                                            if (success) {
+                                                await message(t('settings.data.location_changed'), { title: t('app.title'), kind: 'info' });
+                                                window.location.reload();
+                                            }
+                                        }
+                                    } catch (e) {
+                                        console.error(e);
+                                    }
+                                }}
+                                className="px-3 py-1 border-2 border-[#0a0a0a] bg-white hover:bg-[#e8e4db] text-xs font-bold uppercase transition-colors"
+                            >
+                                {t('settings.data.change_location')}
+                            </button>
+                        </div>
                     </div>
 
                     {/* Auto Copy Toggle */}

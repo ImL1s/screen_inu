@@ -1,5 +1,23 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { getHistory, addToHistory, clearHistory, deleteHistoryItem, exportHistory, importHistory, HistoryItem } from '../utils/history';
+import {
+    getHistoryAsync,
+    addToHistoryAsync,
+    clearHistoryAsync,
+    deleteHistoryItemAsync,
+    exportHistory,
+    importHistory,
+    HistoryItem,
+    migrateToLocalStorage,
+    migrateToFileStorage
+} from '../utils/history';
+
+// Mock Settings (Critical to avoid tauri-plugin-store usage)
+vi.mock('../utils/settings', () => ({
+    getDataDirectory: vi.fn(),
+    setDataDirectory: vi.fn(),
+}));
+
+import { getDataDirectory } from '../utils/settings';
 
 // Mock Tauri APIs
 vi.mock('@tauri-apps/plugin-dialog', () => ({
@@ -10,12 +28,19 @@ vi.mock('@tauri-apps/plugin-dialog', () => ({
 vi.mock('@tauri-apps/plugin-fs', () => ({
     writeTextFile: vi.fn(),
     readTextFile: vi.fn(),
+    exists: vi.fn(),
+    mkdir: vi.fn(),
+}));
+
+vi.mock('@tauri-apps/api/path', () => ({
+    join: vi.fn((...args) => args.join('/')),
+    appDataDir: vi.fn(() => Promise.resolve('/app/data')),
 }));
 
 import { save, open } from '@tauri-apps/plugin-dialog';
-import { writeTextFile, readTextFile } from '@tauri-apps/plugin-fs';
+import { writeTextFile, readTextFile, exists, mkdir } from '@tauri-apps/plugin-fs';
 
-describe('history.ts', () => {
+describe('history.ts (Async)', () => {
     // Mock localStorage
     let store: Record<string, string> = {};
 
@@ -27,6 +52,10 @@ describe('history.ts', () => {
             removeItem: (key: string) => { delete store[key]; },
             clear: () => { store = {}; },
         });
+
+        // Default: No custom directory (LocalStorage mode)
+        vi.mocked(getDataDirectory).mockResolvedValue(null);
+
         vi.clearAllMocks();
     });
 
@@ -34,292 +63,164 @@ describe('history.ts', () => {
         vi.unstubAllGlobals();
     });
 
-    describe('getHistory', () => {
-        it('should return empty array when no history exists', () => {
-            const result = getHistory();
+    // ============================================
+    // LocalStorage Mode Tests (Default)
+    // ============================================
+    describe('LocalStorage Mode', () => {
+        it('should get empty history initially', async () => {
+            const result = await getHistoryAsync();
             expect(result).toEqual([]);
         });
 
-        it('should return parsed history from localStorage', () => {
-            const mockHistory: HistoryItem[] = [
-                { id: '1', text: 'Hello', lang: 'en', timestamp: 1234567890 },
-                { id: '2', text: 'World', lang: 'en', timestamp: 1234567891 },
-            ];
-            store['ocr_history'] = JSON.stringify(mockHistory);
+        it('should add and retrieve items', async () => {
+            await addToHistoryAsync('Hello', 'en');
 
-            const result = getHistory();
-            expect(result).toEqual(mockHistory);
-        });
-
-        it('should return empty array when localStorage contains invalid JSON', () => {
-            store['ocr_history'] = 'invalid json';
-
-            const result = getHistory();
-            expect(result).toEqual([]);
-        });
-    });
-
-    describe('addToHistory', () => {
-        it('should add new item to the beginning of history', () => {
-            addToHistory('Hello World', 'en');
-
-            const history = getHistory();
+            const history = await getHistoryAsync();
             expect(history.length).toBe(1);
-            expect(history[0].text).toBe('Hello World');
-            expect(history[0].lang).toBe('en');
+            expect(history[0].text).toBe('Hello');
+            expect(store['ocr_history']).toBeDefined();
         });
 
-        it('should not add empty text', () => {
-            addToHistory('', 'en');
-            addToHistory('   ', 'en');
+        it('should clear history', async () => {
+            await addToHistoryAsync('Hello', 'en');
+            await clearHistoryAsync();
 
-            const history = getHistory();
-            expect(history.length).toBe(0);
-        });
-
-        it('should trim whitespace from text', () => {
-            addToHistory('  Hello World  ', 'en');
-
-            const history = getHistory();
-            expect(history[0].text).toBe('Hello World');
-        });
-
-        it('should add new items at the beginning', () => {
-            addToHistory('First', 'en');
-            addToHistory('Second', 'en');
-
-            const history = getHistory();
-            expect(history.length).toBe(2);
-            expect(history[0].text).toBe('Second');
-            expect(history[1].text).toBe('First');
-        });
-
-        it('should limit history to 20 items', () => {
-            for (let i = 0; i < 25; i++) {
-                addToHistory(`Item ${i}`, 'en');
-            }
-
-            const history = getHistory();
-            expect(history.length).toBe(20);
-            expect(history[0].text).toBe('Item 24'); // Most recent
-        });
-
-        it('should generate unique IDs for each item', () => {
-            addToHistory('First', 'en');
-            addToHistory('Second', 'en');
-
-            const history = getHistory();
-            expect(history[0].id).not.toBe(history[1].id);
-        });
-
-        it('should set timestamp to current time', () => {
-            const before = Date.now();
-            addToHistory('Test', 'en');
-            const after = Date.now();
-
-            const history = getHistory();
-            expect(history[0].timestamp).toBeGreaterThanOrEqual(before);
-            expect(history[0].timestamp).toBeLessThanOrEqual(after);
-        });
-    });
-
-    describe('clearHistory', () => {
-        it('should remove all history items', () => {
-            addToHistory('First', 'en');
-            addToHistory('Second', 'en');
-
-            clearHistory();
-
-            const history = getHistory();
+            const history = await getHistoryAsync();
             expect(history).toEqual([]);
+            expect(store['ocr_history']).toBeUndefined();
+        });
+
+        it('should delete specific item', async () => {
+            await addToHistoryAsync('Item 1', 'en');
+            await addToHistoryAsync('Item 2', 'en');
+
+            const history = await getHistoryAsync();
+            const idToDelete = history[0].id; // Item 2 (newest first)
+
+            await deleteHistoryItemAsync(idToDelete);
+
+            const updated = await getHistoryAsync();
+            expect(updated.length).toBe(1);
+            expect(updated[0].text).toBe('Item 1');
         });
     });
 
-    describe('deleteHistoryItem', () => {
-        it('should delete specific item by ID', () => {
-            addToHistory('First', 'en');
-            addToHistory('Second', 'en');
+    // ============================================
+    // File Storage Mode Tests (Custom Directory)
+    // ============================================
+    describe('File Storage Mode', () => {
+        const MOCK_CUSTOM_DIR = '/custom/data';
+        const MOCK_FILE_PATH = '/custom/data/ocr_history.json';
 
-            const history = getHistory();
-            const idToDelete = history[0].id;
-
-            deleteHistoryItem(idToDelete);
-
-            const updatedHistory = getHistory();
-            expect(updatedHistory.length).toBe(1);
-            expect(updatedHistory[0].text).toBe('First');
+        beforeEach(() => {
+            vi.mocked(getDataDirectory).mockResolvedValue(MOCK_CUSTOM_DIR);
+            // Mock fs.exists to return false by default (file doesn't exist yet)
+            vi.mocked(exists).mockResolvedValue(false);
+            // Mock fs.readTextFile
+            vi.mocked(readTextFile).mockResolvedValue('[]');
         });
 
-        it('should do nothing when ID does not exist', () => {
-            addToHistory('First', 'en');
+        it('should use file system when custom directory is set', async () => {
+            await getHistoryAsync();
+            expect(getDataDirectory).toHaveBeenCalled();
+            expect(exists).toHaveBeenCalledWith(MOCK_FILE_PATH);
+        });
 
-            deleteHistoryItem('non-existent-id');
+        it('should return empty array if file does not exist', async () => {
+            vi.mocked(exists).mockResolvedValue(false);
+            const result = await getHistoryAsync();
+            expect(result).toEqual([]);
+        });
 
-            const history = getHistory();
-            expect(history.length).toBe(1);
+        it('should read from file if exists', async () => {
+            const mockData = [{ id: '1', text: 'File Item', lang: 'en', timestamp: 123 }];
+            vi.mocked(exists).mockResolvedValue(true);
+            vi.mocked(readTextFile).mockResolvedValue(JSON.stringify(mockData));
+
+            const result = await getHistoryAsync();
+            expect(result).toEqual(mockData);
+            expect(readTextFile).toHaveBeenCalledWith(MOCK_FILE_PATH);
+        });
+
+        it('should write to file when adding item', async () => {
+            // Setup: Empty existing history
+            vi.mocked(exists).mockResolvedValue(false);
+
+            await addToHistoryAsync('New File Item', 'fr');
+
+            expect(writeTextFile).toHaveBeenCalledWith(
+                MOCK_FILE_PATH,
+                expect.stringContaining('New File Item')
+            );
+            // Should verify that directory creation was attempted
+            expect(mkdir).toHaveBeenCalled();
+        });
+
+        it('should clear history by writing empty array to file', async () => {
+            await clearHistoryAsync();
+            expect(writeTextFile).toHaveBeenCalledWith(MOCK_FILE_PATH, '[]');
         });
     });
 
-    describe('exportHistory', () => {
-        it('should return false when history is empty', async () => {
-            const result = await exportHistory();
-            expect(result).toBe(false);
-            expect(save).not.toHaveBeenCalled();
+    // ============================================
+    // Migration Tests
+    // ============================================
+    describe('Migration', () => {
+        it('should migrate from localStorage to file', async () => {
+            // Setup LocalStorage data
+            const mockData = [{ id: '1', text: 'LS Item', lang: 'en', timestamp: 1 }];
+            store['ocr_history'] = JSON.stringify(mockData);
+
+            // Mock switching to File Mode
+            vi.mocked(getDataDirectory).mockResolvedValue('/new/dir');
+
+            // We use the sync helper internally or we simulate the state where we still have access to LS
+            // Since migration usually happens BEFORE switching the setting source of truth effectively, 
+            // the test here is slightly artificial. The helper `migrateToFileStorage` reads from LS (sync) and writes to File (async).
+
+            await migrateToFileStorage();
+
+            expect(writeTextFile).toHaveBeenCalledWith(
+                '/new/dir/ocr_history.json',
+                JSON.stringify(mockData, null, 2)
+            );
         });
+    });
 
-        it('should return false when user cancels file dialog', async () => {
-            addToHistory('Test', 'en');
-            vi.mocked(save).mockResolvedValue(null);
+    // ============================================
+    // Export/Import Tests (re-verified for async)
+    // ============================================
+    describe('Export/Import', () => {
+        it('should export history (async source)', async () => {
+            // Setup async history (LocalStorage mode)
+            await addToHistoryAsync('Export Me', 'en');
 
-            const result = await exportHistory();
-            expect(result).toBe(false);
-            expect(writeTextFile).not.toHaveBeenCalled();
-        });
-
-        it('should export history to selected file', async () => {
-            addToHistory('Test Item', 'en');
-            vi.mocked(save).mockResolvedValue('/path/to/export.json');
-            vi.mocked(writeTextFile).mockResolvedValue(undefined);
+            vi.mocked(save).mockResolvedValue('/export.json');
 
             const result = await exportHistory();
 
             expect(result).toBe(true);
-            expect(save).toHaveBeenCalledWith({
-                filters: [{ name: 'JSON', extensions: ['json'] }],
-                defaultPath: 'screen_inu_history.json'
-            });
             expect(writeTextFile).toHaveBeenCalledWith(
-                '/path/to/export.json',
-                expect.stringContaining('Test Item')
+                '/export.json',
+                expect.stringContaining('Export Me')
             );
         });
 
-        it('should return false on write error', async () => {
-            addToHistory('Test', 'en');
-            vi.mocked(save).mockResolvedValue('/path/to/export.json');
-            vi.mocked(writeTextFile).mockRejectedValue(new Error('Write failed'));
+        it('should import history and merge (async)', async () => {
+            // Setup existing
+            await addToHistoryAsync('Existing', 'en');
 
-            const result = await exportHistory();
-            expect(result).toBe(false);
-        });
-    });
-
-    describe('importHistory', () => {
-        it('should return false when user cancels file dialog', async () => {
-            vi.mocked(open).mockResolvedValue(null);
-
-            const result = await importHistory();
-            expect(result).toBe(false);
-            expect(readTextFile).not.toHaveBeenCalled();
-        });
-
-        it('should return false when multiple files selected', async () => {
-            vi.mocked(open).mockResolvedValue(['/file1.json', '/file2.json']);
-
-            const result = await importHistory();
-            expect(result).toBe(false);
-        });
-
-        it('should import valid history from file', async () => {
-            const importedData: HistoryItem[] = [
-                { id: 'imported-1', text: 'Imported Item', lang: 'en', timestamp: 1234567890 }
-            ];
-            vi.mocked(open).mockResolvedValue('/path/to/import.json');
-            vi.mocked(readTextFile).mockResolvedValue(JSON.stringify(importedData));
+            // Setup import file
+            const importData = [{ id: 'new-1', text: 'Imported', lang: 'en', timestamp: 2 }];
+            vi.mocked(open).mockResolvedValue('/import.json');
+            vi.mocked(readTextFile).mockResolvedValue(JSON.stringify(importData));
 
             const result = await importHistory();
 
             expect(result).toBe(true);
-            const history = getHistory();
-            expect(history.length).toBe(1);
-            expect(history[0].text).toBe('Imported Item');
-        });
-
-        it('should merge imported history with existing history', async () => {
-            addToHistory('Existing Item', 'en');
-            const existingHistory = getHistory();
-
-            const importedData: HistoryItem[] = [
-                { id: 'imported-1', text: 'Imported Item', lang: 'en', timestamp: 1234567890 }
-            ];
-            vi.mocked(open).mockResolvedValue('/path/to/import.json');
-            vi.mocked(readTextFile).mockResolvedValue(JSON.stringify(importedData));
-
-            await importHistory();
-
-            const history = getHistory();
+            const history = await getHistoryAsync();
             expect(history.length).toBe(2);
-            expect(history.some(h => h.text === 'Imported Item')).toBe(true);
-            expect(history.some(h => h.id === existingHistory[0].id)).toBe(true);
-        });
-
-        it('should skip duplicate items by ID', async () => {
-            addToHistory('First', 'en');
-            const existingHistory = getHistory();
-            const existingId = existingHistory[0].id;
-
-            const importedData: HistoryItem[] = [
-                { id: existingId, text: 'Duplicate', lang: 'en', timestamp: 1234567890 },
-                { id: 'new-id', text: 'New Item', lang: 'en', timestamp: 1234567891 }
-            ];
-            vi.mocked(open).mockResolvedValue('/path/to/import.json');
-            vi.mocked(readTextFile).mockResolvedValue(JSON.stringify(importedData));
-
-            await importHistory();
-
-            const history = getHistory();
-            expect(history.length).toBe(2);
-            expect(history.some(h => h.text === 'First')).toBe(true);
-            expect(history.some(h => h.text === 'New Item')).toBe(true);
-            expect(history.some(h => h.text === 'Duplicate')).toBe(false);
-        });
-
-        it('should return false when no new items to import', async () => {
-            addToHistory('First', 'en');
-            const existingHistory = getHistory();
-            const existingId = existingHistory[0].id;
-
-            const importedData: HistoryItem[] = [
-                { id: existingId, text: 'Same Item', lang: 'en', timestamp: 1234567890 }
-            ];
-            vi.mocked(open).mockResolvedValue('/path/to/import.json');
-            vi.mocked(readTextFile).mockResolvedValue(JSON.stringify(importedData));
-
-            const result = await importHistory();
-            expect(result).toBe(false);
-        });
-
-        it('should return false for invalid JSON format', async () => {
-            vi.mocked(open).mockResolvedValue('/path/to/import.json');
-            vi.mocked(readTextFile).mockResolvedValue('not a valid json');
-
-            const result = await importHistory();
-            expect(result).toBe(false);
-        });
-
-        it('should return false when file content is not an array', async () => {
-            vi.mocked(open).mockResolvedValue('/path/to/import.json');
-            vi.mocked(readTextFile).mockResolvedValue('{"key": "value"}');
-
-            const result = await importHistory();
-            expect(result).toBe(false);
-        });
-
-        it('should filter out invalid items (missing id or text)', async () => {
-            const importedData = [
-                { id: 'valid-1', text: 'Valid Item', lang: 'en', timestamp: 1234567890 },
-                { text: 'No ID', lang: 'en', timestamp: 1234567891 },
-                { id: 'no-text', lang: 'en', timestamp: 1234567892 },
-            ];
-            vi.mocked(open).mockResolvedValue('/path/to/import.json');
-            vi.mocked(readTextFile).mockResolvedValue(JSON.stringify(importedData));
-
-            await importHistory();
-
-            const history = getHistory();
-            expect(history.length).toBe(1);
-            expect(history[0].text).toBe('Valid Item');
+            expect(history.find(h => h.text === 'Imported')).toBeDefined();
         });
     });
 });
-

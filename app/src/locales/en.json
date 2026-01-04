@@ -64,7 +64,13 @@
             "export_success": "History exported successfully!",
             "import_success": "History imported successfully!",
             "export_error": "Failed to export history",
-            "import_error": "Failed to import history"
+            "import_error": "Failed to import history",
+            "location": "Storage Location",
+            "default_location": "Default (Local Storage)",
+            "change_location": "Change Location",
+            "reset_location": "Reset to Default",
+            "location_changed": "Storage location changed!",
+            "migrating": "Migrating data..."
         },
         "ocr_engine": {
             "title": "OCR ENGINE",

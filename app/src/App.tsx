@@ -22,7 +22,7 @@ import {
   Languages
 } from "lucide-react";
 import { notifyOcrComplete } from "./utils/notification";
-import { addToHistory, getHistory, clearHistory, HistoryItem } from "./utils/history";
+import { addToHistoryAsync, getHistoryAsync, clearHistoryAsync, HistoryItem } from "./utils/history";
 import { soundManager } from "./utils/SoundManager";
 import { translateText, COMMON_TARGET_LANGUAGES } from "./utils/translate";
 import "./App.css";
@@ -107,8 +107,8 @@ function App() {
       }
     }).catch(e => console.error("Failed to get OCR engines:", e));
 
-    // Load History
-    setHistoryItems(getHistory());
+    // Load History (async)
+    getHistoryAsync().then(items => setHistoryItems(items));
 
     let shortcutRegistered = false;
     let currentRegisteredShortcut = "";
@@ -169,8 +169,8 @@ function App() {
     localStorage.setItem('soundEnabled', String(enabled));
   };
 
-  const handleClearHistory = () => {
-    clearHistory();
+  const handleClearHistory = async () => {
+    await clearHistoryAsync();
     setHistoryItems([]);
     setShowSettings(false);
   };
@@ -296,8 +296,8 @@ function App() {
 
       if (text && text.trim()) {
         soundManager.playBark(); // 🐕 WOOF!
-        addToHistory(text, qrResult ? "QR" : selectedLang);
-        setHistoryItems(getHistory()); // Refresh history view
+        await addToHistoryAsync(text, qrResult ? "QR" : selectedLang);
+        setHistoryItems(await getHistoryAsync()); // Refresh history view
         notifyOcrComplete(text.length);
 
         if (autoCopy) {
@@ -575,7 +575,7 @@ function App() {
 
             {/* History Toggle */}
             <button
-              onClick={() => { setHistoryItems(getHistory()); setShowHistory(true); }}
+              onClick={async () => { setHistoryItems(await getHistoryAsync()); setShowHistory(true); }}
               className="relative group w-12 h-12 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0a0a0a] focus-visible:ring-offset-2 rounded-sm"
               title={t('history.title')}
               aria-label={t('history.title')}
@@ -627,7 +627,7 @@ function App() {
               isOpen={showHistory}
               onClose={() => setShowHistory(false)}
               historyItems={historyItems}
-              onClearHistory={() => { clearHistory(); setHistoryItems([]); }}
+              onClearHistory={async () => { await clearHistoryAsync(); setHistoryItems([]); }}
               onCopyItem={() => { setIsCopied(true); setTimeout(() => setIsCopied(false), 1000); }}
             />
           )}
