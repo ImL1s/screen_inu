@@ -1,7 +1,9 @@
-import { X, Volume2, VolumeX, Copy, Check, Trash2, Scissors, EyeOff, Eye, Monitor, Globe, ChevronDown, Cpu, Keyboard, Languages } from "lucide-react";
+import { X, Volume2, VolumeX, Copy, Check, Trash2, Scissors, EyeOff, Eye, Monitor, Globe, ChevronDown, Cpu, Keyboard, Languages, Download, Upload } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
+import { exportHistory, importHistory } from "../utils/history";
+import { message } from "@tauri-apps/plugin-dialog";
 
 // Detect Windows platform (Direct Snip not supported due to WebView2 transparency bug)
 const isWindows = typeof navigator !== 'undefined' && navigator.userAgent.includes('Windows');
@@ -405,6 +407,47 @@ export const SettingsModal = ({
                         </button>
                     </div>
 
+                    {/* Section: Data Management */}
+                    <div className="text-[10px] font-black uppercase tracking-widest text-[#0a0a0a]/50 border-b border-[#0a0a0a]/10 pb-1 pt-2">{t('settings.section.data') || '💾 DATA MANAGEMENT'}</div>
+
+                    <div className="grid grid-cols-2 gap-3">
+                        <button
+                            onClick={async () => {
+                                try {
+                                    await exportHistory();
+                                    await message(t('settings.data.export_success'), { title: t('app.title'), kind: 'info' });
+                                } catch (e) {
+                                    console.error(e);
+                                    await message(t('settings.data.export_error'), { title: t('app.title'), kind: 'error' });
+                                }
+                            }}
+                            className="flex items-center justify-center gap-2 p-3 bg-white border-2 border-[#0a0a0a] hover:bg-[#00ff88] transition-all hover:shadow-[4px_4px_0px_#0a0a0a] active:translate-x-1 active:translate-y-1 active:shadow-none"
+                        >
+                            <Download size={18} />
+                            <span className="font-bold text-xs uppercase">{t('settings.data.export')}</span>
+                        </button>
+
+                        <button
+                            onClick={async () => {
+                                try {
+                                    await importHistory();
+                                    await message(t('settings.data.import_success'), { title: t('app.title'), kind: 'info' });
+                                    // Trigger a potential history refresh - since history state is in App.tsx, 
+                                    // ideally we'd pass a refresh callback, but localStorage change will be picked up 
+                                    // next time drawer opens or via storage event if we implement it.
+                                    window.location.reload(); // Hard refresh to ensure all states are synced
+                                } catch (e) {
+                                    console.error(e);
+                                    await message(t('settings.data.import_error'), { title: t('app.title'), kind: 'error' });
+                                }
+                            }}
+                            className="flex items-center justify-center gap-2 p-3 bg-white border-2 border-[#0a0a0a] hover:bg-[#00ff88] transition-all hover:shadow-[4px_4px_0px_#0a0a0a] active:translate-x-1 active:translate-y-1 active:shadow-none"
+                        >
+                            <Upload size={18} />
+                            <span className="font-bold text-xs uppercase">{t('settings.data.import')}</span>
+                        </button>
+                    </div>
+
                     {/* Auto Copy Toggle */}
                     <div className="flex items-center justify-between group">
                         <div className="flex items-center gap-3">
@@ -438,8 +481,8 @@ export const SettingsModal = ({
                         </button>
                     </div>
 
-                </div>
-            </motion.div>
-        </div>
+                </div >
+            </motion.div >
+        </div >
     );
 };

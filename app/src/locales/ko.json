@@ -55,7 +55,16 @@
         },
         "section": {
             "capture": "📸 캡처",
-            "app": "⚙️ 앱"
+            "app": "⚙️ 앱",
+            "data": "💾 데이터 관리"
+        },
+        "data": {
+            "export": "기록 내보내기 (JSON)",
+            "import": "기록 가져오기 (JSON)",
+            "export_success": "기록을 성공적으로 내보냈습니다!",
+            "import_success": "기록을 성공적으로 가져왔습니다!",
+            "export_error": "내보내기 실패",
+            "import_error": "가져오기 실패"
         },
         "ocr_engine": {
             "title": "OCR 엔진",

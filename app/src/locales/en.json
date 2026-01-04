@@ -55,7 +55,16 @@
         },
         "section": {
             "capture": "📸 CAPTURE",
-            "app": "⚙️ APP"
+            "app": "⚙️ APP",
+            "data": "💾 DATA"
+        },
+        "data": {
+            "export": "Export History (JSON)",
+            "import": "Import History (JSON)",
+            "export_success": "History exported successfully!",
+            "import_success": "History imported successfully!",
+            "export_error": "Failed to export history",
+            "import_error": "Failed to import history"
         },
         "ocr_engine": {
             "title": "OCR ENGINE",

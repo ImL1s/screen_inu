@@ -10,6 +10,12 @@
     "opener:default",
     "global-shortcut:allow-register",
     "global-shortcut:allow-unregister",
-    "global-shortcut:allow-is-registered"
+    "global-shortcut:allow-is-registered",
+    "dialog:default",
+    "fs:allow-write",
+    "fs:allow-read",
+    "updater:default",
+    "process:allow-restart",
+    "process:allow-exit"
   ]
 }
