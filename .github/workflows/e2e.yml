@@ -17,6 +17,11 @@ jobs:
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
 
+      - name: Rust cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: "./app/src-tauri -> target"
+
       - name: Prepare dummy Tesseract sidecars
         run: |
           mkdir -p app/src-tauri/binaries

@@ -6,6 +6,8 @@ let context: BrowserContext;
 let page: Page;
 
 test.beforeAll(async () => {
+    // Increase timeout for the hook to 5 minutes to accommodate slow CI builds
+    test.setTimeout(300000);
     console.log('Connecting to Tauri app via CDP...');
     // Retry connection logic (essential for CI/CD reliability)
     for (let i = 0; i < 300; i++) {
