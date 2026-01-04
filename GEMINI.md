@@ -62,3 +62,15 @@ npm run tauri build  # Production build
 - Node.js v18+
 - Rust (latest stable)
 - Tesseract OCR with language packs installed on system
+
+## E2E Testing (Required for UI/UX)
+
+**Rule: All new UI/UX features MUST have Playwright E2E tests.**
+
+```bash
+cd app
+npx playwright test               # Run all tests
+npx playwright test --reporter=line  # With output
+```
+
+See `/e2e-testing` workflow and `docs/playwright_testing.md` for details.

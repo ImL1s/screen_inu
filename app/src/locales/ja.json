@@ -69,6 +69,16 @@
         "ocr_engine": {
             "title": "OCRエンジン",
             "auto": "自動（スマート選択）"
+        },
+        "models": {
+            "title": "OCR言語パック管理",
+            "manage": "OCR言語パックを管理",
+            "search": "言語を検索...",
+            "installed": "インストール済み",
+            "available": "ダウンロード可能",
+            "download": "ダウンロード",
+            "delete": "削除",
+            "source": "ソース: tessdata_fast (GitHub)"
         }
     },
     "overlay": {

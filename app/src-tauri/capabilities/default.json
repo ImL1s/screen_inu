@@ -16,6 +16,7 @@
     "fs:allow-read",
     "updater:default",
     "process:allow-restart",
-    "process:allow-exit"
+    "process:allow-exit",
+    "store:default"
   ]
 }

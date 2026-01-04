@@ -1,44 +1,13 @@
 name: E2E Tests
-
-on:
-  push:
-    branches: [develop, main]
-    paths-ignore:
-      - '**.md'
-      - 'docs/**'
-  pull_request:
-    branches: [develop]
-    paths-ignore:
-      - '**.md'
-      - 'docs/**'
-  workflow_dispatch:
+on: [push, pull_request]
 
 jobs:
-  e2e-test:
-    name: E2E WebDriver Tests
-    runs-on: ubuntu-24.04
-
+  test:
+    runs-on: windows-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Install Linux dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            libwebkit2gtk-4.1-dev \
-            libayatana-appindicator3-dev \
-            librsvg2-dev \
-            patchelf \
-            libtesseract-dev \
-            libleptonica-dev \
-            clang \
-            libpipewire-0.3-dev \
-            libgbm-dev \
-            webkit2gtk-driver \
-            xvfb
-
-      - name: Setup Node.js
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 20
@@ -53,35 +22,23 @@ jobs:
         with:
           workspaces: "./app/src-tauri -> target"
 
-      - name: Install tauri-driver
-        run: cargo install tauri-driver --locked
-
-      - name: Install frontend dependencies
-        working-directory: ./app
-        run: npm install
-
-
-      - name: Install E2E test dependencies
-        working-directory: ./app/e2e
-        run: npm install
-
-      - name: Install Tesseract language data
-        run: |
-          sudo mkdir -p /usr/share/tessdata
-          sudo wget -O /usr/share/tessdata/eng.traineddata https://github.com/tesseract-ocr/tessdata_best/raw/main/eng.traineddata
-        
       - name: Prepare dummy Tesseract sidecars
         run: |
           mkdir -p app/src-tauri/binaries
-          touch app/src-tauri/binaries/tesseract-x86_64-unknown-linux-gnu
-          chmod +x app/src-tauri/binaries/tesseract-x86_64-unknown-linux-gnu
+          touch app/src-tauri/binaries/tesseract-x86_64-pc-windows-msvc.exe
+        shell: bash
 
-      - name: Build Tauri app (Debug)
+      - name: Install Dependencies
         working-directory: ./app
-        run: npm run tauri build -- --debug --no-bundle
+        run: |
+          npm install
+          npx playwright install chromium
 
-      - name: Run E2E tests with xvfb
-        working-directory: ./app/e2e
-        run: xvfb-run --auto-servernum npm test
+      - name: Run Playwright Tests
+        working-directory: ./app
+        run: npx playwright test
         env:
+          # Enable remote debugging for WebView2
+          WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS: "--remote-debugging-port=9222"
+          # CI flag usually set by GitHub, but explicit is good
           CI: true

@@ -37,6 +37,7 @@ fn capture_region(x: i32, y: i32, width: u32, height: u32) -> Result<String, Str
 }
 
 mod ocr;
+mod model_manager;
 
 #[tauri::command]
 fn perform_ocr(base64_image: &str, langs: Option<String>, engine: Option<String>) -> Result<String, String> {
@@ -111,11 +112,28 @@ fn greet(name: &str) -> String {
     format!("Hello, {}! You've been greeted from Rust!", name)
 }
 
+// OCR Model Management Commands
+#[tauri::command]
+fn list_ocr_models() -> Result<Vec<model_manager::ModelInfo>, String> {
+    model_manager::list_available_models()
+}
+
+#[tauri::command]
+fn download_ocr_model(lang: String) -> Result<(), String> {
+    model_manager::download_model(&lang)
+}
+
+#[tauri::command]
+fn delete_ocr_model(lang: String) -> Result<(), String> {
+    model_manager::delete_model(&lang)
+}
+
 mod tray;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_store::Builder::new().build())
         .plugin(tauri_plugin_process::init())
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_updater::Builder::new().build())
@@ -146,7 +164,10 @@ pub fn run() {
             capture_region,
             perform_ocr,
             scan_qr,
-            get_ocr_engines
+            get_ocr_engines,
+            list_ocr_models,
+            download_ocr_model,
+            delete_ocr_model
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

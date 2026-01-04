@@ -64,11 +64,27 @@
             "export_success": "紀錄已成功匯出！",
             "import_success": "紀錄已成功匯入！",
             "export_error": "匯出失敗",
-            "import_error": "匯入失敗"
+            "import_error": "匯入失敗",
+            "location": "儲存位置",
+            "default_location": "預設 (本機儲存)",
+            "change_location": "變更位置",
+            "reset_location": "重設為預設",
+            "location_changed": "儲存位置已變更！",
+            "migrating": "正在遷移資料..."
         },
         "ocr_engine": {
             "title": "OCR 引擎",
             "auto": "自動 (智慧選擇)"
+        },
+        "models": {
+            "title": "OCR 語言包管理",
+            "manage": "管理 OCR 語言包",
+            "search": "搜尋語言...",
+            "installed": "已安裝",
+            "available": "可下載語言",
+            "download": "下載",
+            "delete": "刪除",
+            "source": "來源: tessdata_fast (GitHub)"
         }
     },
     "overlay": {
