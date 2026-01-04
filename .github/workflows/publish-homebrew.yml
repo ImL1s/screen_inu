@@ -1,0 +1,20 @@
+name: Publish to Homebrew
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  homebrew:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update Homebrew Formula
+        uses: mislav/bump-homebrew-formula-action@v3
+        with:
+          # A PR will be sent to the "homebrew-screen-inu" repo to update the formula
+          formula-name: screen-inu
+          formula-path: Casks/screen-inu.rb
+          homebrew-tap: ImL1s/homebrew-screen-inu
+          download-url: https://github.com/ImL1s/screen_inu/releases/download/${{ github.event.release.tag_name }}/Screen.Inu_${{ github.event.release.tag_name }}_aarch64.dmg
+        env:
+          COMMITTER_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
