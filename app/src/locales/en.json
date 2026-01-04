@@ -73,8 +73,18 @@
             "migrating": "Migrating data..."
         },
         "ocr_engine": {
-            "title": "OCR ENGINE",
+            "title": "OCR Engine",
             "auto": "Auto (Smart Selection)"
+        },
+        "models": {
+            "title": "OCR Languages",
+            "manage": "Manage OCR Languages",
+            "search": "Search languages...",
+            "installed": "Installed",
+            "available": "Available to Download",
+            "download": "Download",
+            "delete": "Delete",
+            "source": "Source: tessdata_fast (GitHub)"
         }
     },
     "overlay": {

@@ -75,6 +75,16 @@
         "ocr_engine": {
             "title": "OCR 引擎",
             "auto": "自動 (智慧選擇)"
+        },
+        "models": {
+            "title": "OCR 語言包管理",
+            "manage": "管理 OCR 語言包",
+            "search": "搜尋語言...",
+            "installed": "已安裝",
+            "available": "可下載語言",
+            "download": "下載",
+            "delete": "刪除",
+            "source": "來源: tessdata_fast (GitHub)"
         }
     },
     "overlay": {

@@ -40,23 +40,42 @@ test.afterAll(async () => {
 
 // Helper: Open settings modal
 async function openSettings() {
-    // aria-label is set to t('settings.title') which is "SETTINGS" in English
-    // We try multiple approaches
-    const settingsButton = page.locator('button').filter({ has: page.locator('svg.lucide-settings') });
-    if (await settingsButton.count() > 0) {
-        await settingsButton.first().click();
-    } else {
-        // Fallback: look for button with Settings icon by structure
-        await page.locator('button:has(svg)').nth(-2).click();
+    console.log('  [Helper] Cleaning up existing modals (if any)');
+    // Press Escape multiple times until no dialogs are visible
+    for (let i = 0; i < 3; i++) {
+        const dialogCount = await page.locator('div[role="dialog"]').count();
+        if (dialogCount === 0) break;
+        console.log(`  [Helper] Closing modal ${i + 1}...`);
+        await page.keyboard.press('Escape');
+        await page.waitForTimeout(500);
     }
+
+    console.log('  [Helper] Finding Settings button');
+    const settingsButton = page.locator('button[aria-label*="settings" i]').first();
+
+    if (await settingsButton.isVisible()) {
+        console.log('  [Helper] Clicking Settings button');
+        await settingsButton.click();
+    } else {
+        console.log('  [Helper] Fallback: Clicking button by icon');
+        await page.locator('button:has(svg.lucide-settings)').first().click();
+    }
+
+    // Wait for modal to be visible
+    console.log('  [Helper] Waiting for settings title');
+    await expect(page.getByText(/settings|設定/i).first()).toBeVisible({ timeout: 5000 });
     await page.waitForTimeout(300);
 }
 
 // Helper: Close settings modal
 async function closeSettings() {
-    const closeButton = page.locator('[aria-label="Close settings"]');
+    console.log('  [Helper] Closing settings modal');
+    const closeButton = page.locator('div[role="dialog"] button[aria-label*="close" i], button:has(svg.lucide-x)').first();
     if (await closeButton.count() > 0) {
         await closeButton.click();
+        await page.waitForTimeout(300);
+    } else {
+        await page.keyboard.press('Escape');
         await page.waitForTimeout(300);
     }
 }
@@ -171,6 +190,39 @@ test.describe('Settings Modal', () => {
         expect(await clearButton.count()).toBeGreaterThanOrEqual(1);
 
         await closeSettings();
+    });
+
+    test('should open and interact with OCR Language Manager', async () => {
+        console.log('Step 1: Starting test');
+        await page.screenshot({ path: 'e2e-debug-1-start.png' });
+
+        console.log('Step 2: Opening settings');
+        await openSettings();
+        await page.waitForTimeout(500);
+        await page.screenshot({ path: 'e2e-debug-2-settings.png' });
+
+        console.log('Step 3: Clicking Manage button');
+        const manageButton = page.locator('button').filter({ hasText: /manage|語言包|管理/i });
+        await manageButton.click();
+        await page.waitForTimeout(1000);
+        await page.screenshot({ path: 'e2e-debug-3-manager.png' });
+
+        console.log('Step 4: Verifying search result');
+        const searchInput = page.locator('input[placeholder*="search" i], input[placeholder*="搜尋" i]');
+        await searchInput.fill('Arabic');
+        await page.waitForTimeout(1000);
+        await page.screenshot({ path: 'e2e-debug-4-search.png' });
+
+        await expect(page.getByText(/arabic/i)).toBeVisible();
+
+        console.log('Step 5: Closing Manager');
+        const closeIcon = page.locator('button:has(svg.lucide-x)').last();
+        await closeIcon.click();
+        await page.waitForTimeout(500);
+
+        console.log('Step 6: Final check');
+        await closeSettings();
+        console.log('Test complete!');
     });
 });
 
