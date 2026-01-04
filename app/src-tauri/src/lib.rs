@@ -323,4 +323,41 @@ mod tests {
             }
         }
     }
+
+    #[test]
+    fn test_batch_ocr() {
+        // Test batch OCR with multiple copies of the same image
+        let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+        path.push("tests/sample_ocr.png");
+
+        let mut file = std::fs::File::open(path).expect("Failed to open sample_ocr.png");
+        let mut buffer = Vec::new();
+        file.read_to_end(&mut buffer)
+            .expect("Failed to read image data");
+
+        let b64 = base64::engine::general_purpose::STANDARD.encode(&buffer);
+        let data_url = format!("data:image/png;base64,{}", b64);
+
+        // Create a batch of 3 images
+        let images = vec![data_url.clone(), data_url.clone(), data_url.clone()];
+
+        let results = perform_batch_ocr(images, Some("eng".to_string()), None);
+
+        // Should have 3 results
+        assert_eq!(results.len(), 3, "Batch OCR should return 3 results");
+
+        // Each result should have text (no errors)
+        for (i, result) in results.iter().enumerate() {
+            assert_eq!(result.index, i, "Result index should match");
+            assert!(
+                result.text.is_some(),
+                "Result {} should have text, got error: {:?}",
+                i,
+                result.error
+            );
+            assert!(result.error.is_none(), "Result {} should have no error", i);
+        }
+
+        println!("Batch OCR test passed with {} results", results.len());
+    }
 }

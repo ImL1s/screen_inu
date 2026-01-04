@@ -262,3 +262,56 @@ test.describe('Integration', () => {
         expect(await langSelect.count()).toBeGreaterThanOrEqual(1);
     });
 });
+
+// =========================================
+// BATCH PROCESSING TESTS
+// =========================================
+test.describe('Batch Processing', () => {
+    test('should display Batch Mode button in idle state', async () => {
+        // Ensure no modals are open
+        await page.keyboard.press('Escape');
+        await page.waitForTimeout(300);
+
+        // Look for Batch Mode button
+        const batchButton = page.locator('button').filter({ hasText: /batch|批次/i });
+        await expect(batchButton.first()).toBeVisible();
+    });
+
+    test('should open Batch Processor modal', async () => {
+        // Ensure no modals are open
+        await page.keyboard.press('Escape');
+        await page.waitForTimeout(300);
+
+        // Click Batch Mode button
+        const batchButton = page.locator('button').filter({ hasText: /batch|批次/i });
+        await batchButton.first().click();
+        await page.waitForTimeout(500);
+
+        // Verify modal is open with drop zone
+        const dropHint = page.getByText(/drop|拖放/i);
+        await expect(dropHint.first()).toBeVisible();
+
+        // Close the modal
+        await page.keyboard.press('Escape');
+        await page.waitForTimeout(300);
+    });
+
+    test('should have file input for batch processing', async () => {
+        // Ensure no modals are open
+        await page.keyboard.press('Escape');
+        await page.waitForTimeout(300);
+
+        // Click Batch Mode button
+        const batchButton = page.locator('button').filter({ hasText: /batch|批次/i });
+        await batchButton.first().click();
+        await page.waitForTimeout(500);
+
+        // Check for file input
+        const fileInput = page.locator('input[type="file"]');
+        expect(await fileInput.count()).toBeGreaterThanOrEqual(1);
+
+        // Close the modal
+        await page.keyboard.press('Escape');
+        await page.waitForTimeout(300);
+    });
+});
