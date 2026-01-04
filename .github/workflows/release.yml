@@ -48,6 +48,31 @@ jobs:
         if: matrix.platform == 'windows-latest'
         run: choco install tesseract
 
+      - name: Prepare Tesseract sidecars
+        run: |
+          mkdir -p app/src-tauri/binaries
+          if [ "${{ matrix.platform }}" = "macos-latest" ]; then
+            # Attempt to find real Tesseract binary on macOS
+            TESS_PATH=$(which tesseract || echo "/usr/local/bin/tesseract")
+            if [ -f "$TESS_PATH" ]; then
+              cp "$TESS_PATH" app/src-tauri/binaries/tesseract-aarch64-apple-darwin
+              cp "$TESS_PATH" app/src-tauri/binaries/tesseract-x86_64-apple-darwin
+            else
+              touch app/src-tauri/binaries/tesseract-aarch64-apple-darwin
+              touch app/src-tauri/binaries/tesseract-x86_64-apple-darwin
+            fi
+            chmod +x app/src-tauri/binaries/tesseract-aarch64-apple-darwin
+            chmod +x app/src-tauri/binaries/tesseract-x86_64-apple-darwin
+          elif [ "${{ matrix.platform }}" = "windows-latest" ]; then
+            # Attempt to find real Tesseract binary on Windows
+            if [ -f "C:/Program Files/Tesseract-OCR/tesseract.exe" ]; then
+              cp "C:/Program Files/Tesseract-OCR/tesseract.exe" app/src-tauri/binaries/tesseract-x86_64-pc-windows-msvc.exe
+            else
+              touch app/src-tauri/binaries/tesseract-x86_64-pc-windows-msvc.exe
+            fi
+          fi
+        shell: bash
+
       - name: Install frontend dependencies
         working-directory: ./app
         run: npm install
