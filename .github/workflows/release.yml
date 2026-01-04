@@ -52,22 +52,43 @@ jobs:
         run: |
           mkdir -p app/src-tauri/binaries
           if [ "${{ matrix.platform }}" = "macos-latest" ]; then
-            # Attempt to find real Tesseract binary on macOS
-            TESS_PATH=$(which tesseract || echo "/usr/local/bin/tesseract")
-            if [ -f "$TESS_PATH" ]; then
-              cp "$TESS_PATH" app/src-tauri/binaries/tesseract-aarch64-apple-darwin
-              cp "$TESS_PATH" app/src-tauri/binaries/tesseract-x86_64-apple-darwin
+            # Try multiple common paths for Tesseract on GitHub macOS runners
+            TESS_PATHS=("$(which tesseract)" "/opt/homebrew/bin/tesseract" "/usr/local/bin/tesseract")
+            FOUND_PATH=""
+            for p in "${TESS_PATHS[@]}"; do
+              if [ -n "$p" ] && [ -f "$p" ]; then
+                FOUND_PATH="$p"
+                break
+              fi
+            done
+            
+            if [ -n "$FOUND_PATH" ]; then
+              echo "Found Tesseract at $FOUND_PATH"
+              cp "$FOUND_PATH" app/src-tauri/binaries/tesseract-aarch64-apple-darwin
+              cp "$FOUND_PATH" app/src-tauri/binaries/tesseract-x86_64-apple-darwin
             else
-              touch app/src-tauri/binaries/tesseract-aarch64-apple-darwin
-              touch app/src-tauri/binaries/tesseract-x86_64-apple-darwin
+              echo "Tesseract not found, falling back to /bin/ls for sidecar placeholder (must be real Mach-O)"
+              cp /bin/ls app/src-tauri/binaries/tesseract-aarch64-apple-darwin
+              cp /bin/ls app/src-tauri/binaries/tesseract-x86_64-apple-darwin
             fi
             chmod +x app/src-tauri/binaries/tesseract-aarch64-apple-darwin
             chmod +x app/src-tauri/binaries/tesseract-x86_64-apple-darwin
           elif [ "${{ matrix.platform }}" = "windows-latest" ]; then
             # Attempt to find real Tesseract binary on Windows
-            if [ -f "C:/Program Files/Tesseract-OCR/tesseract.exe" ]; then
-              cp "C:/Program Files/Tesseract-OCR/tesseract.exe" app/src-tauri/binaries/tesseract-x86_64-pc-windows-msvc.exe
+            WINDOWS_TESS_PATHS=("C:/Program Files/Tesseract-OCR/tesseract.exe" "C:/Program Files (x86)/Tesseract-OCR/tesseract.exe")
+            FOUND_WIN_PATH=""
+            for p in "${WINDOWS_TESS_PATHS[@]}"; do
+              if [ -f "$p" ]; then
+                FOUND_WIN_PATH="$p"
+                break
+              fi
+            done
+            
+            if [ -n "$FOUND_WIN_PATH" ]; then
+              echo "Found Tesseract Windows at $FOUND_WIN_PATH"
+              cp "$FOUND_WIN_PATH" app/src-tauri/binaries/tesseract-x86_64-pc-windows-msvc.exe
             else
+              echo "Tesseract Windows not found, using empty placeholder (acceptable on Windows)"
               touch app/src-tauri/binaries/tesseract-x86_64-pc-windows-msvc.exe
             fi
           fi
