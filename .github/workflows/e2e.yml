@@ -17,6 +17,12 @@ jobs:
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
 
+      - name: Prepare dummy Tesseract sidecars
+        run: |
+          mkdir -p app/src-tauri/binaries
+          touch app/src-tauri/binaries/tesseract-x86_64-pc-windows-msvc.exe
+        shell: bash
+
       - name: Install Dependencies
         working-directory: ./app
         run: |
