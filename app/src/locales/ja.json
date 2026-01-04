@@ -55,7 +55,16 @@
         },
         "section": {
             "capture": "📸 キャプチャ",
-            "app": "⚙️ アプリ"
+            "app": "⚙️ アプリ",
+            "data": "💾 データ管理"
+        },
+        "data": {
+            "export": "履歴を書き出す (JSON)",
+            "import": "履歴を読み込む (JSON)",
+            "export_success": "履歴を正常に書き出しました！",
+            "import_success": "履歴を正常に読み込みました！",
+            "export_error": "書き出しに失敗しました",
+            "import_error": "読み込みに失敗しました"
         },
         "ocr_engine": {
             "title": "OCRエンジン",
