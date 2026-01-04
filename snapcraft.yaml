@@ -1,0 +1,35 @@
+name: screen-inu
+base: core22
+version: '0.2.3'
+summary: Modern screenshot OCR tool
+description: |
+  Screen Inu is a powerful, cross-platform screenshot OCR tool.
+  Capture any region of your screen and instantly extract text using Tesseract OCR.
+  Supports multiple languages, QR code scanning, and auto-copy to clipboard.
+
+grade: stable
+confinement: strict
+
+apps:
+  screen-inu:
+    command: screen-inu
+    extensions: [gnome]
+    plugs:
+      - home
+      - network
+      - desktop
+      - desktop-legacy
+      - x11
+      - wayland
+
+parts:
+  screen-inu:
+    plugin: dump
+    source: .
+    stage-packages:
+      - libwebkit2gtk-4.0-37
+      - libgtk-3-0
+      - libappindicator3-1
+      - librsvg2-2
+      - libtesseract4
+      - libleptonica6

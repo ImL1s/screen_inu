@@ -1,0 +1,25 @@
+app-id: com.iml1s.screeninu
+runtime: org.gnome.Platform
+runtime-version: '45'
+sdk: org.gnome.Sdk
+command: screen-inu
+finish-args:
+  - --share=ipc
+  - --socket=fallback-x11
+  - --socket=wayland
+  - --device=dri
+  - --share=network
+
+modules:
+  - name: screen-inu
+    buildsystem: simple
+    build-commands:
+      - install -D screen-inu /app/bin/screen-inu
+      - install -D icons/128x128.png /app/share/icons/hicolor/128x128/apps/com.iml1s.screeninu.png
+      - install -D screen-inu.desktop /app/share/applications/com.iml1s.screeninu.desktop
+    sources:
+      # NOTE: You must update this URL and SHA256 for each release
+      - type: archive
+        url: https://github.com/ImL1s/screen_inu/releases/download/v0.2.3/screen-inu_0.2.3_amd64.deb
+        sha256: REPLACE_WITH_DEB_SHA256
+        # Flatpak builds from the content of the deb (data.tar.xz)
