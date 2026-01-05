@@ -250,7 +250,7 @@ test.describe('Settings Modal', () => {
         await page.screenshot({ path: 'e2e-debug-2-settings.png' });
 
         console.log('Step 3: Clicking Manage button');
-        const manageButton = page.locator('button').filter({ hasText: /manage|語言包|管理/i });
+        const manageButton = page.getByRole('button', { name: /manage ocr languages|語言包管理|管理語言包/i });
         await manageButton.click();
         await page.waitForTimeout(1000);
         await page.screenshot({ path: 'e2e-debug-3-manager.png' });

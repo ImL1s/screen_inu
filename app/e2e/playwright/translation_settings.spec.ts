@@ -91,7 +91,7 @@ test.describe('Translation Settings', () => {
         await page.waitForTimeout(1500);
 
         // 3. Open History and Load the item
-        await page.getByRole('button', { name: /history/i }).click();
+        await page.getByRole('button', { name: /bone stash/i }).click();
         await page.waitForSelector('text=HELLO DOGE');
         await page.getByText('HELLO DOGE').click();
 
