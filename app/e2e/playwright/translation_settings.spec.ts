@@ -74,38 +74,44 @@ test.describe('Translation Settings', () => {
         });
 
         // 2. Inject mock OCR result into localStorage
-        await page.addInitScript(() => {
-            const mockHistory = [
-                {
-                    id: 'test-id-123',
-                    text: 'HELLO DOGE',
-                    timestamp: Date.now(),
-                    image: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg==',
-                    language: 'en'
-                }
-            ];
+        // Inject mock OCR result into localStorage
+        const mockHistory = [
+            {
+                id: '123',
+                text: 'HELLO DOGE',
+                timestamp: Date.now(),
+                lang: 'en'
+            }
+        ];
+        await page.addInitScript(mockHistory => {
             window.localStorage.setItem('ocr_history', JSON.stringify(mockHistory));
-        });
+        }, mockHistory);
 
         await page.goto('http://localhost:1420');
-        await page.waitForTimeout(1500);
 
-        // 3. Open History and Load the item
-        await page.getByRole('button', { name: /bone stash/i }).click();
-        // Wait for drawer to open physically
-        await expect(page.getByText('Bone Stash').first()).toBeVisible();
+        // 1. Open history
+        const historyBtn = page.getByRole('button', { name: /bone/i }).first(); // Bone icon button
+        await historyBtn.click();
 
-        const item = page.getByText('HELLO DOGE');
-        await expect(item).toBeVisible();
-        await item.click();
+        // 2. Select the item
+        const historyItem = page.getByText('HELLO DOGE');
+        await expect(historyItem).toBeVisible({ timeout: 10000 });
+        await historyItem.click();
+
+        // 3. Mock translation response
+        await page.route('**/translate', async route => {
+            const json = { translatedText: 'HELLO DOGE TRANSLATED' };
+            await route.fulfill({ json });
+        });
 
         // 4. Click Translate
-        // Wait for the main result area to show the text
-        await expect(page.locator('div.flex-1.p-4', { hasText: 'HELLO DOGE' })).toBeVisible();
         const translateBtn = page.getByRole('button', { name: /translate/i }).first();
         await translateBtn.click();
 
+        // Wait for the main result area to show the text
+        await expect(page.locator('#result-display')).toContainText('HELLO DOGE TRANSLATED', { timeout: 15000 });
+
         // 5. Verify Result
-        await expect(page.getByText('MOCK_TRANSLATION_RESULT')).toBeVisible({ timeout: 15000 });
+        await expect(page.getByText('HELLO DOGE TRANSLATED')).toBeVisible({ timeout: 15000 });
     });
 });

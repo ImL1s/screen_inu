@@ -141,10 +141,18 @@ export const TranslationModelManager = ({ isOpen, onClose }: TranslationModelMan
                 >
                     {/* Header */}
                     <div className="bg-[#0a0a0a] text-white p-4 flex justify-between items-center">
-                        <h2 id="model-manager-title" className="text-lg font-black uppercase tracking-widest flex items-center gap-2">
-                            <Languages size={20} />
-                            {t('settings.translation.models_title') || 'Translation Models'}
-                        </h2>
+                        <div className="flex flex-col">
+                            <h2 id="model-manager-title" className="text-lg font-black uppercase tracking-widest flex items-center gap-2">
+                                <Languages size={20} />
+                                {t('settings.translation.models_title') || 'Translation Models'}
+                            </h2>
+                            {downloadingModel && (
+                                <span className="text-xs text-[#00ff88] animate-pulse flex items-center gap-1">
+                                    <Loader2 size={10} className="animate-spin" />
+                                    {t('status.downloading_model') || 'Downloading translation model...'}
+                                </span>
+                            )}
+                        </div>
                         <button
                             onClick={onClose}
                             className="hover:text-[#00ff88] transition-colors"

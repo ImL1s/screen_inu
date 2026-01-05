@@ -558,7 +558,7 @@ function App() {
                   </div>
 
                   {/* Text Content */}
-                  <div className="flex-1 overflow-y-auto p-4 custom-scrollbar bg-white font-mono text-xs leading-loose whitespace-pre-wrap selection:bg-[#ff6b35] selection:text-white">
+                  <div id="result-display" className="flex-1 overflow-y-auto p-4 custom-scrollbar bg-white font-mono text-xs leading-loose whitespace-pre-wrap selection:bg-[#ff6b35] selection:text-white">
                     {ocrResult === "__EMPTY__" ? (
                       <span className="opacity-50 italic">{t('status.empty')}</span>
                     ) : ocrResult.startsWith("Error:") ? (
