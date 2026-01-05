@@ -81,7 +81,7 @@ Screen Inu leverages the power of **Tauri 2.0** for a lightweight, secure, and p
 ## 🛠️ Getting Started
 
 ### Prerequisites
-*   **Node.js** (v18+)
+*   **Node.js** (v22+)
 *   **Rust** (latest stable)
 *   *(Optional)* **Tesseract OCR**: Only needed if you want to use system-installed Tesseract on Linux/macOS. 
     *   **Windows**: Bundled automatically! No install needed.
@@ -93,6 +93,20 @@ Screen Inu leverages the power of **Tauri 2.0** for a lightweight, secure, and p
 *   **macOS**: `brew install tesseract tesseract-lang`
 *   **Linux**: `sudo apt install tesseract-ocr tesseract-ocr-chi-tra tesseract-ocr-jpn`
 *   **Windows**: Not required (Bundled).
+
+> **Note (Linux)**: The `build.rs` script automatically copies your system's `tesseract` binary to the required location during compilation.
+
+</details>
+
+<details>
+<summary><strong>Linux Build Dependencies (Ubuntu/Debian)</strong></summary>
+
+```bash
+sudo apt update && sudo apt install -y \
+    build-essential libwebkit2gtk-4.1-dev libayatana-appindicator3-dev \
+    librsvg2-dev libxdo-dev libssl-dev libpipewire-0.3-dev libgbm-dev \
+    clang curl wget file tesseract-ocr tesseract-ocr-chi-tra tesseract-ocr-jpn
+```
 
 </details>
 

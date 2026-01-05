@@ -1,0 +1,40 @@
+# Screen Inu - Root .gitignore
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE / Editor
+.idea/
+*.swp
+*.swo
+*~
+
+# Debug and CI logs (local debugging artifacts)
+*.log
+e2e_*.txt
+ci_*.txt
+macos_*.txt
+build_errors.txt
+
+# Temporary JSON files (CI/debug)
+all_runs.json
+jobs_*.json
+run_*.json
+run_list.json
+steps_e2e.json
+current_runs.json
+e2e_jobs.json
+e2e_latest_run.json
+latest_run_id.txt
+
+# Test artifacts
+test_ocr.png
+
+# Binaries (should not be in repo root)
+*.exe

@@ -40,12 +40,17 @@ Please be respectful and constructive in all interactions. We welcome contributo
 
 ### Prerequisites
 
-- **Node.js** v18 or higher
+- **Node.js** v22 or higher
 - **Rust** (latest stable via [rustup](https://rustup.rs/))
 - **Platform-specific dependencies**:
   - **Windows**: No additional setup required
   - **macOS**: `brew install tesseract tesseract-lang` (optional)
-  - **Linux**: `sudo apt install libwebkit2gtk-4.1-dev libayatana-appindicator3-dev librsvg2-dev`
+  - **Linux**: 
+    ```bash
+    sudo apt install -y build-essential libwebkit2gtk-4.1-dev libayatana-appindicator3-dev \
+        librsvg2-dev libxdo-dev libssl-dev libpipewire-0.3-dev libgbm-dev clang \
+        tesseract-ocr tesseract-ocr-chi-tra tesseract-ocr-jpn
+    ```
 
 ### Installation
 
