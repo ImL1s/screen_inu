@@ -4,11 +4,6 @@ const SETTINGS_FILE = 'settings.json';
 
 export interface AppSettings {
     dataDirectory: string | null;  // null = use localStorage (default)
-<<<<<<< HEAD
-}
-
-let storeInstance: Store | null = null;
-=======
     translationEngine: 'online' | 'offline'; // default: 'online'
 }
 
@@ -17,21 +12,16 @@ const DEFAULT_SETTINGS: AppSettings = {
     dataDirectory: null,
     translationEngine: 'online'
 };
->>>>>>> develop
 
 /**
  * Get or create the store instance
  */
 async function getStore(): Promise<Store> {
     if (!storeInstance) {
-<<<<<<< HEAD
-        storeInstance = await load(SETTINGS_FILE, {
-            autoSave: true,
-            defaults: { dataDirectory: null }
+        storeInstance = await load(SETTINGS_FILE, { 
+            autoSave: true, 
+            defaults: DEFAULT_SETTINGS as unknown as { [key: string]: unknown }
         });
-=======
-        storeInstance = await load(SETTINGS_FILE, { autoSave: true, defaults: DEFAULT_SETTINGS });
->>>>>>> develop
     }
     return storeInstance;
 }
@@ -43,14 +33,6 @@ export async function getSettings(): Promise<AppSettings> {
     try {
         const store = await getStore();
         const dataDirectory = await store.get<string | null>('dataDirectory');
-<<<<<<< HEAD
-        return {
-            dataDirectory: dataDirectory ?? null,
-        };
-    } catch (error) {
-        console.error('Failed to load settings:', error);
-        return { dataDirectory: null };
-=======
         const translationEngine = await store.get<'online' | 'offline'>('translationEngine');
         return {
             dataDirectory: dataDirectory ?? null,
@@ -59,7 +41,6 @@ export async function getSettings(): Promise<AppSettings> {
     } catch (error) {
         console.error('Failed to load settings:', error);
         return { dataDirectory: null, translationEngine: 'online' };
->>>>>>> develop
     }
 }
 
@@ -79,8 +60,6 @@ export async function setDataDirectory(path: string | null): Promise<void> {
 }
 
 /**
-<<<<<<< HEAD
-=======
  * Set the translation engine preference
  * @param engine - 'online' or 'offline'
  */
@@ -96,7 +75,6 @@ export async function setTranslationEngine(engine: 'online' | 'offline'): Promis
 }
 
 /**
->>>>>>> develop
  * Get the current data directory path
  * @returns The custom directory path if set, or null for localStorage
  */

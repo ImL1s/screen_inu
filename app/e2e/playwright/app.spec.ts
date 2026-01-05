@@ -6,16 +6,10 @@ let context: BrowserContext;
 let page: Page;
 
 test.beforeAll(async () => {
-<<<<<<< HEAD
-    console.log('Connecting to Tauri app via CDP...');
-    // Retry connection logic (essential for CI/CD reliability)
-    // CI machines can be slow to compile/launch the app
-=======
     // Increase timeout for the hook to 5 minutes to accommodate slow CI builds
     test.setTimeout(300000);
     console.log('Connecting to Tauri app via CDP...');
     // Retry connection logic (essential for CI/CD reliability)
->>>>>>> develop
     for (let i = 0; i < 300; i++) {
         try {
             browser = await chromium.connectOverCDP('http://127.0.0.1:9222');
@@ -33,11 +27,6 @@ test.beforeAll(async () => {
 
     context = browser.contexts()[0];
     const pages = context.pages();
-<<<<<<< HEAD
-    console.log(`Found ${pages.length} pages`);
-
-    page = pages[0];
-=======
     // Filter for the main window
     const appPages = pages.filter(p => {
         const url = p.url();
@@ -75,15 +64,12 @@ test.beforeAll(async () => {
     }
 
     console.log(`  [Setup] Selected page: "${await page.title()}" (${page.url()})`);
->>>>>>> develop
 
     if (!page) {
         page = await context.waitForEvent('page');
     }
 });
 
-<<<<<<< HEAD
-=======
 test.beforeEach(async () => {
     // Escape multiple times to close any lingering modals
     for (let i = 0; i < 2; i++) {
@@ -96,34 +82,12 @@ test.beforeEach(async () => {
     }
 });
 
->>>>>>> develop
 test.afterAll(async () => {
     await browser?.close();
 });
 
 // Helper: Open settings modal
 async function openSettings() {
-<<<<<<< HEAD
-    const settingsTitle = page.getByText(/settings|設定/i).first();
-    // If already open, don't click again
-    if (await settingsTitle.isVisible()) {
-        return;
-    }
-
-    // Try multiple approaches to find settings button
-    const settingsButton = page.locator('button').filter({ has: page.locator('svg.lucide-settings') });
-    if (await settingsButton.count() > 0) {
-        // force: true helps if a backdrop is still in the process of fading out
-        await settingsButton.first().click({ force: true });
-    } else {
-        // Fallback: look for button with Settings icon by structure
-        await page.locator('button:has(svg)').nth(-2).click({ force: true });
-    }
-
-    // Wait for modal to appear
-    await expect(settingsTitle).toBeVisible({ timeout: 5000 });
-    await page.waitForTimeout(500); // Wait for animation
-=======
     console.log('  [Helper] Cleaning up existing modals (if any)');
     // Press Escape multiple times until no dialogs are visible
     for (let i = 0; i < 3; i++) {
@@ -149,24 +113,10 @@ async function openSettings() {
     console.log('  [Helper] Waiting for settings title');
     await expect(page.getByText(/settings|設定/i).first()).toBeVisible({ timeout: 5000 });
     await page.waitForTimeout(300);
->>>>>>> develop
 }
 
 // Helper: Close settings modal
 async function closeSettings() {
-<<<<<<< HEAD
-    const closeButton = page.locator('[aria-label="Close settings"]');
-    if (await closeButton.count() > 0) {
-        await closeButton.click({ force: true });
-        // Wait for modal to be gone
-        const settingsTitle = page.getByText(/settings|設定/i).first();
-        await expect(settingsTitle).not.toBeVisible({ timeout: 5000 });
-        await page.waitForTimeout(500); // Wait for animation
-    } else {
-        // Fallback: use Escape key
-        await page.keyboard.press('Escape');
-        await page.waitForTimeout(500);
-=======
     console.log('  [Helper] Closing settings modal');
     const closeButton = page.locator('div[role="dialog"] button[aria-label*="close" i], button:has(svg.lucide-x)').first();
     if (await closeButton.count() > 0) {
@@ -175,7 +125,6 @@ async function closeSettings() {
     } else {
         await page.keyboard.press('Escape');
         await page.waitForTimeout(300);
->>>>>>> develop
     }
 }
 
@@ -232,16 +181,6 @@ test.describe('OCR Feature', () => {
 // SETTINGS MODAL TESTS  
 // =========================================
 test.describe('Settings Modal', () => {
-<<<<<<< HEAD
-    test.beforeEach(async () => {
-        // Ensure clean state (no modals open) before each test
-        // This prevents "intercepts pointer events" errors if a previous test failed to close the modal
-        await page.keyboard.press('Escape');
-        await page.waitForTimeout(300);
-    });
-
-=======
->>>>>>> develop
     test('should open and close settings modal', async () => {
         // Open settings
         await openSettings();
@@ -300,8 +239,6 @@ test.describe('Settings Modal', () => {
 
         await closeSettings();
     });
-<<<<<<< HEAD
-=======
 
     test('should open and interact with OCR Language Manager', async () => {
         console.log('Step 1: Starting test');
@@ -335,7 +272,6 @@ test.describe('Settings Modal', () => {
         await closeSettings();
         console.log('Test complete!');
     });
->>>>>>> develop
 });
 
 // =========================================
@@ -372,8 +308,6 @@ test.describe('Integration', () => {
         expect(await langSelect.count()).toBeGreaterThanOrEqual(1);
     });
 });
-<<<<<<< HEAD
-=======
 
 // =========================================
 // BATCH PROCESSING TESTS
@@ -431,4 +365,3 @@ test.describe('Batch Processing', () => {
         await page.waitForTimeout(300);
     });
 });
->>>>>>> develop

@@ -695,15 +695,12 @@ function App() {
               onClose={() => setShowHistory(false)}
               historyItems={historyItems}
               onClearHistory={async () => { await clearHistoryAsync(); setHistoryItems([]); }}
-<<<<<<< HEAD
-=======
               onSelect={(item) => {
                 setOcrResult(item.text);
                 setTranslatedText("");
                 setShowHistory(false);
                 soundManager.playSuccess();
               }}
->>>>>>> develop
               onCopyItem={() => { setIsCopied(true); setTimeout(() => setIsCopied(false), 1000); }}
             />
           )}
