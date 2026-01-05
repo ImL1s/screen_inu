@@ -92,8 +92,12 @@ test.describe('Translation Settings', () => {
 
         // 3. Open History and Load the item
         await page.getByRole('button', { name: /bone stash/i }).click();
-        await page.waitForSelector('text=HELLO DOGE');
-        await page.getByText('HELLO DOGE').click();
+        // Wait for drawer to open physically
+        await expect(page.getByText('Bone Stash').first()).toBeVisible();
+
+        const item = page.getByText('HELLO DOGE');
+        await expect(item).toBeVisible();
+        await item.click();
 
         // 4. Click Translate
         // Wait for the main result area to show the text
