@@ -182,13 +182,14 @@ pub fn list_translation_models() -> Result<Vec<TranslationModelInfo>, String> {
     let models_dir = get_models_dir()?;
     
     // Available models (can be downloaded)
+    // Available models (can be downloaded)
     let available_models = vec![
-        ("opus-mt-en-zh", "en", "zh", "https://huggingface.co/Helsinki-NLP/opus-mt-en-zh/resolve/main/"),
-        ("opus-mt-zh-en", "zh", "en", "https://huggingface.co/Helsinki-NLP/opus-mt-zh-en/resolve/main/"),
-        ("opus-mt-en-ja", "en", "ja", "https://huggingface.co/Helsinki-NLP/opus-mt-en-ja/resolve/main/"),
-        ("opus-mt-ja-en", "ja", "en", "https://huggingface.co/Helsinki-NLP/opus-mt-ja-en/resolve/main/"),
-        ("opus-mt-en-ko", "en", "ko", "https://huggingface.co/Helsinki-NLP/opus-mt-en-ko/resolve/main/"),
-        ("opus-mt-ko-en", "ko", "en", "https://huggingface.co/Helsinki-NLP/opus-mt-ko-en/resolve/main/"),
+        ("opus-mt-en-zh", "en", "zh", "https://huggingface.co/Xenova/opus-mt-en-zh/resolve/main"),
+        ("opus-mt-zh-en", "zh", "en", "https://huggingface.co/Xenova/opus-mt-zh-en/resolve/main"),
+        ("opus-mt-en-ja", "en", "ja", "https://huggingface.co/Xenova/opus-mt-en-ja/resolve/main"),
+        ("opus-mt-ja-en", "ja", "en", "https://huggingface.co/Xenova/opus-mt-ja-en/resolve/main"),
+        ("opus-mt-en-ko", "en", "ko", "https://huggingface.co/Xenova/opus-mt-en-ko/resolve/main"),
+        ("opus-mt-ko-en", "ko", "en", "https://huggingface.co/Xenova/opus-mt-ko-en/resolve/main"),
     ];
     
     let mut models = Vec::new();
@@ -260,9 +261,71 @@ pub fn delete_translation_model(model_name: String) -> Result<(), String> {
     Ok(())
 }
 
+/// Download a translation model
+#[tauri::command]
+pub async fn download_translation_model(model_name: String) -> Result<(), String> {
+    let models_dir = get_models_dir()?;
+    let model_path = models_dir.join(&model_name);
+    
+    if model_path.exists() {
+        return Ok(());
+    }
+    
+    std::fs::create_dir_all(&model_path)
+        .map_err(|e| format!("Failed to create directory: {}", e))?;
+    
+    let parts: Vec<&str> = model_name.split('-').collect();
+    if parts.len() < 4 {
+        return Err("Invalid model name".to_string());
+    }
+    let src = parts[2];
+    let tgt = parts[3];
+    
+    // Xenova models base URL
+    let base_url = format!("https://huggingface.co/Xenova/opus-mt-{}-{}/resolve/main", src, tgt);
+    
+    // Download tokenizer.json
+    download_file(&format!("{}/tokenizer.json", base_url), &model_path.join("tokenizer.json")).await?;
+    
+    // Download model.onnx (try standard first, then quantized)
+    let model_res = download_file(&format!("{}/onnx/model.onnx", base_url), &model_path.join("model.onnx")).await;
+    
+    if model_res.is_err() {
+        // Try quantized
+         download_file(&format!("{}/onnx/model_quantized.onnx", base_url), &model_path.join("model.onnx")).await?;
+    }
+    
+    Ok(())
+}
+
 // ========================================
 // Helper Functions
 // ========================================
+
+async fn download_file(url: &str, path: &PathBuf) -> Result<(), String> {
+    use std::io::Write;
+    
+    let response = reqwest::get(url)
+        .await
+        .map_err(|e| format!("Failed to request {}: {}", url, e))?;
+        
+    if !response.status().is_success() {
+        return Err(format!("Failed to download {}: Status {}", url, response.status()));
+    }
+    
+    let content = response.bytes()
+        .await
+        .map_err(|e| format!("Failed to get bytes {}: {}", url, e))?;
+        
+    let mut file = std::fs::File::create(path)
+        .map_err(|e| format!("Failed to create file {:?}: {}", path, e))?;
+        
+    file.write_all(&content)
+        .map_err(|e| format!("Failed to write file {:?}: {}", path, e))?;
+        
+    Ok(())
+}
+
 
 /// Calculate total size of a directory
 fn calculate_dir_size(path: &PathBuf) -> Result<u64, std::io::Error> {

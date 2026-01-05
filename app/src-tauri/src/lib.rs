@@ -307,6 +307,7 @@ pub fn run() {
             translator::translate_offline,
             translator::list_translation_models,
             translator::get_translation_model_status,
+            translator::download_translation_model,
             translator::delete_translation_model
         ])
         .run(tauri::generate_context!())

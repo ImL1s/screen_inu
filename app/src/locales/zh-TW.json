@@ -16,7 +16,9 @@
         "error": "錯誤",
         "copied": "已複製！",
         "speak": "朗讀",
-        "stop_speak": "停止朗讀"
+        "stop_speak": "停止朗讀",
+        "translate": "翻譯",
+        "translated": "已翻譯"
     },
     "history": {
         "title": "骨頭倉庫",
@@ -89,13 +91,23 @@
             "delete": "刪除",
             "source": "來源: tessdata_fast (GitHub)"
         },
+        "translate": {
+            "title": "啟用翻譯",
+            "on": "顯示翻譯按鈕",
+            "off": "隱藏按鈕",
+            "target_lang": "目標語言",
+            "auto": "自動翻譯",
+            "auto_on": "OCR 後自動翻譯",
+            "auto_off": "手動翻譯"
+        },
         "translation": {
             "title": "翻譯引擎",
             "section": "🌐 翻譯",
             "online": "線上 (LibreTranslate)",
             "offline": "離線 (本地 AI)",
             "engine": "引擎",
-            "models": "管理翻譯模型",
+            "models": "管理模型",
+            "models_title": "翻譯模型管理",
             "model_size": "模型大小",
             "download": "下載",
             "delete": "刪除",

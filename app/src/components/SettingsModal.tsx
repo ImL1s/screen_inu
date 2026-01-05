@@ -7,6 +7,8 @@ import { message, open } from "@tauri-apps/plugin-dialog";
 import { getDataDirectory, setDataDirectory } from "../utils/settings";
 import { FolderEdit, RotateCcw } from "lucide-react";
 import { ModelManager } from "./ModelManager";
+import { TranslationModelManager } from "./TranslationModelManager";
+import { Database } from "lucide-react";
 
 // Detect Windows platform (Direct Snip not supported due to WebView2 transparency bug)
 const isWindows = typeof navigator !== 'undefined' && navigator.userAgent.includes('Windows');
@@ -36,6 +38,8 @@ interface SettingsModalProps {
     targetLang: string;
     setTargetLang: (lang: string) => void;
     targetLanguages: { code: string; name: string; flag: string }[];
+    translationEngine: 'online' | 'offline';
+    setTranslationEngine: (engine: 'online' | 'offline') => void;
 }
 
 export const SettingsModal = ({
@@ -61,7 +65,9 @@ export const SettingsModal = ({
     setAutoTranslate,
     targetLang,
     setTargetLang,
-    targetLanguages
+    targetLanguages,
+    translationEngine,
+    setTranslationEngine
 }: SettingsModalProps) => {
     const { t, i18n } = useTranslation();
     const [showLangMenu, setShowLangMenu] = useState(false);
@@ -70,6 +76,7 @@ export const SettingsModal = ({
     const [shortcutError, setShortcutError] = useState<string | null>(null);
     const [dataDirectory, setDataDirectoryState] = useState<string | null>(null);
     const [showModelManager, setShowModelManager] = useState(false);
+    const [showTranslationModelManager, setShowTranslationModelManager] = useState(false);
 
     // Load data directory on mount
     useEffect(() => {
@@ -430,6 +437,43 @@ export const SettingsModal = ({
                             </div>
                         )}
 
+                        {/* Translation Engine & Models */}
+                        {translateEnabled && (
+                            <div className="space-y-4 pt-2 border-t border-[#0a0a0a]/10 mt-2">
+                                <div>
+                                    <h3 className="font-bold text-sm mb-2">{t('settings.translation.title') || 'Translation Engine'}</h3>
+                                    <div className="flex gap-2">
+                                        <button
+                                            onClick={() => setTranslationEngine('online')}
+                                            className={`flex-1 py-1 px-3 border-2 border-[#0a0a0a] font-bold text-xs transition-all ${translationEngine === 'online'
+                                                ? 'bg-[#00ff88] shadow-[2px_2px_0px_#0a0a0a] -translate-y-0.5'
+                                                : 'bg-white hover:bg-gray-50'
+                                                }`}
+                                        >
+                                            {t('settings.translation.online') || 'Online'}
+                                        </button>
+                                        <button
+                                            onClick={() => setTranslationEngine('offline')}
+                                            className={`flex-1 py-1 px-3 border-2 border-[#0a0a0a] font-bold text-xs transition-all ${translationEngine === 'offline'
+                                                ? 'bg-[#00ff88] shadow-[2px_2px_0px_#0a0a0a] -translate-y-0.5'
+                                                : 'bg-white hover:bg-gray-50'
+                                                }`}
+                                        >
+                                            {t('settings.translation.offline') || 'Offline'}
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <button
+                                    onClick={() => setShowTranslationModelManager(true)}
+                                    className="w-full py-2 border-2 border-[#0a0a0a] bg-white hover:bg-[#00ff88] text-[#0a0a0a] font-bold text-sm transition-all hover:shadow-[2px_2px_0px_#0a0a0a] hover:-translate-y-0.5 flex items-center justify-center gap-2"
+                                >
+                                    <Database size={16} />
+                                    {t('settings.translation.models') || 'Manage Models'}
+                                </button>
+                            </div>
+                        )}
+
                         {/* Section: Behavior */}
                         <div className="text-[10px] font-black uppercase tracking-widest text-[#0a0a0a]/50 border-b border-[#0a0a0a]/10 pb-1 pt-2">{t('settings.section.app')}</div>
 
@@ -605,6 +649,7 @@ export const SettingsModal = ({
 
             {/* Model Manager Modal */}
             <ModelManager isOpen={showModelManager} onClose={() => setShowModelManager(false)} />
+            <TranslationModelManager isOpen={showTranslationModelManager} onClose={() => setShowTranslationModelManager(false)} />
         </>
     );
 };

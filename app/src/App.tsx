@@ -29,6 +29,7 @@ import { notifyOcrComplete } from "./utils/notification";
 import { addToHistoryAsync, getHistoryAsync, clearHistoryAsync, HistoryItem } from "./utils/history";
 import { soundManager } from "./utils/SoundManager";
 import { translateText, COMMON_TARGET_LANGUAGES } from "./utils/translate";
+import { getSettings, setTranslationEngine as setTranslationEnginePref } from "./utils/settings";
 import "./App.css";
 
 function App() {
@@ -66,6 +67,8 @@ function App() {
   const [translateEnabled, setTranslateEnabled] = useState(true);
   const [autoTranslate, setAutoTranslate] = useState(false);
   const [targetLang, setTargetLang] = useState('zh'); // Default to Chinese
+  const [translationEngine, setTranslationEngine] = useState<'online' | 'offline'>('online');
+
 
   // TTS (Text-to-Speech) state
   const [isSpeaking, setIsSpeaking] = useState(false);
@@ -107,6 +110,11 @@ function App() {
       setCustomShortcut(savedShortcut);
       customShortcutRef.current = savedShortcut;
     }
+
+    // Load Translation Engine preference
+    getSettings().then(settings => {
+      setTranslationEngine(settings.translationEngine);
+    });
 
     // Fetch available OCR engines from backend
     invoke<string[]>("get_ocr_engines").then(engines => {
@@ -237,6 +245,7 @@ function App() {
       const result = await translateText({
         text: ocrResult,
         targetLang: targetLang,
+        offlineMode: translationEngine === 'offline'
       });
       setTranslatedText(result.translatedText);
       soundManager.playSuccess();
@@ -669,6 +678,11 @@ function App() {
               targetLang={targetLang}
               setTargetLang={setTargetLang}
               targetLanguages={COMMON_TARGET_LANGUAGES}
+              translationEngine={translationEngine}
+              setTranslationEngine={async (engine) => {
+                setTranslationEngine(engine);
+                await setTranslationEnginePref(engine);
+              }}
             />
           )}
         </AnimatePresence>

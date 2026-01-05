@@ -16,7 +16,9 @@
         "error": "Error",
         "copied": "COPIED!",
         "speak": "Speak",
-        "stop_speak": "Stop Speaking"
+        "stop_speak": "Stop Speaking",
+        "translate": "Translate",
+        "translated": "Translated"
     },
     "history": {
         "title": "BONE STASH",
@@ -89,13 +91,23 @@
             "delete": "Delete",
             "source": "Source: tessdata_fast (GitHub)"
         },
+        "translate": {
+            "title": "Enable Translation",
+            "on": "Show translate button",
+            "off": "Hidden",
+            "target_lang": "Target Language",
+            "auto": "Auto-Translate",
+            "auto_on": "Translate after OCR",
+            "auto_off": "Manual"
+        },
         "translation": {
             "title": "Translation Engine",
             "section": "🌐 TRANSLATION",
             "online": "Online (LibreTranslate)",
             "offline": "Offline (Local AI)",
             "engine": "Engine",
-            "models": "Manage Translation Models",
+            "models": "Manage Models",
+            "models_title": "Translation Models",
             "model_size": "Model Size",
             "download": "Download",
             "delete": "Delete",
