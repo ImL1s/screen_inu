@@ -115,6 +115,13 @@ test.describe('OCR Feature', () => {
 // SETTINGS MODAL TESTS  
 // =========================================
 test.describe('Settings Modal', () => {
+    test.beforeEach(async () => {
+        // Ensure clean state (no modals open) before each test
+        // This prevents "intercepts pointer events" errors if a previous test failed to close the modal
+        await page.keyboard.press('Escape');
+        await page.waitForTimeout(300);
+    });
+
     test('should open and close settings modal', async () => {
         // Open settings
         await openSettings();
