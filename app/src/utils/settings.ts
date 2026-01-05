@@ -7,8 +7,11 @@ export interface AppSettings {
     translationEngine: 'online' | 'offline'; // default: 'online'
 }
 
+// Type-safe defaults for the store
+type StoreDefaults = Record<keyof AppSettings, unknown>;
+
 let storeInstance: Store | null = null;
-const DEFAULT_SETTINGS: AppSettings = {
+const DEFAULT_SETTINGS: StoreDefaults = {
     dataDirectory: null,
     translationEngine: 'online'
 };
@@ -20,7 +23,7 @@ async function getStore(): Promise<Store> {
     if (!storeInstance) {
         storeInstance = await load(SETTINGS_FILE, { 
             autoSave: true, 
-            defaults: DEFAULT_SETTINGS as unknown as { [key: string]: unknown }
+            defaults: DEFAULT_SETTINGS
         });
     }
     return storeInstance;
