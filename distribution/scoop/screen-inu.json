@@ -1,0 +1,32 @@
+{
+    "version": "0.2.3",
+    "description": "Modern screenshot OCR tool",
+    "homepage": "https://github.com/ImL1s/screen_inu",
+    "license": "MIT",
+    "architecture": {
+        "64bit": {
+            "url": "https://github.com/ImL1s/screen_inu/releases/download/v0.2.3/Screen.Inu_0.2.3_x64-setup.exe#/dl.7z",
+            "hash": "REPLACE_WITH_SHA256"
+        }
+    },
+    "installer": {
+        "script": [
+            "Expand-7ZipArchive \"$dir\\dl.7z\" \"$dir\"",
+            "Remove-Item \"$dir\\dl.7z\" -Force"
+        ]
+    },
+    "shortcuts": [
+        [
+            "Screen Inu.exe",
+            "Screen Inu"
+        ]
+    ],
+    "checkver": "github",
+    "autoupdate": {
+        "architecture": {
+            "64bit": {
+                "url": "https://github.com/ImL1s/screen_inu/releases/download/v$version/Screen.Inu_$version_x64-setup.exe#/dl.7z"
+            }
+        }
+    }
+}

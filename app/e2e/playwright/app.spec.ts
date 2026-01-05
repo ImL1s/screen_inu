@@ -6,9 +6,16 @@ let context: BrowserContext;
 let page: Page;
 
 test.beforeAll(async () => {
+<<<<<<< HEAD
     console.log('Connecting to Tauri app via CDP...');
     // Retry connection logic (essential for CI/CD reliability)
     // CI machines can be slow to compile/launch the app
+=======
+    // Increase timeout for the hook to 5 minutes to accommodate slow CI builds
+    test.setTimeout(300000);
+    console.log('Connecting to Tauri app via CDP...');
+    // Retry connection logic (essential for CI/CD reliability)
+>>>>>>> develop
     for (let i = 0; i < 300; i++) {
         try {
             browser = await chromium.connectOverCDP('http://127.0.0.1:9222');
@@ -26,21 +33,77 @@ test.beforeAll(async () => {
 
     context = browser.contexts()[0];
     const pages = context.pages();
+<<<<<<< HEAD
     console.log(`Found ${pages.length} pages`);
 
     page = pages[0];
+=======
+    // Filter for the main window
+    const appPages = pages.filter(p => {
+        const url = p.url();
+        // const title = p.title().catch(() => ''); // Handle promise - not needed for filter, will be checked async
+        return url.includes('localhost') ||
+            url.includes('tauri://') ||
+            url.includes('127.0.0.1') ||
+            url.includes('index.html');
+    });
+
+    // Fallback: Check titles async if no URL match
+    if (appPages.length === 0) {
+        console.log('  [Setup] No URL match. Checking titles...');
+        for (const p of pages) {
+            const title = await p.title().catch(() => 'Error');
+            console.log(`    - Checking Title: "${title}" URL: ${p.url()}`);
+            if (title.match(/Screen\s*Inu/i)) { // Case insensitive match
+                console.log('  [Setup] Found app by title!');
+                appPages.push(p);
+            }
+        }
+    }
+
+    if (appPages.length > 0) {
+        page = appPages[0];
+    } else if (pages.length > 0) {
+        console.log('  [Setup] Warning: No app page found. Using 2nd page if available (often 1st is background).');
+        page = pages.length > 1 ? pages[1] : pages[0];
+    }
+
+    // Log all pages for debugging
+    console.log('  [Setup] Available pages:');
+    for (const p of pages) {
+        console.log(`    - Title: "${await p.title()}", URL: ${p.url()}`);
+    }
+
+    console.log(`  [Setup] Selected page: "${await page.title()}" (${page.url()})`);
+>>>>>>> develop
 
     if (!page) {
         page = await context.waitForEvent('page');
     }
 });
 
+<<<<<<< HEAD
+=======
+test.beforeEach(async () => {
+    // Escape multiple times to close any lingering modals
+    for (let i = 0; i < 2; i++) {
+        const dialogs = page.locator('div[role="dialog"]');
+        if (await dialogs.count() > 0) {
+            console.log(`  [beforeEach] Closing open modal...`);
+            await page.keyboard.press('Escape');
+            await page.waitForTimeout(500);
+        }
+    }
+});
+
+>>>>>>> develop
 test.afterAll(async () => {
     await browser?.close();
 });
 
 // Helper: Open settings modal
 async function openSettings() {
+<<<<<<< HEAD
     const settingsTitle = page.getByText(/settings|設定/i).first();
     // If already open, don't click again
     if (await settingsTitle.isVisible()) {
@@ -60,10 +123,38 @@ async function openSettings() {
     // Wait for modal to appear
     await expect(settingsTitle).toBeVisible({ timeout: 5000 });
     await page.waitForTimeout(500); // Wait for animation
+=======
+    console.log('  [Helper] Cleaning up existing modals (if any)');
+    // Press Escape multiple times until no dialogs are visible
+    for (let i = 0; i < 3; i++) {
+        const dialogCount = await page.locator('div[role="dialog"]').count();
+        if (dialogCount === 0) break;
+        console.log(`  [Helper] Closing modal ${i + 1}...`);
+        await page.keyboard.press('Escape');
+        await page.waitForTimeout(500);
+    }
+
+    console.log('  [Helper] Finding Settings button');
+    const settingsButton = page.locator('button[aria-label*="settings" i]').first();
+
+    if (await settingsButton.isVisible()) {
+        console.log('  [Helper] Clicking Settings button');
+        await settingsButton.click();
+    } else {
+        console.log('  [Helper] Fallback: Clicking button by icon');
+        await page.locator('button:has(svg.lucide-settings)').first().click();
+    }
+
+    // Wait for modal to be visible
+    console.log('  [Helper] Waiting for settings title');
+    await expect(page.getByText(/settings|設定/i).first()).toBeVisible({ timeout: 5000 });
+    await page.waitForTimeout(300);
+>>>>>>> develop
 }
 
 // Helper: Close settings modal
 async function closeSettings() {
+<<<<<<< HEAD
     const closeButton = page.locator('[aria-label="Close settings"]');
     if (await closeButton.count() > 0) {
         await closeButton.click({ force: true });
@@ -75,6 +166,16 @@ async function closeSettings() {
         // Fallback: use Escape key
         await page.keyboard.press('Escape');
         await page.waitForTimeout(500);
+=======
+    console.log('  [Helper] Closing settings modal');
+    const closeButton = page.locator('div[role="dialog"] button[aria-label*="close" i], button:has(svg.lucide-x)').first();
+    if (await closeButton.count() > 0) {
+        await closeButton.click();
+        await page.waitForTimeout(300);
+    } else {
+        await page.keyboard.press('Escape');
+        await page.waitForTimeout(300);
+>>>>>>> develop
     }
 }
 
@@ -131,6 +232,7 @@ test.describe('OCR Feature', () => {
 // SETTINGS MODAL TESTS  
 // =========================================
 test.describe('Settings Modal', () => {
+<<<<<<< HEAD
     test.beforeEach(async () => {
         // Ensure clean state (no modals open) before each test
         // This prevents "intercepts pointer events" errors if a previous test failed to close the modal
@@ -138,6 +240,8 @@ test.describe('Settings Modal', () => {
         await page.waitForTimeout(300);
     });
 
+=======
+>>>>>>> develop
     test('should open and close settings modal', async () => {
         // Open settings
         await openSettings();
@@ -196,6 +300,42 @@ test.describe('Settings Modal', () => {
 
         await closeSettings();
     });
+<<<<<<< HEAD
+=======
+
+    test('should open and interact with OCR Language Manager', async () => {
+        console.log('Step 1: Starting test');
+        await page.screenshot({ path: 'e2e-debug-1-start.png' });
+
+        console.log('Step 2: Opening settings');
+        await openSettings();
+        await page.waitForTimeout(500);
+        await page.screenshot({ path: 'e2e-debug-2-settings.png' });
+
+        console.log('Step 3: Clicking Manage button');
+        const manageButton = page.getByRole('button', { name: /manage ocr languages|語言包管理|管理語言包/i });
+        await manageButton.click();
+        await page.waitForTimeout(1000);
+        await page.screenshot({ path: 'e2e-debug-3-manager.png' });
+
+        console.log('Step 4: Verifying search result');
+        const searchInput = page.locator('input[placeholder*="search" i], input[placeholder*="搜尋" i]');
+        await searchInput.fill('Arabic');
+        await page.waitForTimeout(1000);
+        await page.screenshot({ path: 'e2e-debug-4-search.png' });
+
+        await expect(page.getByText(/arabic/i)).toBeVisible();
+
+        console.log('Step 5: Closing Manager');
+        const closeIcon = page.locator('button:has(svg.lucide-x)').last();
+        await closeIcon.click();
+        await page.waitForTimeout(500);
+
+        console.log('Step 6: Final check');
+        await closeSettings();
+        console.log('Test complete!');
+    });
+>>>>>>> develop
 });
 
 // =========================================
@@ -232,3 +372,63 @@ test.describe('Integration', () => {
         expect(await langSelect.count()).toBeGreaterThanOrEqual(1);
     });
 });
+<<<<<<< HEAD
+=======
+
+// =========================================
+// BATCH PROCESSING TESTS
+// =========================================
+test.describe('Batch Processing', () => {
+    test('should display Batch Mode button in idle state', async () => {
+        // Look for Batch Mode button
+        const batchButton = page.locator('button').filter({ hasText: /batch|批次/i });
+
+        // Debugging: Dump all buttons if not visible
+        const isVisible = await batchButton.first().isVisible().catch(() => false);
+        if (!isVisible) {
+            console.log('  [DEBUG] Batch button not found via isVisible check.');
+            const allButtons = await page.locator('button').allInnerTexts();
+            console.log('  [DEBUG] Visible buttons:', allButtons);
+            // Dump page title and url
+            console.log('  [DEBUG] Page Title:', await page.title());
+            console.log('  [DEBUG] Page URL:', page.url());
+        }
+
+        await expect(batchButton.first()).toBeVisible({ timeout: 5000 });
+    });
+
+    test('should open Batch Processor modal', async () => {
+        // Click Batch Mode button
+        const batchButton = page.locator('button').filter({ hasText: /batch|批次/i });
+        await batchButton.first().click();
+        await page.waitForTimeout(500);
+
+        // Verify modal is open with drop zone
+        const dropHint = page.getByText(/drop|拖放/i);
+        await expect(dropHint.first()).toBeVisible();
+
+        // Close the modal
+        await page.keyboard.press('Escape');
+        await page.waitForTimeout(300);
+    });
+
+    test('should have file input for batch processing', async () => {
+        // Click Batch Mode button
+        const batchButton = page.locator('button').filter({ hasText: /batch|批次/i });
+        await batchButton.first().click();
+
+        // Wait for modal to actually appear
+        const modalTitle = page.getByText(/batch mode|批次/i).first();
+        await expect(modalTitle).toBeVisible({ timeout: 5000 });
+        await page.waitForTimeout(500);
+
+        // Check for file input
+        const fileInput = page.locator('input[type="file"]');
+        expect(await fileInput.count()).toBeGreaterThanOrEqual(1);
+
+        // Close the modal
+        await page.keyboard.press('Escape');
+        await page.waitForTimeout(300);
+    });
+});
+>>>>>>> develop

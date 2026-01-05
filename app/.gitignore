@@ -22,8 +22,19 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+<<<<<<< HEAD
 test-results/
 playwright-report/
 
 # Ignore Linux tesseract binary as it is system-dependent
 src-tauri/binaries/tesseract-*-linux-*
+=======
+
+# Playwright
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
+test_results.txt
+translation_failure.txt
+>>>>>>> develop

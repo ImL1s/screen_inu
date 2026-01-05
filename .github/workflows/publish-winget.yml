@@ -1,0 +1,16 @@
+name: Publish to Winget
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  winget:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Publish to Winget
+        uses: vedantmgoyal2009/winget-releaser@v2
+        with:
+          identifier: ImL1s.ScreenInu
+          installers-regex: 'Screen\.Inu_.*_x64_en-US\.msi$'
+          token: ${{ secrets.WINGET_TOKEN }}

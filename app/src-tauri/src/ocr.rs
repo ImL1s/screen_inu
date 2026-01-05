@@ -345,3 +345,98 @@ pub fn get_available_engines() -> Vec<OcrEngine> {
     
     engines
 }
+
+/// Detect the script of an image using Tesseract OSD
+/// Returns the detected script name (e.g., "Latin", "Han", "Japanese")
+pub fn detect_script(image_bytes: &[u8]) -> Result<String, String> {
+    use std::process::Command;
+    
+    let temp_path = std::env::temp_dir().join("osd_input.png");
+    let mut file = File::create(&temp_path).map_err(|e| e.to_string())?;
+    file.write_all(image_bytes).map_err(|e| e.to_string())?;
+    drop(file);
+
+    let tesseract_path = get_tesseract_path()?;
+    let resource_dir = get_resource_dir()?;
+    let tessdata_dir = resource_dir.join("tessdata");
+    
+    let mut cmd = Command::new(&tesseract_path);
+    cmd.arg(temp_path.to_str().unwrap())
+       .arg("stdout")
+       .arg("--psm")
+       .arg("0"); // OSD only mode
+    
+    if tessdata_dir.exists() {
+        cmd.env("TESSDATA_PREFIX", &tessdata_dir);
+    }
+    
+    #[cfg(windows)]
+    {
+        let binaries_dir = resource_dir.join("binaries");
+        if binaries_dir.exists() {
+            if let Ok(current_path) = std::env::var("PATH") {
+                cmd.env("PATH", format!("{};{}", binaries_dir.display(), current_path));
+            } else {
+                cmd.env("PATH", binaries_dir.to_str().unwrap());
+            }
+        }
+    }
+    
+    let output = cmd.output().map_err(|e| {
+        format!("Failed to execute OSD: {}", e)
+    })?;
+
+    // Cleanup
+    let _ = std::fs::remove_file(&temp_path);
+
+    if !output.status.success() {
+        let stderr = String::from_utf8_lossy(&output.stderr);
+        return Err(format!("OSD error: {}", stderr));
+    }
+    
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    
+    // Parse "Script: <name>" from output
+    for line in stdout.lines() {
+        if line.starts_with("Script:") {
+            let script = line.trim_start_matches("Script:").trim();
+            return Ok(script.to_string());
+        }
+    }
+    
+    Err("Could not detect script".to_string())
+}
+
+/// Map detected script name to best Tesseract language code
+pub fn script_to_language(script: &str) -> String {
+    match script {
+        "Han" | "HanS" | "HanT" => "chi_tra".to_string(),
+        "Japanese" => "jpn".to_string(),
+        "Korean" | "Hangul" => "kor".to_string(),
+        "Cyrillic" => "rus".to_string(),
+        "Arabic" => "ara".to_string(),
+        "Hebrew" => "heb".to_string(),
+        "Thai" => "tha".to_string(),
+        "Vietnamese" => "vie".to_string(),
+        "Devanagari" => "hin".to_string(),
+        _ => "eng".to_string(), // Latin and fallback
+    }
+}
+
+/// Auto-detect language and perform OCR
+pub fn perform_auto_ocr(image_bytes: &[u8], engine: OcrEngine) -> Result<String, String> {
+    // Try to detect script
+    let lang = match detect_script(image_bytes) {
+        Ok(script) => {
+            let detected = script_to_language(&script);
+            eprintln!("Auto-detected script: {} -> language: {}", script, detected);
+            detected
+        }
+        Err(e) => {
+            eprintln!("Script detection failed: {}, falling back to English", e);
+            "eng".to_string()
+        }
+    };
+    
+    perform_ocr_with_engine(image_bytes, &lang, engine)
+}

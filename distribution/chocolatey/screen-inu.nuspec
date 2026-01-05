@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
+  <metadata>
+    <id>screen-inu</id>
+    <version>0.2.3</version>
+    <title>Screen Inu</title>
+    <authors>ImL1s</authors>
+    <projectUrl>https://github.com/ImL1s/screen_inu</projectUrl>
+    <tags>screen-inu ocr screenshot productivity utility tauri</tags>
+    <summary>Modern screenshot OCR tool.</summary>
+    <description>
+      Screen Inu is a modern cross-platform screenshot OCR tool built with Tauri (Rust + React).
+      
+      ## Features
+      - **One-Keyboard Shortcut**: (Ctrl/Cmd + Shift + X) to capture immediately.
+      - **Instant OCR**: Extract text from any region on your screen.
+      - **Multi-Language**: Support for English, Chinese, Japanese, Korean, and more.
+      - **Privacy First**: Offline processing (default) using Tesseract.
+    </description>
+  </metadata>
+  <files>
+    <file src="tools\**" target="tools" />
+  </files>
+</package>

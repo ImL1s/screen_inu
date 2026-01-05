@@ -69,6 +69,16 @@
         "ocr_engine": {
             "title": "OCR 엔진",
             "auto": "자동 (스마트 선택)"
+        },
+        "models": {
+            "title": "OCR 언어 팩 관리",
+            "manage": "OCR 언어 팩 관리",
+            "search": "언어 검색...",
+            "installed": "설치됨",
+            "available": "다운로드 가능",
+            "download": "다운로드",
+            "delete": "삭제",
+            "source": "출처: tessdata_fast (GitHub)"
         }
     },
     "overlay": {

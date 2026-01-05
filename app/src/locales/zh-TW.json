@@ -14,7 +14,11 @@
         "clear": "丟掉",
         "empty": "空的。好難過。",
         "error": "錯誤",
-        "copied": "已複製！"
+        "copied": "已複製！",
+        "speak": "朗讀",
+        "stop_speak": "停止朗讀",
+        "translate": "翻譯",
+        "translated": "已翻譯"
     },
     "history": {
         "title": "骨頭倉庫",
@@ -47,6 +51,7 @@
         },
         "language": {
             "title": "語言",
+            "auto": "自動偵測",
             "en": "English (英文)",
             "zh-TW": "繁體中文",
             "chi_sim": "簡體中文",
@@ -75,10 +80,55 @@
         "ocr_engine": {
             "title": "OCR 引擎",
             "auto": "自動 (智慧選擇)"
+        },
+        "models": {
+            "title": "OCR 語言包管理",
+            "manage": "管理 OCR 語言包",
+            "search": "搜尋語言...",
+            "installed": "已安裝",
+            "available": "可下載語言",
+            "download": "下載",
+            "delete": "刪除",
+            "source": "來源: tessdata_fast (GitHub)"
+        },
+        "translate": {
+            "title": "啟用翻譯",
+            "on": "顯示翻譯按鈕",
+            "off": "隱藏按鈕",
+            "target_lang": "目標語言",
+            "auto": "自動翻譯",
+            "auto_on": "OCR 後自動翻譯",
+            "auto_off": "手動翻譯"
+        },
+        "translation": {
+            "title": "翻譯引擎",
+            "section": "🌐 翻譯",
+            "online": "線上 (LibreTranslate)",
+            "offline": "離線 (本地 AI)",
+            "engine": "引擎",
+            "models": "管理模型",
+            "models_title": "翻譯模型管理",
+            "model_size": "模型大小",
+            "download": "下載",
+            "delete": "刪除",
+            "downloading": "正在下載模型...",
+            "no_model": "未安裝離線模型",
+            "installed": "已安裝"
         }
     },
     "overlay": {
         "drag_to_capture": "拖曳以擷取",
         "too_small": "太小了"
-    }
+    },
+    "batch_mode": "批次模式",
+    "batch_drop_hint": "拖放圖片至此處或點擊選擇",
+    "batch_formats": "支援 PNG、JPG、WebP",
+    "batch_files_selected": "個檔案已選擇",
+    "batch_start": "開始辨識",
+    "batch_clear": "清除",
+    "batch_processing": "處理中...",
+    "batch_results": "辨識結果",
+    "batch_no_text": "未偵測到文字",
+    "batch_new": "處理新批次",
+    "copy_all": "複製全部"
 }

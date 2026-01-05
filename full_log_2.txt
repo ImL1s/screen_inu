@@ -1,0 +1,624 @@
+test	Set up job	﻿2026-01-05T12:32:06.8044243Z Current runner version: '2.330.0'
+test	Set up job	2026-01-05T12:32:06.8111693Z ##[group]Runner Image Provisioner
+test	Set up job	2026-01-05T12:32:06.8112453Z Hosted Compute Agent
+test	Set up job	2026-01-05T12:32:06.8112993Z Version: 20251211.462
+test	Set up job	2026-01-05T12:32:06.8113551Z Commit: 6cbad8c2bb55d58165063d031ccabf57e2d2db61
+test	Set up job	2026-01-05T12:32:06.8114283Z Build Date: 2025-12-11T16:28:49Z
+test	Set up job	2026-01-05T12:32:06.8114871Z Worker ID: {23cafe3a-3fa8-418c-9a9b-006c031e1566}
+test	Set up job	2026-01-05T12:32:06.8115441Z ##[endgroup]
+test	Set up job	2026-01-05T12:32:06.8115928Z ##[group]Operating System
+test	Set up job	2026-01-05T12:32:06.8116439Z Microsoft Windows Server 2025
+test	Set up job	2026-01-05T12:32:06.8116939Z 10.0.26100
+test	Set up job	2026-01-05T12:32:06.8117347Z Datacenter
+test	Set up job	2026-01-05T12:32:06.8117761Z ##[endgroup]
+test	Set up job	2026-01-05T12:32:06.8118163Z ##[group]Runner Image
+test	Set up job	2026-01-05T12:32:06.8118737Z Image: windows-2025
+test	Set up job	2026-01-05T12:32:06.8119196Z Version: 20251216.149.1
+test	Set up job	2026-01-05T12:32:06.8120107Z Included Software: https://github.com/actions/runner-images/blob/win25/20251216.149/images/windows/Windows2025-Readme.md
+test	Set up job	2026-01-05T12:32:06.8121903Z Image Release: https://github.com/actions/runner-images/releases/tag/win25%2F20251216.149
+test	Set up job	2026-01-05T12:32:06.8122719Z ##[endgroup]
+test	Set up job	2026-01-05T12:32:06.8123727Z ##[group]GITHUB_TOKEN Permissions
+test	Set up job	2026-01-05T12:32:06.8125481Z Contents: read
+test	Set up job	2026-01-05T12:32:06.8126262Z Metadata: read
+test	Set up job	2026-01-05T12:32:06.8126759Z Packages: read
+test	Set up job	2026-01-05T12:32:06.8127169Z ##[endgroup]
+test	Set up job	2026-01-05T12:32:06.8129326Z Secret source: Actions
+test	Set up job	2026-01-05T12:32:06.8129999Z Prepare workflow directory
+test	Set up job	2026-01-05T12:32:06.8542266Z Prepare all required actions
+test	Set up job	2026-01-05T12:32:06.8581381Z Getting action download info
+test	Set up job	2026-01-05T12:32:07.2731831Z Download action repository 'actions/checkout@v4' (SHA:34e114876b0b11c390a56381ad16ebd13914f8d5)
+test	Set up job	2026-01-05T12:32:07.4006345Z Download action repository 'actions/setup-node@v4' (SHA:49933ea5288caeca8642d1e84afbd3f7d6820020)
+test	Set up job	2026-01-05T12:32:07.5665648Z Download action repository 'dtolnay/rust-toolchain@stable' (SHA:4be9e76fd7c4901c61fb841f559994984270fce7)
+test	Set up job	2026-01-05T12:32:08.0836734Z Download action repository 'Swatinem/rust-cache@v2' (SHA:779680da715d629ac1d338a641029a2f4372abb5)
+test	Set up job	2026-01-05T12:32:08.9584975Z Complete job name: test
+test	Run actions/checkout@v4	﻿2026-01-05T12:32:09.1080150Z ##[group]Run actions/checkout@v4
+test	Run actions/checkout@v4	2026-01-05T12:32:09.1081800Z with:
+test	Run actions/checkout@v4	2026-01-05T12:32:09.1082645Z   repository: ImL1s/screen_inu
+test	Run actions/checkout@v4	2026-01-05T12:32:09.1083927Z   token: ***
+test	Run actions/checkout@v4	2026-01-05T12:32:09.1084935Z   ssh-strict: true
+test	Run actions/checkout@v4	2026-01-05T12:32:09.1085866Z   ssh-user: git
+test	Run actions/checkout@v4	2026-01-05T12:32:09.1086983Z   persist-credentials: true
+test	Run actions/checkout@v4	2026-01-05T12:32:09.1087850Z   clean: true
+test	Run actions/checkout@v4	2026-01-05T12:32:09.1088552Z   sparse-checkout-cone-mode: true
+test	Run actions/checkout@v4	2026-01-05T12:32:09.1089375Z   fetch-depth: 1
+test	Run actions/checkout@v4	2026-01-05T12:32:09.1090066Z   fetch-tags: false
+test	Run actions/checkout@v4	2026-01-05T12:32:09.1090754Z   show-progress: true
+test	Run actions/checkout@v4	2026-01-05T12:32:09.1091463Z   lfs: false
+test	Run actions/checkout@v4	2026-01-05T12:32:09.1092103Z   submodules: false
+test	Run actions/checkout@v4	2026-01-05T12:32:09.1092814Z   set-safe-directory: true
+test	Run actions/checkout@v4	2026-01-05T12:32:09.1093847Z ##[endgroup]
+test	Run actions/checkout@v4	2026-01-05T12:32:09.2820676Z Syncing repository: ImL1s/screen_inu
+test	Run actions/checkout@v4	2026-01-05T12:32:09.2823052Z ##[group]Getting Git version info
+test	Run actions/checkout@v4	2026-01-05T12:32:09.2824096Z Working directory is 'D:\a\screen_inu\screen_inu'
+test	Run actions/checkout@v4	2026-01-05T12:32:09.3880674Z [command]"C:\Program Files\Git\bin\git.exe" version
+test	Run actions/checkout@v4	2026-01-05T12:32:09.8166245Z git version 2.52.0.windows.1
+test	Run actions/checkout@v4	2026-01-05T12:32:09.8230776Z ##[endgroup]
+test	Run actions/checkout@v4	2026-01-05T12:32:09.8255264Z Temporarily overriding HOME='D:\a\_temp\54980442-77fc-43d5-805d-a5ba8ab598cf' before making global git config changes
+test	Run actions/checkout@v4	2026-01-05T12:32:09.8257094Z Adding repository directory to the temporary git global config as a safe directory
+test	Run actions/checkout@v4	2026-01-05T12:32:09.8268257Z [command]"C:\Program Files\Git\bin\git.exe" config --global --add safe.directory D:\a\screen_inu\screen_inu
+test	Run actions/checkout@v4	2026-01-05T12:32:09.8938737Z Deleting the contents of 'D:\a\screen_inu\screen_inu'
+test	Run actions/checkout@v4	2026-01-05T12:32:09.8946553Z ##[group]Initializing the repository
+test	Run actions/checkout@v4	2026-01-05T12:32:09.8961374Z [command]"C:\Program Files\Git\bin\git.exe" init D:\a\screen_inu\screen_inu
+test	Run actions/checkout@v4	2026-01-05T12:32:09.9995143Z Initialized empty Git repository in D:/a/screen_inu/screen_inu/.git/
+test	Run actions/checkout@v4	2026-01-05T12:32:10.0051473Z [command]"C:\Program Files\Git\bin\git.exe" remote add origin https://github.com/ImL1s/screen_inu
+test	Run actions/checkout@v4	2026-01-05T12:32:10.0748519Z ##[endgroup]
+test	Run actions/checkout@v4	2026-01-05T12:32:10.0749449Z ##[group]Disabling automatic garbage collection
+test	Run actions/checkout@v4	2026-01-05T12:32:10.0759910Z [command]"C:\Program Files\Git\bin\git.exe" config --local gc.auto 0
+test	Run actions/checkout@v4	2026-01-05T12:32:10.1166960Z ##[endgroup]
+test	Run actions/checkout@v4	2026-01-05T12:32:10.1167795Z ##[group]Setting up auth
+test	Run actions/checkout@v4	2026-01-05T12:32:10.1182921Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp core\.sshCommand
+test	Run actions/checkout@v4	2026-01-05T12:32:10.1537413Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :\""
+test	Run actions/checkout@v4	2026-01-05T12:32:11.7015947Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+test	Run actions/checkout@v4	2026-01-05T12:32:11.7325308Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :\""
+test	Run actions/checkout@v4	2026-01-05T12:32:12.2959004Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp ^includeIf\.gitdir:
+test	Run actions/checkout@v4	2026-01-05T12:32:12.3270567Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "git config --local --show-origin --name-only --get-regexp remote.origin.url"
+test	Run actions/checkout@v4	2026-01-05T12:32:12.8458464Z [command]"C:\Program Files\Git\bin\git.exe" config --local http.https://github.com/.extraheader "AUTHORIZATION: basic ***"
+test	Run actions/checkout@v4	2026-01-05T12:32:12.8769642Z ##[endgroup]
+test	Run actions/checkout@v4	2026-01-05T12:32:12.8783295Z ##[group]Fetching the repository
+test	Run actions/checkout@v4	2026-01-05T12:32:12.8784693Z [command]"C:\Program Files\Git\bin\git.exe" -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +c24c9dd0f3257aae83d3fde50eb3bbfaf3cf4cde:refs/remotes/origin/develop
+test	Run actions/checkout@v4	2026-01-05T12:32:18.1116460Z From https://github.com/ImL1s/screen_inu
+test	Run actions/checkout@v4	2026-01-05T12:32:18.1117300Z  * [new ref]         c24c9dd0f3257aae83d3fde50eb3bbfaf3cf4cde -> origin/develop
+test	Run actions/checkout@v4	2026-01-05T12:32:18.1405218Z ##[endgroup]
+test	Run actions/checkout@v4	2026-01-05T12:32:18.1405846Z ##[group]Determining the checkout info
+test	Run actions/checkout@v4	2026-01-05T12:32:18.1408549Z ##[endgroup]
+test	Run actions/checkout@v4	2026-01-05T12:32:18.1421823Z [command]"C:\Program Files\Git\bin\git.exe" sparse-checkout disable
+test	Run actions/checkout@v4	2026-01-05T12:32:18.2018017Z [command]"C:\Program Files\Git\bin\git.exe" config --local --unset-all extensions.worktreeConfig
+test	Run actions/checkout@v4	2026-01-05T12:32:18.2349473Z ##[group]Checking out the ref
+test	Run actions/checkout@v4	2026-01-05T12:32:18.2360411Z [command]"C:\Program Files\Git\bin\git.exe" checkout --progress --force -B develop refs/remotes/origin/develop
+test	Run actions/checkout@v4	2026-01-05T12:32:19.4851559Z Updating files:  57% (179/314)
+test	Run actions/checkout@v4	2026-01-05T12:32:19.4860082Z Updating files:  58% (183/314)
+test	Run actions/checkout@v4	2026-01-05T12:32:19.4867423Z Updating files:  59% (186/314)
+test	Run actions/checkout@v4	2026-01-05T12:32:19.4873569Z Updating files:  60% (189/314)
+test	Run actions/checkout@v4	2026-01-05T12:32:19.4879227Z Updating files:  61% (192/314)
+test	Run actions/checkout@v4	2026-01-05T12:32:19.4884766Z Updating files:  62% (195/314)
+test	Run actions/checkout@v4	2026-01-05T12:32:19.4895974Z Updating files:  63% (198/314)
+test	Run actions/checkout@v4	2026-01-05T12:32:19.4903512Z Updating files:  64% (201/314)
+test	Run actions/checkout@v4	2026-01-05T12:32:19.5890764Z Updating files:  65% (205/314)
+test	Run actions/checkout@v4	2026-01-05T12:32:19.8326696Z Updating files:  66% (208/314)
+test	Run actions/checkout@v4	2026-01-05T12:32:19.9056667Z Updating files:  67% (211/314)
+test	Run actions/checkout@v4	2026-01-05T12:32:19.9061026Z Updating files:  68% (214/314)
+test	Run actions/checkout@v4	2026-01-05T12:32:19.9067741Z Updating files:  69% (217/314)
+test	Run actions/checkout@v4	2026-01-05T12:32:19.9105045Z Updating files:  70% (220/314)
+test	Run actions/checkout@v4	2026-01-05T12:32:19.9161800Z Updating files:  71% (223/314)
+test	Run actions/checkout@v4	2026-01-05T12:32:19.9174399Z Updating files:  72% (227/314)
+test	Run actions/checkout@v4	2026-01-05T12:32:19.9184126Z Updating files:  73% (230/314)
+test	Run actions/checkout@v4	2026-01-05T12:32:19.9193776Z Updating files:  74% (233/314)
+test	Run actions/checkout@v4	2026-01-05T12:32:19.9202421Z Updating files:  75% (236/314)
+test	Run actions/checkout@v4	2026-01-05T12:32:19.9210114Z Updating files:  76% (239/314)
+test	Run actions/checkout@v4	2026-01-05T12:32:19.9220566Z Updating files:  77% (242/314)
+test	Run actions/checkout@v4	2026-01-05T12:32:19.9231528Z Updating files:  78% (245/314)
+test	Run actions/checkout@v4	2026-01-05T12:32:19.9238818Z Updating files:  79% (249/314)
+test	Run actions/checkout@v4	2026-01-05T12:32:19.9245810Z Updating files:  80% (252/314)
+test	Run actions/checkout@v4	2026-01-05T12:32:19.9256876Z Updating files:  81% (255/314)
+test	Run actions/checkout@v4	2026-01-05T12:32:19.9268225Z Updating files:  82% (258/314)
+test	Run actions/checkout@v4	2026-01-05T12:32:19.9287831Z Updating files:  83% (261/314)
+test	Run actions/checkout@v4	2026-01-05T12:32:19.9299048Z Updating files:  84% (264/314)
+test	Run actions/checkout@v4	2026-01-05T12:32:19.9312902Z Updating files:  85% (267/314)
+test	Run actions/checkout@v4	2026-01-05T12:32:19.9341913Z Updating files:  86% (271/314)
+test	Run actions/checkout@v4	2026-01-05T12:32:19.9402493Z Updating files:  87% (274/314)
+test	Run actions/checkout@v4	2026-01-05T12:32:19.9435433Z Updating files:  88% (277/314)
+test	Run actions/checkout@v4	2026-01-05T12:32:19.9456625Z Updating files:  89% (280/314)
+test	Run actions/checkout@v4	2026-01-05T12:32:19.9470257Z Updating files:  90% (283/314)
+test	Run actions/checkout@v4	2026-01-05T12:32:19.9513824Z Updating files:  91% (286/314)
+test	Run actions/checkout@v4	2026-01-05T12:32:19.9526107Z Updating files:  92% (289/314)
+test	Run actions/checkout@v4	2026-01-05T12:32:19.9532233Z Updating files:  93% (293/314)
+test	Run actions/checkout@v4	2026-01-05T12:32:19.9541568Z Updating files:  94% (296/314)
+test	Run actions/checkout@v4	2026-01-05T12:32:19.9555431Z Updating files:  95% (299/314)
+test	Run actions/checkout@v4	2026-01-05T12:32:20.0883388Z Updating files:  96% (302/314)
+test	Run actions/checkout@v4	2026-01-05T12:32:20.0889166Z Updating files:  97% (305/314)
+test	Run actions/checkout@v4	2026-01-05T12:32:20.0896267Z Updating files:  98% (308/314)
+test	Run actions/checkout@v4	2026-01-05T12:32:20.0903209Z Updating files:  99% (311/314)
+test	Run actions/checkout@v4	2026-01-05T12:32:20.0903792Z Updating files: 100% (314/314)
+test	Run actions/checkout@v4	2026-01-05T12:32:20.0904262Z Updating files: 100% (314/314), done.
+test	Run actions/checkout@v4	2026-01-05T12:32:20.1104821Z branch 'develop' set up to track 'origin/develop'.
+test	Run actions/checkout@v4	2026-01-05T12:32:20.1141708Z Switched to a new branch 'develop'
+test	Run actions/checkout@v4	2026-01-05T12:32:20.1358054Z ##[endgroup]
+test	Run actions/checkout@v4	2026-01-05T12:32:20.1737174Z [command]"C:\Program Files\Git\bin\git.exe" log -1 --format=%H
+test	Run actions/checkout@v4	2026-01-05T12:32:20.2018157Z c24c9dd0f3257aae83d3fde50eb3bbfaf3cf4cde
+test	Setup Node	﻿2026-01-05T12:32:20.2438633Z ##[group]Run actions/setup-node@v4
+test	Setup Node	2026-01-05T12:32:20.2439024Z with:
+test	Setup Node	2026-01-05T12:32:20.2439263Z   node-version: 20
+test	Setup Node	2026-01-05T12:32:20.2439548Z   cache: npm
+test	Setup Node	2026-01-05T12:32:20.2439846Z   cache-dependency-path: app/package-lock.json
+test	Setup Node	2026-01-05T12:32:20.2440191Z   always-auth: false
+test	Setup Node	2026-01-05T12:32:20.2440452Z   check-latest: false
+test	Setup Node	2026-01-05T12:32:20.2440840Z   token: ***
+test	Setup Node	2026-01-05T12:32:20.2441048Z ##[endgroup]
+test	Setup Node	2026-01-05T12:32:20.4989214Z Found in cache @ C:\hostedtoolcache\windows\node\20.19.6\x64
+test	Setup Node	2026-01-05T12:32:20.5000503Z ##[group]Environment details
+test	Setup Node	2026-01-05T12:32:25.3747576Z node: v20.19.6
+test	Setup Node	2026-01-05T12:32:25.3748279Z npm: 10.8.2
+test	Setup Node	2026-01-05T12:32:25.3748536Z yarn: 1.22.22
+test	Setup Node	2026-01-05T12:32:25.3749950Z ##[endgroup]
+test	Setup Node	2026-01-05T12:32:25.4549405Z [command]C:\Windows\system32\cmd.exe /D /S /C "C:\hostedtoolcache\windows\node\20.19.6\x64\npm.cmd config get cache"
+test	Setup Node	2026-01-05T12:32:26.0499238Z C:\npm\cache
+test	Setup Node	2026-01-05T12:32:26.4919549Z Cache hit for: node-cache-Windows-x64-npm-d0fea8876f2c410c34593965213ae3a3e208ed07383f4ddafe95387aec0119f9
+test	Setup Node	2026-01-05T12:32:27.6159055Z Received 42341716 of 42341716 (100.0%), 44.3 MBs/sec
+test	Setup Node	2026-01-05T12:32:27.6162001Z Cache Size: ~40 MB (42341716 B)
+test	Setup Node	2026-01-05T12:32:27.6229114Z [command]"C:\Program Files\Git\usr\bin\tar.exe" -xf D:/a/_temp/5284c34b-8ca3-4f4c-92b4-38f004c45c4a/cache.tzst -P -C D:/a/screen_inu/screen_inu --force-local --use-compress-program "zstd -d"
+test	Setup Node	2026-01-05T12:32:28.7623202Z Cache restored successfully
+test	Setup Node	2026-01-05T12:32:28.7694289Z Cache restored from key: node-cache-Windows-x64-npm-d0fea8876f2c410c34593965213ae3a3e208ed07383f4ddafe95387aec0119f9
+test	Install Rust	﻿2026-01-05T12:32:28.8127705Z ##[group]Run dtolnay/rust-toolchain@stable
+test	Install Rust	2026-01-05T12:32:28.8128066Z with:
+test	Install Rust	2026-01-05T12:32:28.8128225Z   toolchain: stable
+test	Install Rust	2026-01-05T12:32:28.8128407Z ##[endgroup]
+test	Install Rust	2026-01-05T12:32:28.8351274Z ##[group]Run : parse toolchain version
+test	Install Rust	2026-01-05T12:32:28.8351689Z [36;1m: parse toolchain version[0m
+test	Install Rust	2026-01-05T12:32:28.8351945Z [36;1mif [[ -z $toolchain ]]; then[0m
+test	Install Rust	2026-01-05T12:32:28.8352410Z [36;1m  # GitHub does not enforce `required: true` inputs itself. https://github.com/actions/runner/issues/1070[0m
+test	Install Rust	2026-01-05T12:32:28.8353416Z [36;1m  echo "'toolchain' is a required input" >&2[0m
+test	Install Rust	2026-01-05T12:32:28.8353674Z [36;1m  exit 1[0m
+test	Install Rust	2026-01-05T12:32:28.8353946Z [36;1melif [[ $toolchain =~ ^stable' '[0-9]+' '(year|month|week|day)s?' 'ago$ ]]; then[0m
+test	Install Rust	2026-01-05T12:32:28.8354302Z [36;1m  if [[ Windows == macOS ]]; then[0m
+test	Install Rust	2026-01-05T12:32:28.8354735Z [36;1m    echo "toolchain=1.$((($(date -v-$(sed 's/stable \([0-9]*\) \(.\).*/\1\2/' <<< $toolchain) +%s)/60/60/24-16569)/7/6))" >> $GITHUB_OUTPUT[0m
+test	Install Rust	2026-01-05T12:32:28.8355173Z [36;1m  else[0m
+test	Install Rust	2026-01-05T12:32:28.8355499Z [36;1m    echo "toolchain=1.$((($(date --date "${toolchain#stable }" +%s)/60/60/24-16569)/7/6))" >> $GITHUB_OUTPUT[0m
+test	Install Rust	2026-01-05T12:32:28.8355863Z [36;1m  fi[0m
+test	Install Rust	2026-01-05T12:32:28.8356103Z [36;1melif [[ $toolchain =~ ^stable' 'minus' '[0-9]+' 'releases?$ ]]; then[0m
+test	Install Rust	2026-01-05T12:32:28.8356555Z [36;1m  echo "toolchain=1.$((($(date +%s)/60/60/24-16569)/7/6-${toolchain//[^0-9]/}))" >> $GITHUB_OUTPUT[0m
+test	Install Rust	2026-01-05T12:32:28.8356939Z [36;1melif [[ $toolchain =~ ^1\.[0-9]+$ ]]; then[0m
+test	Install Rust	2026-01-05T12:32:28.8357360Z [36;1m  echo "toolchain=1.$((i=${toolchain#1.}, c=($(date +%s)/60/60/24-16569)/7/6, i+9*i*(10*i<=c)+90*i*(100*i<=c)))" >> $GITHUB_OUTPUT[0m
+test	Install Rust	2026-01-05T12:32:28.8357750Z [36;1melse[0m
+test	Install Rust	2026-01-05T12:32:28.8357949Z [36;1m  echo "toolchain=$toolchain" >> $GITHUB_OUTPUT[0m
+test	Install Rust	2026-01-05T12:32:28.8358189Z [36;1mfi[0m
+test	Install Rust	2026-01-05T12:32:28.8380849Z shell: C:\Program Files\Git\bin\bash.EXE --noprofile --norc -e -o pipefail {0}
+test	Install Rust	2026-01-05T12:32:28.8381246Z env:
+test	Install Rust	2026-01-05T12:32:28.8381395Z   toolchain: stable
+test	Install Rust	2026-01-05T12:32:28.8381560Z ##[endgroup]
+test	Install Rust	2026-01-05T12:32:29.0372316Z ##[group]Run : construct rustup command line
+test	Install Rust	2026-01-05T12:32:29.0372634Z [36;1m: construct rustup command line[0m
+test	Install Rust	2026-01-05T12:32:29.0373016Z [36;1mecho "targets=$(for t in ${targets//,/ }; do echo -n ' --target' $t; done)" >> $GITHUB_OUTPUT[0m
+test	Install Rust	2026-01-05T12:32:29.0373546Z [36;1mecho "components=$(for c in ${components//,/ }; do echo -n ' --component' $c; done)" >> $GITHUB_OUTPUT[0m
+test	Install Rust	2026-01-05T12:32:29.0373970Z [36;1mecho "downgrade=" >> $GITHUB_OUTPUT[0m
+test	Install Rust	2026-01-05T12:32:29.0390104Z shell: C:\Program Files\Git\bin\bash.EXE --noprofile --norc -e -o pipefail {0}
+test	Install Rust	2026-01-05T12:32:29.0390548Z env:
+test	Install Rust	2026-01-05T12:32:29.0390723Z   targets: 
+test	Install Rust	2026-01-05T12:32:29.0390869Z   components: 
+test	Install Rust	2026-01-05T12:32:29.0391037Z ##[endgroup]
+test	Install Rust	2026-01-05T12:32:29.1179833Z ##[group]Run : set $CARGO_HOME
+test	Install Rust	2026-01-05T12:32:29.1180115Z [36;1m: set $CARGO_HOME[0m
+test	Install Rust	2026-01-05T12:32:29.1180404Z [36;1mecho CARGO_HOME=${CARGO_HOME:-"$USERPROFILE\.cargo"} >> $GITHUB_ENV[0m
+test	Install Rust	2026-01-05T12:32:29.1196768Z shell: C:\Program Files\Git\bin\bash.EXE --noprofile --norc -e -o pipefail {0}
+test	Install Rust	2026-01-05T12:32:29.1197136Z ##[endgroup]
+test	Install Rust	2026-01-05T12:32:29.1736555Z ##[group]Run : install rustup if needed on windows
+test	Install Rust	2026-01-05T12:32:29.1736893Z [36;1m: install rustup if needed on windows[0m
+test	Install Rust	2026-01-05T12:32:29.1737187Z [36;1mif ! command -v rustup &>/dev/null; then[0m
+test	Install Rust	2026-01-05T12:32:29.1737847Z [36;1m  curl --proto '=https' --tlsv1.2 --retry 10 --retry-connrefused --location --silent --show-error --fail https://win.rustup.rs/x86_64 --output 'D:\a\_temp\rustup-init.exe'[0m
+test	Install Rust	2026-01-05T12:32:29.1738602Z [36;1m  'D:\a\_temp\rustup-init.exe' --default-toolchain none --no-modify-path -y[0m
+test	Install Rust	2026-01-05T12:32:29.1738972Z [36;1m  echo "$CARGO_HOME\bin" >> $GITHUB_PATH[0m
+test	Install Rust	2026-01-05T12:32:29.1739200Z [36;1mfi[0m
+test	Install Rust	2026-01-05T12:32:29.1755566Z shell: C:\Program Files\Git\bin\bash.EXE --noprofile --norc -e -o pipefail {0}
+test	Install Rust	2026-01-05T12:32:29.1757723Z env:
+test	Install Rust	2026-01-05T12:32:29.1757898Z   CARGO_HOME: C:\Users\runneradmin\.cargo
+test	Install Rust	2026-01-05T12:32:29.1758139Z ##[endgroup]
+test	Install Rust	2026-01-05T12:32:29.2414137Z ##[group]Run rustup toolchain install stable --profile minimal --no-self-update
+test	Install Rust	2026-01-05T12:32:29.2414653Z [36;1mrustup toolchain install stable --profile minimal --no-self-update[0m
+test	Install Rust	2026-01-05T12:32:29.2430956Z shell: C:\Program Files\Git\bin\bash.EXE --noprofile --norc -e -o pipefail {0}
+test	Install Rust	2026-01-05T12:32:29.2431496Z env:
+test	Install Rust	2026-01-05T12:32:29.2431670Z   CARGO_HOME: C:\Users\runneradmin\.cargo
+test	Install Rust	2026-01-05T12:32:29.2431912Z   RUSTUP_PERMIT_COPY_RENAME: 1
+test	Install Rust	2026-01-05T12:32:29.2432103Z ##[endgroup]
+test	Install Rust	2026-01-05T12:32:33.4888694Z info: syncing channel updates for 'stable-x86_64-pc-windows-msvc'
+test	Install Rust	2026-01-05T12:32:34.0240876Z 
+test	Install Rust	2026-01-05T12:32:34.0444674Z   stable-x86_64-pc-windows-msvc unchanged - rustc 1.92.0 (ded5c06cf 2025-12-08)
+test	Install Rust	2026-01-05T12:32:34.0445831Z 
+test	Install Rust	2026-01-05T12:32:34.0661185Z ##[group]Run rustup default stable
+test	Install Rust	2026-01-05T12:32:34.0661467Z [36;1mrustup default stable[0m
+test	Install Rust	2026-01-05T12:32:34.0676477Z shell: C:\Program Files\Git\bin\bash.EXE --noprofile --norc -e -o pipefail {0}
+test	Install Rust	2026-01-05T12:32:34.0676815Z env:
+test	Install Rust	2026-01-05T12:32:34.0676984Z   CARGO_HOME: C:\Users\runneradmin\.cargo
+test	Install Rust	2026-01-05T12:32:34.0677212Z ##[endgroup]
+test	Install Rust	2026-01-05T12:32:34.1454733Z info: using existing install for 'stable-x86_64-pc-windows-msvc'
+test	Install Rust	2026-01-05T12:32:34.2054424Z info: default toolchain set to 'stable-x86_64-pc-windows-msvc'
+test	Install Rust	2026-01-05T12:32:34.2055415Z 
+test	Install Rust	2026-01-05T12:32:34.2256144Z   stable-x86_64-pc-windows-msvc unchanged - rustc 1.92.0 (ded5c06cf 2025-12-08)
+test	Install Rust	2026-01-05T12:32:34.2256547Z 
+test	Install Rust	2026-01-05T12:32:34.2465513Z ##[group]Run : create cachekey
+test	Install Rust	2026-01-05T12:32:34.2465778Z [36;1m: create cachekey[0m
+test	Install Rust	2026-01-05T12:32:34.2466208Z [36;1mDATE=$(rustc +stable --version --verbose | sed -ne 's/^commit-date: \(20[0-9][0-9]\)-\([01][0-9]\)-\([0-3][0-9]\)$/\1\2\3/p')[0m
+test	Install Rust	2026-01-05T12:32:34.2466767Z [36;1mHASH=$(rustc +stable --version --verbose | sed -ne 's/^commit-hash: //p')[0m
+test	Install Rust	2026-01-05T12:32:34.2467205Z [36;1mecho "cachekey=$(echo $DATE$HASH | head -c12)" >> $GITHUB_OUTPUT[0m
+test	Install Rust	2026-01-05T12:32:34.2482301Z shell: C:\Program Files\Git\bin\bash.EXE --noprofile --norc -e -o pipefail {0}
+test	Install Rust	2026-01-05T12:32:34.2482657Z env:
+test	Install Rust	2026-01-05T12:32:34.2483271Z   CARGO_HOME: C:\Users\runneradmin\.cargo
+test	Install Rust	2026-01-05T12:32:34.2483526Z ##[endgroup]
+test	Install Rust	2026-01-05T12:32:35.3348616Z ##[group]Run : disable incremental compilation
+test	Install Rust	2026-01-05T12:32:35.3349166Z [36;1m: disable incremental compilation[0m
+test	Install Rust	2026-01-05T12:32:35.3349665Z [36;1mif [ -z "${CARGO_INCREMENTAL+set}" ]; then[0m
+test	Install Rust	2026-01-05T12:32:35.3350166Z [36;1m  echo CARGO_INCREMENTAL=0 >> $GITHUB_ENV[0m
+test	Install Rust	2026-01-05T12:32:35.3350577Z [36;1mfi[0m
+test	Install Rust	2026-01-05T12:32:35.3375515Z shell: C:\Program Files\Git\bin\bash.EXE --noprofile --norc -e -o pipefail {0}
+test	Install Rust	2026-01-05T12:32:35.3376152Z env:
+test	Install Rust	2026-01-05T12:32:35.3376476Z   CARGO_HOME: C:\Users\runneradmin\.cargo
+test	Install Rust	2026-01-05T12:32:35.3376869Z ##[endgroup]
+test	Install Rust	2026-01-05T12:32:35.3953091Z ##[group]Run : enable colors in Cargo output
+test	Install Rust	2026-01-05T12:32:35.3953415Z [36;1m: enable colors in Cargo output[0m
+test	Install Rust	2026-01-05T12:32:35.3953688Z [36;1mif [ -z "${CARGO_TERM_COLOR+set}" ]; then[0m
+test	Install Rust	2026-01-05T12:32:35.3953988Z [36;1m  echo CARGO_TERM_COLOR=always >> $GITHUB_ENV[0m
+test	Install Rust	2026-01-05T12:32:35.3954237Z [36;1mfi[0m
+test	Install Rust	2026-01-05T12:32:35.3970234Z shell: C:\Program Files\Git\bin\bash.EXE --noprofile --norc -e -o pipefail {0}
+test	Install Rust	2026-01-05T12:32:35.3970584Z env:
+test	Install Rust	2026-01-05T12:32:35.3970753Z   CARGO_HOME: C:\Users\runneradmin\.cargo
+test	Install Rust	2026-01-05T12:32:35.3971007Z   CARGO_INCREMENTAL: 0
+test	Install Rust	2026-01-05T12:32:35.3971196Z ##[endgroup]
+test	Install Rust	2026-01-05T12:32:35.4527633Z ##[group]Run : enable Cargo sparse registry
+test	Install Rust	2026-01-05T12:32:35.4527959Z [36;1m: enable Cargo sparse registry[0m
+test	Install Rust	2026-01-05T12:32:35.4528272Z [36;1m# implemented in 1.66, stabilized in 1.68, made default in 1.70[0m
+test	Install Rust	2026-01-05T12:32:35.4529615Z [36;1mif [ -z "${CARGO_REGISTRIES_CRATES_IO_PROTOCOL+set}" -o -f "D:\a\_temp"/.implicit_cargo_registries_crates_io_protocol ]; then[0m
+test	Install Rust	2026-01-05T12:32:35.4530196Z [36;1m  if rustc +stable --version --verbose | grep -q '^release: 1\.6[89]\.'; then[0m
+test	Install Rust	2026-01-05T12:32:35.4530638Z [36;1m    touch "D:\a\_temp"/.implicit_cargo_registries_crates_io_protocol || true[0m
+test	Install Rust	2026-01-05T12:32:35.4531047Z [36;1m    echo CARGO_REGISTRIES_CRATES_IO_PROTOCOL=sparse >> $GITHUB_ENV[0m
+test	Install Rust	2026-01-05T12:32:35.4532037Z [36;1m  elif rustc +stable --version --verbose | grep -q '^release: 1\.6[67]\.'; then[0m
+test	Install Rust	2026-01-05T12:32:35.4532492Z [36;1m    touch "D:\a\_temp"/.implicit_cargo_registries_crates_io_protocol || true[0m
+test	Install Rust	2026-01-05T12:32:35.4532891Z [36;1m    echo CARGO_REGISTRIES_CRATES_IO_PROTOCOL=git >> $GITHUB_ENV[0m
+test	Install Rust	2026-01-05T12:32:35.4533176Z [36;1m  fi[0m
+test	Install Rust	2026-01-05T12:32:35.4533330Z [36;1mfi[0m
+test	Install Rust	2026-01-05T12:32:35.4550298Z shell: C:\Program Files\Git\bin\bash.EXE --noprofile --norc -e -o pipefail {0}
+test	Install Rust	2026-01-05T12:32:35.4550668Z env:
+test	Install Rust	2026-01-05T12:32:35.4550845Z   CARGO_HOME: C:\Users\runneradmin\.cargo
+test	Install Rust	2026-01-05T12:32:35.4551083Z   CARGO_INCREMENTAL: 0
+test	Install Rust	2026-01-05T12:32:35.4551268Z   CARGO_TERM_COLOR: always
+test	Install Rust	2026-01-05T12:32:35.4551454Z ##[endgroup]
+test	Install Rust	2026-01-05T12:32:35.6676943Z ##[group]Run : work around spurious network errors in curl 8.0
+test	Install Rust	2026-01-05T12:32:35.6677592Z [36;1m: work around spurious network errors in curl 8.0[0m
+test	Install Rust	2026-01-05T12:32:35.6678418Z [36;1m# https://rust-lang.zulipchat.com/#narrow/stream/246057-t-cargo/topic/timeout.20investigation[0m
+test	Install Rust	2026-01-05T12:32:35.6679405Z [36;1mif rustc +stable --version --verbose | grep -q '^release: 1\.7[01]\.'; then[0m
+test	Install Rust	2026-01-05T12:32:35.6680103Z [36;1m  echo CARGO_HTTP_MULTIPLEXING=false >> $GITHUB_ENV[0m
+test	Install Rust	2026-01-05T12:32:35.6680564Z [36;1mfi[0m
+test	Install Rust	2026-01-05T12:32:35.6705181Z shell: C:\Program Files\Git\bin\bash.EXE --noprofile --norc -e -o pipefail {0}
+test	Install Rust	2026-01-05T12:32:35.6705778Z env:
+test	Install Rust	2026-01-05T12:32:35.6706072Z   CARGO_HOME: C:\Users\runneradmin\.cargo
+test	Install Rust	2026-01-05T12:32:35.6706474Z   CARGO_INCREMENTAL: 0
+test	Install Rust	2026-01-05T12:32:35.6706777Z   CARGO_TERM_COLOR: always
+test	Install Rust	2026-01-05T12:32:35.6707103Z ##[endgroup]
+test	Install Rust	2026-01-05T12:32:35.7933165Z ##[group]Run rustc +stable --version --verbose
+test	Install Rust	2026-01-05T12:32:35.7933479Z [36;1mrustc +stable --version --verbose[0m
+test	Install Rust	2026-01-05T12:32:35.7948666Z shell: C:\Program Files\Git\bin\bash.EXE --noprofile --norc -e -o pipefail {0}
+test	Install Rust	2026-01-05T12:32:35.7949037Z env:
+test	Install Rust	2026-01-05T12:32:35.7949212Z   CARGO_HOME: C:\Users\runneradmin\.cargo
+test	Install Rust	2026-01-05T12:32:35.7949451Z   CARGO_INCREMENTAL: 0
+test	Install Rust	2026-01-05T12:32:35.7949629Z   CARGO_TERM_COLOR: always
+test	Install Rust	2026-01-05T12:32:35.7949817Z ##[endgroup]
+test	Install Rust	2026-01-05T12:32:35.8802337Z rustc 1.92.0 (ded5c06cf 2025-12-08)
+test	Install Rust	2026-01-05T12:32:35.8802936Z binary: rustc
+test	Install Rust	2026-01-05T12:32:35.8803528Z commit-hash: ded5c06cf21d2b93bffd5d884aa6e96934ee4234
+test	Install Rust	2026-01-05T12:32:35.8804143Z commit-date: 2025-12-08
+test	Install Rust	2026-01-05T12:32:35.8804637Z host: x86_64-pc-windows-msvc
+test	Install Rust	2026-01-05T12:32:35.8805116Z release: 1.92.0
+test	Install Rust	2026-01-05T12:32:35.8805482Z LLVM version: 21.1.3
+test	Rust cache	﻿2026-01-05T12:32:35.9104759Z ##[group]Run Swatinem/rust-cache@v2
+test	Rust cache	2026-01-05T12:32:35.9105073Z with:
+test	Rust cache	2026-01-05T12:32:35.9105264Z   workspaces: ./app/src-tauri -> target
+test	Rust cache	2026-01-05T12:32:35.9105512Z   prefix-key: v0-rust
+test	Rust cache	2026-01-05T12:32:35.9105698Z   add-job-id-key: true
+test	Rust cache	2026-01-05T12:32:35.9105896Z   add-rust-environment-hash-key: true
+test	Rust cache	2026-01-05T12:32:35.9106150Z   cache-targets: true
+test	Rust cache	2026-01-05T12:32:35.9106337Z   cache-all-crates: false
+test	Rust cache	2026-01-05T12:32:35.9106548Z   cache-workspace-crates: false
+test	Rust cache	2026-01-05T12:32:35.9106763Z   save-if: true
+test	Rust cache	2026-01-05T12:32:35.9106929Z   cache-provider: github
+test	Rust cache	2026-01-05T12:32:35.9107116Z   cache-bin: true
+test	Rust cache	2026-01-05T12:32:35.9107283Z   lookup-only: false
+test	Rust cache	2026-01-05T12:32:35.9107442Z env:
+test	Rust cache	2026-01-05T12:32:35.9107609Z   CARGO_HOME: C:\Users\runneradmin\.cargo
+test	Rust cache	2026-01-05T12:32:35.9107839Z   CARGO_INCREMENTAL: 0
+test	Rust cache	2026-01-05T12:32:35.9108014Z   CARGO_TERM_COLOR: always
+test	Rust cache	2026-01-05T12:32:35.9108200Z ##[endgroup]
+test	Rust cache	2026-01-05T12:32:38.8690560Z ##[group]Cache Configuration
+test	Rust cache	2026-01-05T12:32:38.8692373Z Cache Provider:
+test	Rust cache	2026-01-05T12:32:38.8693008Z     github
+test	Rust cache	2026-01-05T12:32:38.8693525Z Workspaces:
+test	Rust cache	2026-01-05T12:32:38.8693943Z     D:\a\screen_inu\screen_inu\app\src-tauri
+test	Rust cache	2026-01-05T12:32:38.8694457Z Cache Paths:
+test	Rust cache	2026-01-05T12:32:38.8694804Z     C:\Users\runneradmin\.cargo\bin
+test	Rust cache	2026-01-05T12:32:38.8695296Z     C:\Users\runneradmin\.cargo\.crates.toml
+test	Rust cache	2026-01-05T12:32:38.8696360Z     C:\Users\runneradmin\.cargo\.crates2.json
+test	Rust cache	2026-01-05T12:32:38.8696896Z     C:\Users\runneradmin\.cargo\registry
+test	Rust cache	2026-01-05T12:32:38.8697386Z     C:\Users\runneradmin\.cargo\git
+test	Rust cache	2026-01-05T12:32:38.8697887Z     D:\a\screen_inu\screen_inu\app\src-tauri\target
+test	Rust cache	2026-01-05T12:32:38.8698361Z Restore Key:
+test	Rust cache	2026-01-05T12:32:38.8698732Z     v0-rust-test-Windows_NT-x64-7a6c70a5
+test	Rust cache	2026-01-05T12:32:38.8699152Z Cache Key:
+test	Rust cache	2026-01-05T12:32:38.8699535Z     v0-rust-test-Windows_NT-x64-7a6c70a5-4900814c
+test	Rust cache	2026-01-05T12:32:38.8700004Z .. Prefix:
+test	Rust cache	2026-01-05T12:32:38.8700303Z   - v0-rust-test-Windows_NT-x64
+test	Rust cache	2026-01-05T12:32:38.8700723Z .. Environment considered:
+test	Rust cache	2026-01-05T12:32:38.8701777Z   - Rust Version: 1.92.0 x86_64-pc-windows-msvc (ded5c06cf21d2b93bffd5d884aa6e96934ee4234)
+test	Rust cache	2026-01-05T12:32:38.8702512Z   - CARGO_HOME
+test	Rust cache	2026-01-05T12:32:38.8702829Z   - CARGO_INCREMENTAL
+test	Rust cache	2026-01-05T12:32:38.8703165Z   - CARGO_TERM_COLOR
+test	Rust cache	2026-01-05T12:32:38.8703548Z .. Lockfiles considered:
+test	Rust cache	2026-01-05T12:32:38.8704037Z   - D:\a\screen_inu\screen_inu\app\src-tauri\Cargo.lock
+test	Rust cache	2026-01-05T12:32:38.8704656Z   - D:\a\screen_inu\screen_inu\app\src-tauri\Cargo.toml
+test	Rust cache	2026-01-05T12:32:38.8705447Z ##[endgroup]
+test	Rust cache	2026-01-05T12:32:38.8705640Z 
+test	Rust cache	2026-01-05T12:32:38.8705833Z ... Restoring cache ...
+test	Rust cache	2026-01-05T12:32:39.1882560Z Cache hit for: v0-rust-test-Windows_NT-x64-7a6c70a5-4900814c
+test	Rust cache	2026-01-05T12:32:40.4125886Z Received 37748736 of 1227790443 (3.1%), 35.9 MBs/sec
+test	Rust cache	2026-01-05T12:32:41.4201108Z Received 176160768 of 1227790443 (14.3%), 83.2 MBs/sec
+test	Rust cache	2026-01-05T12:32:42.4356732Z Received 306184192 of 1227790443 (24.9%), 96.2 MBs/sec
+test	Rust cache	2026-01-05T12:32:43.4368584Z Received 440401920 of 1227790443 (35.9%), 104.1 MBs/sec
+test	Rust cache	2026-01-05T12:32:44.4393319Z Received 541065216 of 1227790443 (44.1%), 102.4 MBs/sec
+test	Rust cache	2026-01-05T12:32:45.4443859Z Received 692060160 of 1227790443 (56.4%), 109.2 MBs/sec
+test	Rust cache	2026-01-05T12:32:46.4506594Z Received 838860800 of 1227790443 (68.3%), 113.5 MBs/sec
+test	Rust cache	2026-01-05T12:32:47.4514108Z Received 989855744 of 1227790443 (80.6%), 117.3 MBs/sec
+test	Rust cache	2026-01-05T12:32:48.4529851Z Received 1094713344 of 1227790443 (89.2%), 115.3 MBs/sec
+test	Rust cache	2026-01-05T12:32:49.4614468Z Received 1207959552 of 1227790443 (98.4%), 114.5 MBs/sec
+test	Rust cache	2026-01-05T12:32:49.6486701Z Received 1227790443 of 1227790443 (100.0%), 114.3 MBs/sec
+test	Rust cache	2026-01-05T12:32:49.6490550Z Cache Size: ~1171 MB (1227790443 B)
+test	Rust cache	2026-01-05T12:32:49.6532023Z [command]"C:\Program Files\Git\usr\bin\tar.exe" -xf D:/a/_temp/3b75197f-22b7-4bf9-ac79-fe8eb50704ec/cache.tzst -P -C D:/a/screen_inu/screen_inu --force-local --use-compress-program "zstd -d"
+test	Rust cache	2026-01-05T12:33:24.0788855Z Cache restored successfully
+test	Rust cache	2026-01-05T12:33:24.1546894Z Restored from cache key "v0-rust-test-Windows_NT-x64-7a6c70a5-4900814c" full match: true.
+test	Prepare dummy Tesseract sidecars	﻿2026-01-05T12:33:24.1819648Z ##[group]Run mkdir -p app/src-tauri/binaries
+test	Prepare dummy Tesseract sidecars	2026-01-05T12:33:24.1820060Z [36;1mmkdir -p app/src-tauri/binaries[0m
+test	Prepare dummy Tesseract sidecars	2026-01-05T12:33:24.1820437Z [36;1mtouch app/src-tauri/binaries/tesseract-x86_64-pc-windows-msvc.exe[0m
+test	Prepare dummy Tesseract sidecars	2026-01-05T12:33:24.1836591Z shell: C:\Program Files\Git\bin\bash.EXE --noprofile --norc -e -o pipefail {0}
+test	Prepare dummy Tesseract sidecars	2026-01-05T12:33:24.1836966Z env:
+test	Prepare dummy Tesseract sidecars	2026-01-05T12:33:24.1837149Z   CARGO_HOME: C:\Users\runneradmin\.cargo
+test	Prepare dummy Tesseract sidecars	2026-01-05T12:33:24.1837396Z   CARGO_INCREMENTAL: 0
+test	Prepare dummy Tesseract sidecars	2026-01-05T12:33:24.1837590Z   CARGO_TERM_COLOR: always
+test	Prepare dummy Tesseract sidecars	2026-01-05T12:33:24.1837797Z   CACHE_ON_FAILURE: false
+test	Prepare dummy Tesseract sidecars	2026-01-05T12:33:24.1837982Z ##[endgroup]
+test	Install Dependencies	﻿2026-01-05T12:33:24.2913873Z ##[group]Run npm install
+test	Install Dependencies	2026-01-05T12:33:24.2914213Z [36;1mnpm install[0m
+test	Install Dependencies	2026-01-05T12:33:24.2914449Z [36;1mnpx playwright install chromium[0m
+test	Install Dependencies	2026-01-05T12:33:24.3688376Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+test	Install Dependencies	2026-01-05T12:33:24.3688776Z env:
+test	Install Dependencies	2026-01-05T12:33:24.3689004Z   CARGO_HOME: C:\Users\runneradmin\.cargo
+test	Install Dependencies	2026-01-05T12:33:24.3689349Z   CARGO_INCREMENTAL: 0
+test	Install Dependencies	2026-01-05T12:33:24.3689634Z   CARGO_TERM_COLOR: always
+test	Install Dependencies	2026-01-05T12:33:24.3689910Z   CACHE_ON_FAILURE: false
+test	Install Dependencies	2026-01-05T12:33:24.3690317Z ##[endgroup]
+test	Install Dependencies	2026-01-05T12:33:38.6086012Z 
+test	Install Dependencies	2026-01-05T12:33:38.6087093Z added 198 packages, and audited 199 packages in 8s
+test	Install Dependencies	2026-01-05T12:33:38.6087679Z 
+test	Install Dependencies	2026-01-05T12:33:38.6087924Z 36 packages are looking for funding
+test	Install Dependencies	2026-01-05T12:33:38.6088278Z   run `npm fund` for details
+test	Install Dependencies	2026-01-05T12:33:38.6099186Z 
+test	Install Dependencies	2026-01-05T12:33:38.6099496Z found 0 vulnerabilities
+test	Install Dependencies	2026-01-05T12:33:40.2010546Z Downloading Chromium 143.0.7499.4 (playwright build v1200)[2m from https://cdn.playwright.dev/dbazure/download/playwright/builds/chromium/1200/chromium-win64.zip[22m
+test	Install Dependencies	2026-01-05T12:33:40.5325807Z |                                                                                |   0% of 169.8 MiB
+test	Install Dependencies	2026-01-05T12:33:40.8309261Z |■■■■■■■■                                                                        |  10% of 169.8 MiB
+test	Install Dependencies	2026-01-05T12:33:41.0160813Z |■■■■■■■■■■■■■■■■                                                                |  20% of 169.8 MiB
+test	Install Dependencies	2026-01-05T12:33:41.1923757Z |■■■■■■■■■■■■■■■■■■■■■■■■                                                        |  30% of 169.8 MiB
+test	Install Dependencies	2026-01-05T12:33:41.4178990Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                                |  40% of 169.8 MiB
+test	Install Dependencies	2026-01-05T12:33:41.5926800Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                        |  50% of 169.8 MiB
+test	Install Dependencies	2026-01-05T12:33:41.7579320Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                |  60% of 169.8 MiB
+test	Install Dependencies	2026-01-05T12:33:41.9325806Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                        |  70% of 169.8 MiB
+test	Install Dependencies	2026-01-05T12:33:42.1005153Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                |  80% of 169.8 MiB
+test	Install Dependencies	2026-01-05T12:33:42.2652350Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■        |  90% of 169.8 MiB
+test	Install Dependencies	2026-01-05T12:33:42.4157952Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■| 100% of 169.8 MiB
+test	Install Dependencies	2026-01-05T12:33:48.5844575Z Chromium 143.0.7499.4 (playwright build v1200) downloaded to C:\Users\runneradmin\AppData\Local\ms-playwright\chromium-1200
+test	Install Dependencies	2026-01-05T12:33:48.5854036Z Downloading FFMPEG playwright build v1011[2m from https://cdn.playwright.dev/dbazure/download/playwright/builds/ffmpeg/1011/ffmpeg-win64.zip[22m
+test	Install Dependencies	2026-01-05T12:33:48.9010764Z |                                                                                |   1% of 1.3 MiB
+test	Install Dependencies	2026-01-05T12:33:48.9458438Z |■■■■■■■■                                                                        |  10% of 1.3 MiB
+test	Install Dependencies	2026-01-05T12:33:48.9531891Z |■■■■■■■■■■■■■■■■                                                                |  20% of 1.3 MiB
+test	Install Dependencies	2026-01-05T12:33:48.9587343Z |■■■■■■■■■■■■■■■■■■■■■■■■                                                        |  30% of 1.3 MiB
+test	Install Dependencies	2026-01-05T12:33:48.9701014Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                                |  40% of 1.3 MiB
+test	Install Dependencies	2026-01-05T12:33:48.9736911Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                        |  50% of 1.3 MiB
+test	Install Dependencies	2026-01-05T12:33:48.9772151Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                |  60% of 1.3 MiB
+test	Install Dependencies	2026-01-05T12:33:48.9851761Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                        |  70% of 1.3 MiB
+test	Install Dependencies	2026-01-05T12:33:48.9877026Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                |  81% of 1.3 MiB
+test	Install Dependencies	2026-01-05T12:33:48.9894595Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■        |  90% of 1.3 MiB
+test	Install Dependencies	2026-01-05T12:33:48.9915040Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■| 100% of 1.3 MiB
+test	Install Dependencies	2026-01-05T12:33:49.0753936Z FFMPEG playwright build v1011 downloaded to C:\Users\runneradmin\AppData\Local\ms-playwright\ffmpeg-1011
+test	Install Dependencies	2026-01-05T12:33:49.0762867Z Downloading Chromium Headless Shell 143.0.7499.4 (playwright build v1200)[2m from https://cdn.playwright.dev/dbazure/download/playwright/builds/chromium/1200/chromium-headless-shell-win64.zip[22m
+test	Install Dependencies	2026-01-05T12:33:49.5216076Z |                                                                                |   0% of 107.2 MiB
+test	Install Dependencies	2026-01-05T12:33:49.8635396Z |■■■■■■■■                                                                        |  10% of 107.2 MiB
+test	Install Dependencies	2026-01-05T12:33:50.0260822Z |■■■■■■■■■■■■■■■■                                                                |  20% of 107.2 MiB
+test	Install Dependencies	2026-01-05T12:33:50.1515447Z |■■■■■■■■■■■■■■■■■■■■■■■■                                                        |  30% of 107.2 MiB
+test	Install Dependencies	2026-01-05T12:33:50.2679756Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                                |  40% of 107.2 MiB
+test	Install Dependencies	2026-01-05T12:33:50.3870329Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                        |  50% of 107.2 MiB
+test	Install Dependencies	2026-01-05T12:33:50.4931330Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                |  60% of 107.2 MiB
+test	Install Dependencies	2026-01-05T12:33:50.5968568Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                        |  70% of 107.2 MiB
+test	Install Dependencies	2026-01-05T12:33:50.6989392Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                |  80% of 107.2 MiB
+test	Install Dependencies	2026-01-05T12:33:50.8099829Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■        |  90% of 107.2 MiB
+test	Install Dependencies	2026-01-05T12:33:50.9131911Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■| 100% of 107.2 MiB
+test	Install Dependencies	2026-01-05T12:33:56.5850290Z Chromium Headless Shell 143.0.7499.4 (playwright build v1200) downloaded to C:\Users\runneradmin\AppData\Local\ms-playwright\chromium_headless_shell-1200
+test	Install Dependencies	2026-01-05T12:33:56.5858708Z Downloading Winldd playwright build v1007[2m from https://cdn.playwright.dev/dbazure/download/playwright/builds/winldd/1007/winldd-win64.zip[22m
+test	Install Dependencies	2026-01-05T12:33:56.9993965Z |                                                                                |   1% of 0.1 MiB
+test	Install Dependencies	2026-01-05T12:33:57.0008673Z |■■■■■■■■                                                                        |  10% of 0.1 MiB
+test	Install Dependencies	2026-01-05T12:33:57.0039380Z |■■■■■■■■■■■■■■■■                                                                |  20% of 0.1 MiB
+test	Install Dependencies	2026-01-05T12:33:57.0051457Z |■■■■■■■■■■■■■■■■■■■■■■■■                                                        |  30% of 0.1 MiB
+test	Install Dependencies	2026-01-05T12:33:57.0159947Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                                |  40% of 0.1 MiB
+test	Install Dependencies	2026-01-05T12:33:57.0201173Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                |  62% of 0.1 MiB
+test	Install Dependencies	2026-01-05T12:33:57.0218146Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                        |  75% of 0.1 MiB
+test	Install Dependencies	2026-01-05T12:33:57.0353786Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                |  87% of 0.1 MiB
+test	Install Dependencies	2026-01-05T12:33:57.0361021Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■| 100% of 0.1 MiB
+test	Install Dependencies	2026-01-05T12:33:57.0618858Z Winldd playwright build v1007 downloaded to C:\Users\runneradmin\AppData\Local\ms-playwright\winldd-1007
+test	Run Playwright Tests	﻿2026-01-05T12:33:59.7748812Z ##[group]Run npx playwright test
+test	Run Playwright Tests	2026-01-05T12:33:59.7749261Z [36;1mnpx playwright test[0m
+test	Run Playwright Tests	2026-01-05T12:33:59.7824890Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+test	Run Playwright Tests	2026-01-05T12:33:59.7825252Z env:
+test	Run Playwright Tests	2026-01-05T12:33:59.7825503Z   CARGO_HOME: C:\Users\runneradmin\.cargo
+test	Run Playwright Tests	2026-01-05T12:33:59.7825835Z   CARGO_INCREMENTAL: 0
+test	Run Playwright Tests	2026-01-05T12:33:59.7826098Z   CARGO_TERM_COLOR: always
+test	Run Playwright Tests	2026-01-05T12:33:59.7826365Z   CACHE_ON_FAILURE: false
+test	Run Playwright Tests	2026-01-05T12:33:59.7826738Z   WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS: --remote-debugging-port=9222
+test	Run Playwright Tests	2026-01-05T12:33:59.7827108Z   CI: true
+test	Run Playwright Tests	2026-01-05T12:33:59.7827336Z ##[endgroup]
+test	Run Playwright Tests	2026-01-05T12:34:04.7473290Z [2m[WebServer] [22m     Running BeforeDevCommand (`npm run dev`)
+test	Run Playwright Tests	2026-01-05T12:34:07.7349796Z 
+test	Run Playwright Tests	2026-01-05T12:34:07.7350511Z Running 21 tests using 1 worker
+test	Run Playwright Tests	2026-01-05T12:34:08.8378561Z [2m[WebServer] [22m     Running DevCommand (`cargo  run --no-default-features --color always --`)
+test	Run Playwright Tests	2026-01-05T12:34:09.3059057Z [2m[WebServer] [22m        Info Watching D:\a\screen_inu\screen_inu\app\src-tauri for changes...
+test	Run Playwright Tests	2026-01-05T12:34:09.7066310Z Connecting to Tauri app via CDP...
+test	Run Playwright Tests	2026-01-05T12:34:09.7795174Z Connection attempt 0 failed. Waiting...
+test	Run Playwright Tests	2026-01-05T12:34:13.2612355Z [2m[WebServer] [22m[1m[92m    Updating[0m crates.io index
+test	Run Playwright Tests	2026-01-05T12:34:19.8760164Z Connection attempt 10 failed. Waiting...
+test	Run Playwright Tests	2026-01-05T12:34:29.9989701Z Connection attempt 20 failed. Waiting...
+test	Run Playwright Tests	2026-01-05T12:34:39.2384711Z [2m[WebServer] [22m[1m[96m       Fetch[0m [=====>                           ] 0 comple…
+test	Run Playwright Tests	2026-01-05T12:34:40.0892490Z Connection attempt 30 failed. Waiting...
+test	Run Playwright Tests	2026-01-05T12:34:40.3461025Z [2m[WebServer] [22m                                                            
+test	Run Playwright Tests	2026-01-05T12:34:40.3462553Z [2m[WebServer] [22m[1m[92m   Compiling[0m screen-inu v0.2.3 (D:\a\screen_inu\screen_inu\app\src-tauri)
+test	Run Playwright Tests	2026-01-05T12:34:48.8718055Z [2m[WebServer] [22m[1m[96m    Building[0m [=======================> ] 686/690: screen-…
+test	Run Playwright Tests	2026-01-05T12:34:49.3396484Z [2m[WebServer] [22m[1m[96m    Building[0m [=======================> ] 687/690: screen-…
+test	Run Playwright Tests	2026-01-05T12:34:50.1901435Z Connection attempt 40 failed. Waiting...
+test	Run Playwright Tests	2026-01-05T12:35:00.3329489Z Connection attempt 50 failed. Waiting...
+test	Run Playwright Tests	2026-01-05T12:35:10.5509891Z Connection attempt 60 failed. Waiting...
+test	Run Playwright Tests	2026-01-05T12:35:17.9464406Z [2m[WebServer] [22m[1m[96m    Building[0m [=======================> ] 688/690: screen-…
+test	Run Playwright Tests	2026-01-05T12:35:20.6505943Z Connection attempt 70 failed. Waiting...
+test	Run Playwright Tests	2026-01-05T12:35:23.9955540Z [2m[WebServer] [22m[1m[96m    Building[0m [=======================> ] 689/690: screen-…
+test	Run Playwright Tests	2026-01-05T12:35:23.9956636Z [2m[WebServer] [22m                                                            
+test	Run Playwright Tests	2026-01-05T12:35:23.9957325Z [1m[92m    Finished[0m `dev` profile [unoptimized + debuginfo] target(s) in 1m 14s
+test	Run Playwright Tests	2026-01-05T12:35:24.5755152Z [2m[WebServer] [22m[1m[92m     Running[0m `target\debug\screen-inu.exe`
+test	Run Playwright Tests	2026-01-05T12:35:30.7487654Z Connection attempt 80 failed. Waiting...
+test	Run Playwright Tests	2026-01-05T12:35:42.8504272Z Connected to CDP!
+test	Run Playwright Tests	2026-01-05T12:35:42.8505907Z   [Setup] No URL match. Checking titles...
+test	Run Playwright Tests	2026-01-05T12:35:42.8894504Z     - Checking Title: "" URL: about:blank
+test	Run Playwright Tests	2026-01-05T12:35:42.8895902Z   [Setup] Warning: No app page found. Using 2nd page if available (often 1st is background).
+test	Run Playwright Tests	2026-01-05T12:35:42.8896906Z   [Setup] Available pages:
+test	Run Playwright Tests	2026-01-05T12:35:42.8927759Z     - Title: "", URL: about:blank
+test	Run Playwright Tests	2026-01-05T12:35:42.9057840Z   [Setup] Selected page: "" (about:blank)
+test	Run Playwright Tests	2026-01-05T12:35:49.2485009Z ·····  [Helper] Cleaning up existing modals (if any)
+test	Run Playwright Tests	2026-01-05T12:35:49.2501501Z   [Helper] Finding Settings button
+test	Run Playwright Tests	2026-01-05T12:35:49.2537656Z   [Helper] Clicking Settings button
+test	Run Playwright Tests	2026-01-05T12:35:55.2753499Z   [Helper] Waiting for settings title
+test	Run Playwright Tests	2026-01-05T12:35:55.5921006Z   [Helper] Closing settings modal
+test	Run Playwright Tests	2026-01-05T12:35:56.3121802Z ·  [Helper] Cleaning up existing modals (if any)
+test	Run Playwright Tests	2026-01-05T12:35:56.3145962Z   [Helper] Finding Settings button
+test	Run Playwright Tests	2026-01-05T12:35:56.3184275Z   [Helper] Clicking Settings button
+test	Run Playwright Tests	2026-01-05T12:35:56.4404892Z   [Helper] Waiting for settings title
+test	Run Playwright Tests	2026-01-05T12:35:56.7593451Z   [Helper] Closing settings modal
+test	Run Playwright Tests	2026-01-05T12:35:57.2235572Z ·  [Helper] Cleaning up existing modals (if any)
+test	Run Playwright Tests	2026-01-05T12:35:57.2258702Z   [Helper] Finding Settings button
+test	Run Playwright Tests	2026-01-05T12:35:57.2290831Z   [Helper] Clicking Settings button
+test	Run Playwright Tests	2026-01-05T12:35:57.3269783Z   [Helper] Waiting for settings title
+test	Run Playwright Tests	2026-01-05T12:35:57.6477258Z   [Helper] Closing settings modal
+test	Run Playwright Tests	2026-01-05T12:35:58.2005775Z ·  [Helper] Cleaning up existing modals (if any)
+test	Run Playwright Tests	2026-01-05T12:35:58.2023262Z   [Helper] Finding Settings button
+test	Run Playwright Tests	2026-01-05T12:35:58.2056503Z   [Helper] Clicking Settings button
+test	Run Playwright Tests	2026-01-05T12:35:58.3128361Z   [Helper] Waiting for settings title
+test	Run Playwright Tests	2026-01-05T12:35:58.6277863Z   [Helper] Closing settings modal
+test	Run Playwright Tests	2026-01-05T12:35:59.1030088Z ·  [Helper] Cleaning up existing modals (if any)
+test	Run Playwright Tests	2026-01-05T12:35:59.1052077Z   [Helper] Finding Settings button
+test	Run Playwright Tests	2026-01-05T12:35:59.1081082Z   [Helper] Clicking Settings button
+test	Run Playwright Tests	2026-01-05T12:35:59.1948171Z   [Helper] Waiting for settings title
+test	Run Playwright Tests	2026-01-05T12:35:59.5065399Z   [Helper] Closing settings modal
+test	Run Playwright Tests	2026-01-05T12:35:59.9852002Z ·Step 1: Starting test
+test	Run Playwright Tests	2026-01-05T12:36:00.0490052Z Step 2: Opening settings
+test	Run Playwright Tests	2026-01-05T12:36:00.0491063Z   [Helper] Cleaning up existing modals (if any)
+test	Run Playwright Tests	2026-01-05T12:36:00.0520500Z   [Helper] Finding Settings button
+test	Run Playwright Tests	2026-01-05T12:36:00.0552106Z   [Helper] Clicking Settings button
+test	Run Playwright Tests	2026-01-05T12:36:00.1556661Z   [Helper] Waiting for settings title
+test	Run Playwright Tests	2026-01-05T12:36:01.0253011Z Step 3: Clicking Manage button
+test	Run Playwright Tests	2026-01-05T12:36:02.2814404Z Step 4: Verifying search result
+test	Run Playwright Tests	2026-01-05T12:36:03.3953113Z Step 5: Closing Manager
+test	Run Playwright Tests	2026-01-05T12:36:03.9670724Z Step 6: Final check
+test	Run Playwright Tests	2026-01-05T12:36:03.9671249Z   [Helper] Closing settings modal
+test	Run Playwright Tests	2026-01-05T12:36:04.3142775Z Test complete!
+test	Run Playwright Tests	2026-01-05T12:36:04.3442783Z ·Found 4 buttons with SVG icons
+test	Run Playwright Tests	2026-01-05T12:39:16.1548281Z ········××T[Setup] Connecting to Tauri app via CDP...
+test	Run Playwright Tests	2026-01-05T12:39:16.2549063Z [Setup] Connected to CDP!
+test	Run Playwright Tests	2026-01-05T12:39:16.2661090Z [Setup] Selected page: "Screen Inu"
+test	Run Playwright Tests	2026-01-05T12:39:16.6132481Z [Test] Injecting mock history item...
+test	Run Playwright Tests	2026-01-05T12:39:18.0729563Z [Test] Opening History Drawer...
+test	Run Playwright Tests	2026-01-05T12:39:18.6676160Z [Test] Clicking history item...
+test	Run Playwright Tests	2026-01-05T12:39:18.7463052Z [Test] Verifying TTS button...
+test	Run Playwright Tests	2026-01-05T12:39:18.8639662Z [Test] Clicking Speak...
+test	Run Playwright Tests	2026-01-05T12:39:19.7642110Z [Test] Clicking Stop...
+test	Run Playwright Tests	2026-01-05T12:39:24.4512895Z ·
+test	Run Playwright Tests	2026-01-05T12:39:24.4526841Z 
+test	Run Playwright Tests	2026-01-05T12:39:24.4548530Z   1) e2e\playwright\translation_settings.spec.ts:69:5 › Translation Settings › should perform online translation and display result 
+test	Run Playwright Tests	2026-01-05T12:39:24.4549494Z 
+test	Run Playwright Tests	2026-01-05T12:39:24.4549941Z     [31mTest timeout of 60000ms exceeded.[39m
+test	Run Playwright Tests	2026-01-05T12:39:24.4550299Z 
+test	Run Playwright Tests	2026-01-05T12:39:24.4550716Z     Error: page.waitForSelector: Test timeout of 60000ms exceeded.
+test	Run Playwright Tests	2026-01-05T12:39:24.4551359Z     Call log:
+test	Run Playwright Tests	2026-01-05T12:39:24.4552067Z     [2m  - waiting for locator('text=HELLO DOGE') to be visible[22m
+test	Run Playwright Tests	2026-01-05T12:39:24.4552729Z 
+test	Run Playwright Tests	2026-01-05T12:39:24.4552755Z 
+test	Run Playwright Tests	2026-01-05T12:39:24.4553090Z       93 |         // 3. Open History and Load the item
+test	Run Playwright Tests	2026-01-05T12:39:24.4553840Z       94 |         await page.getByRole('button', { name: /bone stash/i }).click();
+test	Run Playwright Tests	2026-01-05T12:39:24.4554597Z     > 95 |         await page.waitForSelector('text=HELLO DOGE');
+test	Run Playwright Tests	2026-01-05T12:39:24.4555180Z          |                    ^
+test	Run Playwright Tests	2026-01-05T12:39:24.4555714Z       96 |         await page.getByText('HELLO DOGE').click();
+test	Run Playwright Tests	2026-01-05T12:39:24.4556494Z       97 |
+test	Run Playwright Tests	2026-01-05T12:39:24.4557038Z       98 |         // 4. Click Translate
+test	Run Playwright Tests	2026-01-05T12:39:24.4557935Z         at D:\a\screen_inu\screen_inu\app\e2e\playwright\translation_settings.spec.ts:95:20
+test	Run Playwright Tests	2026-01-05T12:39:24.4558608Z 
+test	Run Playwright Tests	2026-01-05T12:39:24.4559315Z     Error Context: test-results\translation_settings-Trans-59209-nslation-and-display-result\error-context.md
+test	Run Playwright Tests	2026-01-05T12:39:24.4561687Z 
+test	Run Playwright Tests	2026-01-05T12:39:24.4562396Z     Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+test	Run Playwright Tests	2026-01-05T12:39:24.4562870Z 
+test	Run Playwright Tests	2026-01-05T12:39:24.4563260Z     [31mTest timeout of 60000ms exceeded.[39m
+test	Run Playwright Tests	2026-01-05T12:39:24.4564006Z 
+test	Run Playwright Tests	2026-01-05T12:39:24.4564394Z     Error: page.waitForSelector: Test timeout of 60000ms exceeded.
+test	Run Playwright Tests	2026-01-05T12:39:24.4565023Z     Call log:
+test	Run Playwright Tests	2026-01-05T12:39:24.4565753Z     [2m  - waiting for locator('text=HELLO DOGE') to be visible[22m
+test	Run Playwright Tests	2026-01-05T12:39:24.4566265Z 
+test	Run Playwright Tests	2026-01-05T12:39:24.4566279Z 
+test	Run Playwright Tests	2026-01-05T12:39:24.4566611Z       93 |         // 3. Open History and Load the item
+test	Run Playwright Tests	2026-01-05T12:39:24.4567427Z       94 |         await page.getByRole('button', { name: /bone stash/i }).click();
+test	Run Playwright Tests	2026-01-05T12:39:24.4568306Z     > 95 |         await page.waitForSelector('text=HELLO DOGE');
+test	Run Playwright Tests	2026-01-05T12:39:24.4568972Z          |                    ^
+test	Run Playwright Tests	2026-01-05T12:39:24.4569613Z       96 |         await page.getByText('HELLO DOGE').click();
+test	Run Playwright Tests	2026-01-05T12:39:24.4570210Z       97 |
+test	Run Playwright Tests	2026-01-05T12:39:24.4570657Z       98 |         // 4. Click Translate
+test	Run Playwright Tests	2026-01-05T12:39:24.4571504Z         at D:\a\screen_inu\screen_inu\app\e2e\playwright\translation_settings.spec.ts:95:20
+test	Run Playwright Tests	2026-01-05T12:39:24.4572079Z 
+test	Run Playwright Tests	2026-01-05T12:39:24.4572909Z     Error Context: test-results\translation_settings-Trans-59209-nslation-and-display-result-retry1\error-context.md
+test	Run Playwright Tests	2026-01-05T12:39:24.4573708Z 
+test	Run Playwright Tests	2026-01-05T12:39:24.4574493Z     attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+test	Run Playwright Tests	2026-01-05T12:39:24.4575754Z     test-results\translation_settings-Trans-59209-nslation-and-display-result-retry1\trace.zip
+test	Run Playwright Tests	2026-01-05T12:39:24.4576682Z     Usage:
+test	Run Playwright Tests	2026-01-05T12:39:24.4576897Z 
+test	Run Playwright Tests	2026-01-05T12:39:24.4577777Z         npx playwright show-trace test-results\translation_settings-Trans-59209-nslation-and-display-result-retry1\trace.zip
+test	Run Playwright Tests	2026-01-05T12:39:24.4620795Z 
+test	Run Playwright Tests	2026-01-05T12:39:24.4621932Z     ────────────────────────────────────────────────────────────────────────────────────────────────
+test	Run Playwright Tests	2026-01-05T12:39:24.4622479Z 
+test	Run Playwright Tests	2026-01-05T12:39:24.4623439Z     Retry #2 ───────────────────────────────────────────────────────────────────────────────────────
+test	Run Playwright Tests	2026-01-05T12:39:24.4623936Z 
+test	Run Playwright Tests	2026-01-05T12:39:24.4624327Z     [31mTest timeout of 60000ms exceeded.[39m
+test	Run Playwright Tests	2026-01-05T12:39:24.4625029Z 
+test	Run Playwright Tests	2026-01-05T12:39:24.4625433Z     Error: page.waitForSelector: Test timeout of 60000ms exceeded.
+test	Run Playwright Tests	2026-01-05T12:39:24.4626420Z     Call log:
+test	Run Playwright Tests	2026-01-05T12:39:24.4627448Z     [2m  - waiting for locator('text=HELLO DOGE') to be visible[22m
+test	Run Playwright Tests	2026-01-05T12:39:24.4627979Z 
+test	Run Playwright Tests	2026-01-05T12:39:24.4627991Z 
+test	Run Playwright Tests	2026-01-05T12:39:24.4628262Z       93 |         // 3. Open History and Load the item
+test	Run Playwright Tests	2026-01-05T12:39:24.4629046Z       94 |         await page.getByRole('button', { name: /bone stash/i }).click();
+test	Run Playwright Tests	2026-01-05T12:39:24.4629822Z     > 95 |         await page.waitForSelector('text=HELLO DOGE');
+test	Run Playwright Tests	2026-01-05T12:39:24.4630489Z          |                    ^
+test	Run Playwright Tests	2026-01-05T12:39:24.4631084Z       96 |         await page.getByText('HELLO DOGE').click();
+test	Run Playwright Tests	2026-01-05T12:39:24.4635098Z       97 |
+test	Run Playwright Tests	2026-01-05T12:39:24.4635542Z       98 |         // 4. Click Translate
+test	Run Playwright Tests	2026-01-05T12:39:24.4636246Z         at D:\a\screen_inu\screen_inu\app\e2e\playwright\translation_settings.spec.ts:95:20
+test	Run Playwright Tests	2026-01-05T12:39:24.4636720Z 
+test	Run Playwright Tests	2026-01-05T12:39:24.4638015Z     Error Context: test-results\translation_settings-Trans-59209-nslation-and-display-result-retry2\error-context.md
+test	Run Playwright Tests	2026-01-05T12:39:24.4639601Z 
+test	Run Playwright Tests	2026-01-05T12:39:24.4639859Z   1 failed
+test	Run Playwright Tests	2026-01-05T12:39:24.4641560Z     e2e\playwright\translation_settings.spec.ts:69:5 › Translation Settings › should perform online translation and display result 
+test	Run Playwright Tests	2026-01-05T12:39:24.4642684Z   20 passed (5.4m)
+test	Run Playwright Tests	2026-01-05T12:39:24.6648954Z ##[error]Process completed with exit code 1.
+test	Post Run actions/checkout@v4	﻿2026-01-05T12:39:24.6877196Z Post job cleanup.
+test	Post Run actions/checkout@v4	2026-01-05T12:39:24.9391341Z [command]"C:\Program Files\Git\bin\git.exe" version
+test	Post Run actions/checkout@v4	2026-01-05T12:39:24.9663812Z git version 2.52.0.windows.1
+test	Post Run actions/checkout@v4	2026-01-05T12:39:24.9743855Z Temporarily overriding HOME='D:\a\_temp\9c421d65-4552-410e-b210-ff51c0dfdac7' before making global git config changes
+test	Post Run actions/checkout@v4	2026-01-05T12:39:24.9744689Z Adding repository directory to the temporary git global config as a safe directory
+test	Post Run actions/checkout@v4	2026-01-05T12:39:24.9755457Z [command]"C:\Program Files\Git\bin\git.exe" config --global --add safe.directory D:\a\screen_inu\screen_inu
+test	Post Run actions/checkout@v4	2026-01-05T12:39:25.0399031Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp core\.sshCommand
+test	Post Run actions/checkout@v4	2026-01-05T12:39:25.0740759Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :\""
+test	Post Run actions/checkout@v4	2026-01-05T12:39:26.2177925Z fatal: No url found for submodule path 'homebrew-screen-inu' in .gitmodules
+test	Post Run actions/checkout@v4	2026-01-05T12:39:26.2337971Z ##[warning]The process 'C:\Program Files\Git\bin\git.exe' failed with exit code 128
+test	Complete job	﻿2026-01-05T12:39:26.2500079Z Cleaning up orphan processes
