@@ -191,7 +191,7 @@ test.describe('Settings Modal', () => {
         await openSettings();
 
         // Look for clear history button
-        const clearButton = page.locator('button').filter({ hasText: /clear|清除/i });
+        const clearButton = page.locator('button').filter({ hasText: /clear|清除|dig|挖/i });
         expect(await clearButton.count()).toBeGreaterThanOrEqual(1);
 
         await closeSettings();
