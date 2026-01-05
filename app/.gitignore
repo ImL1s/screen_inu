@@ -27,3 +27,9 @@ playwright-report/
 
 # Ignore Linux tesseract binary as it is system-dependent
 src-tauri/binaries/tesseract-*-linux-*
+
+# Playwright
+blob-report/
+playwright/.cache/
+test_results.txt
+translation_failure.txt
