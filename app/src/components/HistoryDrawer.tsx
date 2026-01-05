@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { motion } from "framer-motion";
 import { Bone, Dog, Trash2, X } from "lucide-react";
 import { HistoryItem } from "../utils/history";
@@ -24,6 +25,19 @@ export const HistoryDrawer = ({
     onCopyItem,
 }: HistoryDrawerProps) => {
     const { t } = useTranslation();
+
+    // Close on Escape key
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') {
+                onClose();
+            }
+        };
+        if (isOpen) {
+            window.addEventListener('keydown', handleKeyDown);
+        }
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [isOpen, onClose]);
 
     if (!isOpen) return null;
 

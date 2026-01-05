@@ -41,24 +41,40 @@ test.afterAll(async () => {
 
 // Helper: Open settings modal
 async function openSettings() {
-    // aria-label is set to t('settings.title') which is "SETTINGS" in English
-    // We try multiple approaches
+    const settingsTitle = page.getByText(/settings|設定/i).first();
+    // If already open, don't click again
+    if (await settingsTitle.isVisible()) {
+        return;
+    }
+
+    // Try multiple approaches to find settings button
     const settingsButton = page.locator('button').filter({ has: page.locator('svg.lucide-settings') });
     if (await settingsButton.count() > 0) {
-        await settingsButton.first().click();
+        // force: true helps if a backdrop is still in the process of fading out
+        await settingsButton.first().click({ force: true });
     } else {
         // Fallback: look for button with Settings icon by structure
-        await page.locator('button:has(svg)').nth(-2).click();
+        await page.locator('button:has(svg)').nth(-2).click({ force: true });
     }
-    await page.waitForTimeout(300);
+
+    // Wait for modal to appear
+    await expect(settingsTitle).toBeVisible({ timeout: 5000 });
+    await page.waitForTimeout(500); // Wait for animation
 }
 
 // Helper: Close settings modal
 async function closeSettings() {
     const closeButton = page.locator('[aria-label="Close settings"]');
     if (await closeButton.count() > 0) {
-        await closeButton.click();
-        await page.waitForTimeout(300);
+        await closeButton.click({ force: true });
+        // Wait for modal to be gone
+        const settingsTitle = page.getByText(/settings|設定/i).first();
+        await expect(settingsTitle).not.toBeVisible({ timeout: 5000 });
+        await page.waitForTimeout(500); // Wait for animation
+    } else {
+        // Fallback: use Escape key
+        await page.keyboard.press('Escape');
+        await page.waitForTimeout(500);
     }
 }
 

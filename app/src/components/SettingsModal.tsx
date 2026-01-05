@@ -74,6 +74,19 @@ export const SettingsModal = ({
         getDataDirectory().then(setDataDirectoryState);
     }, [isOpen]);
 
+    // Close on Escape key
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === 'Escape' && !isRecordingShortcut) {
+                onClose();
+            }
+        };
+        if (isOpen) {
+            window.addEventListener('keydown', handleKeyDown);
+        }
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [isOpen, onClose, isRecordingShortcut]);
+
     const engineLabels: Record<string, string> = {
         'auto': t('settings.ocr_engine.auto') || 'Auto (Smart Selection)',
         'tesseract': 'Tesseract OCR',
