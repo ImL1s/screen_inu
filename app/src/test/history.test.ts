@@ -6,8 +6,6 @@ import {
     deleteHistoryItemAsync,
     exportHistory,
     importHistory,
-    HistoryItem,
-    migrateToLocalStorage,
     migrateToFileStorage
 } from '../utils/history';
 

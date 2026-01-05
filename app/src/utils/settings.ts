@@ -13,7 +13,10 @@ let storeInstance: Store | null = null;
  */
 async function getStore(): Promise<Store> {
     if (!storeInstance) {
-        storeInstance = await load(SETTINGS_FILE, { autoSave: true });
+        storeInstance = await load(SETTINGS_FILE, {
+            autoSave: true,
+            defaults: { dataDirectory: null }
+        });
     }
     return storeInstance;
 }
