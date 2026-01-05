@@ -88,6 +88,20 @@
             "download": "Download",
             "delete": "Delete",
             "source": "Source: tessdata_fast (GitHub)"
+        },
+        "translation": {
+            "title": "Translation Engine",
+            "section": "🌐 TRANSLATION",
+            "online": "Online (LibreTranslate)",
+            "offline": "Offline (Local AI)",
+            "engine": "Engine",
+            "models": "Manage Translation Models",
+            "model_size": "Model Size",
+            "download": "Download",
+            "delete": "Delete",
+            "downloading": "Downloading model...",
+            "no_model": "No offline model installed",
+            "installed": "Installed"
         }
     },
     "overlay": {

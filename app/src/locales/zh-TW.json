@@ -88,6 +88,20 @@
             "download": "下載",
             "delete": "刪除",
             "source": "來源: tessdata_fast (GitHub)"
+        },
+        "translation": {
+            "title": "翻譯引擎",
+            "section": "🌐 翻譯",
+            "online": "線上 (LibreTranslate)",
+            "offline": "離線 (本地 AI)",
+            "engine": "引擎",
+            "models": "管理翻譯模型",
+            "model_size": "模型大小",
+            "download": "下載",
+            "delete": "刪除",
+            "downloading": "正在下載模型...",
+            "no_model": "未安裝離線模型",
+            "installed": "已安裝"
         }
     },
     "overlay": {

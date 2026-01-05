@@ -38,6 +38,7 @@ fn capture_region(x: i32, y: i32, width: u32, height: u32) -> Result<String, Str
 
 mod ocr;
 mod model_manager;
+mod translator;
 
 #[tauri::command]
 fn perform_ocr(base64_image: &str, langs: Option<String>, engine: Option<String>) -> Result<String, String> {
@@ -302,7 +303,11 @@ pub fn run() {
             speak_text,
             stop_speech,
             get_tts_voices,
-            is_speaking
+            is_speaking,
+            translator::translate_offline,
+            translator::list_translation_models,
+            translator::get_translation_model_status,
+            translator::delete_translation_model
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
