@@ -27,12 +27,58 @@ test.beforeAll(async () => {
 
     context = browser.contexts()[0];
     const pages = context.pages();
-    console.log(`Found ${pages.length} pages`);
+    // Filter for the main window
+    const appPages = pages.filter(p => {
+        const url = p.url();
+        // const title = p.title().catch(() => ''); // Handle promise - not needed for filter, will be checked async
+        return url.includes('localhost') ||
+            url.includes('tauri://') ||
+            url.includes('127.0.0.1') ||
+            url.includes('index.html');
+    });
 
-    page = pages[0];
+    // Fallback: Check titles async if no URL match
+    if (appPages.length === 0) {
+        console.log('  [Setup] No URL match. Checking titles...');
+        for (const p of pages) {
+            const title = await p.title().catch(() => 'Error');
+            console.log(`    - Checking Title: "${title}" URL: ${p.url()}`);
+            if (title.match(/Screen\s*Inu/i)) { // Case insensitive match
+                console.log('  [Setup] Found app by title!');
+                appPages.push(p);
+            }
+        }
+    }
+
+    if (appPages.length > 0) {
+        page = appPages[0];
+    } else if (pages.length > 0) {
+        console.log('  [Setup] Warning: No app page found. Using 2nd page if available (often 1st is background).');
+        page = pages.length > 1 ? pages[1] : pages[0];
+    }
+
+    // Log all pages for debugging
+    console.log('  [Setup] Available pages:');
+    for (const p of pages) {
+        console.log(`    - Title: "${await p.title()}", URL: ${p.url()}`);
+    }
+
+    console.log(`  [Setup] Selected page: "${await page.title()}" (${page.url()})`);
 
     if (!page) {
         page = await context.waitForEvent('page');
+    }
+});
+
+test.beforeEach(async () => {
+    // Escape multiple times to close any lingering modals
+    for (let i = 0; i < 2; i++) {
+        const dialogs = page.locator('div[role="dialog"]');
+        if (await dialogs.count() > 0) {
+            console.log(`  [beforeEach] Closing open modal...`);
+            await page.keyboard.press('Escape');
+            await page.waitForTimeout(500);
+        }
     }
 });
 
@@ -268,20 +314,24 @@ test.describe('Integration', () => {
 // =========================================
 test.describe('Batch Processing', () => {
     test('should display Batch Mode button in idle state', async () => {
-        // Ensure no modals are open
-        await page.keyboard.press('Escape');
-        await page.waitForTimeout(300);
-
         // Look for Batch Mode button
         const batchButton = page.locator('button').filter({ hasText: /batch|批次/i });
-        await expect(batchButton.first()).toBeVisible();
+
+        // Debugging: Dump all buttons if not visible
+        const isVisible = await batchButton.first().isVisible().catch(() => false);
+        if (!isVisible) {
+            console.log('  [DEBUG] Batch button not found via isVisible check.');
+            const allButtons = await page.locator('button').allInnerTexts();
+            console.log('  [DEBUG] Visible buttons:', allButtons);
+            // Dump page title and url
+            console.log('  [DEBUG] Page Title:', await page.title());
+            console.log('  [DEBUG] Page URL:', page.url());
+        }
+
+        await expect(batchButton.first()).toBeVisible({ timeout: 5000 });
     });
 
     test('should open Batch Processor modal', async () => {
-        // Ensure no modals are open
-        await page.keyboard.press('Escape');
-        await page.waitForTimeout(300);
-
         // Click Batch Mode button
         const batchButton = page.locator('button').filter({ hasText: /batch|批次/i });
         await batchButton.first().click();
@@ -297,13 +347,13 @@ test.describe('Batch Processing', () => {
     });
 
     test('should have file input for batch processing', async () => {
-        // Ensure no modals are open
-        await page.keyboard.press('Escape');
-        await page.waitForTimeout(300);
-
         // Click Batch Mode button
         const batchButton = page.locator('button').filter({ hasText: /batch|批次/i });
         await batchButton.first().click();
+
+        // Wait for modal to actually appear
+        const modalTitle = page.getByText(/batch mode|批次/i).first();
+        await expect(modalTitle).toBeVisible({ timeout: 5000 });
         await page.waitForTimeout(500);
 
         // Check for file input

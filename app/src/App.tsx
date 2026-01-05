@@ -21,7 +21,9 @@ import {
   Settings,
   Search,
   Languages,
-  Layers
+  Layers,
+  Volume2,
+  VolumeX
 } from "lucide-react";
 import { notifyOcrComplete } from "./utils/notification";
 import { addToHistoryAsync, getHistoryAsync, clearHistoryAsync, HistoryItem } from "./utils/history";
@@ -64,6 +66,9 @@ function App() {
   const [translateEnabled, setTranslateEnabled] = useState(true);
   const [autoTranslate, setAutoTranslate] = useState(false);
   const [targetLang, setTargetLang] = useState('zh'); // Default to Chinese
+
+  // TTS (Text-to-Speech) state
+  const [isSpeaking, setIsSpeaking] = useState(false);
 
   // --- Initialization ---
   useEffect(() => {
@@ -240,6 +245,32 @@ function App() {
       soundManager.playError();
     } finally {
       setIsTranslating(false);
+    }
+  };
+
+  const handleSpeak = async () => {
+    if (isSpeaking) {
+      // Stop speaking
+      try {
+        await invoke("stop_speech");
+        setIsSpeaking(false);
+      } catch (error) {
+        console.error("Failed to stop speech:", error);
+      }
+    } else {
+      // Start speaking
+      const textToSpeak = translatedText || ocrResult;
+      if (!textToSpeak || textToSpeak === "__EMPTY__" || textToSpeak.startsWith("Error:")) return;
+
+      try {
+        setIsSpeaking(true);
+        await invoke("speak_text", { text: textToSpeak });
+        // Auto-reset after approximate speaking duration (rough estimate)
+        setTimeout(() => setIsSpeaking(false), Math.min(textToSpeak.length * 60, 30000));
+      } catch (error) {
+        console.error("TTS error:", error);
+        setIsSpeaking(false);
+      }
     }
   };
 
@@ -489,6 +520,14 @@ function App() {
                       <button onClick={handleCopy} className="p-1.5 bg-white border-2 border-[#0a0a0a] hover:bg-[#0a0a0a] hover:text-[#00ff88] transition-colors shadow-[2px_2px_0px_#0a0a0a] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0a0a0a] focus-visible:ring-offset-2" title={t('status.copy')} aria-label={t('status.copy')}>
                         {isCopied ? <Check size={16} strokeWidth={3} /> : <Copy size={16} strokeWidth={3} />}
                       </button>
+                      <button
+                        onClick={handleSpeak}
+                        className={`p-1.5 border-2 border-[#0a0a0a] transition-colors shadow-[2px_2px_0px_#0a0a0a] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0a0a0a] focus-visible:ring-offset-2 ${isSpeaking ? 'bg-[#ff6b35] text-white' : 'bg-white hover:bg-[#0a0a0a] hover:text-[#00ff88]'}`}
+                        title={t('status.speak') || 'Speak'}
+                        aria-label={t('status.speak') || 'Speak'}
+                      >
+                        {isSpeaking ? <VolumeX size={16} strokeWidth={3} /> : <Volume2 size={16} strokeWidth={3} />}
+                      </button>
                       <button onClick={handleSearch} className="p-1.5 bg-white border-2 border-[#0a0a0a] hover:bg-[#0a0a0a] hover:text-[#00ff88] transition-colors shadow-[2px_2px_0px_#0a0a0a] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0a0a0a] focus-visible:ring-offset-2" title={t('status.search')} aria-label={t('status.search')}>
                         <Search size={16} strokeWidth={3} />
                       </button>
@@ -563,6 +602,7 @@ function App() {
                   className="w-full bg-transparent border-none outline-none px-3 text-xs font-black uppercase cursor-pointer appearance-none tracking-wider focus:ring-2 focus:ring-inset focus:ring-[#0a0a0a]"
                   aria-label={t('settings.language.title')}
                 >
+                  <option value="auto">{t('settings.language.auto')}</option>
                   <option value="eng">{t('settings.language.en')}</option>
                   <option value="chi_tra+eng">{t('settings.language.zh-TW')}</option>
                   <option value="chi_sim+eng">{t('settings.language.chi_sim')}</option>
@@ -641,6 +681,12 @@ function App() {
               onClose={() => setShowHistory(false)}
               historyItems={historyItems}
               onClearHistory={async () => { await clearHistoryAsync(); setHistoryItems([]); }}
+              onSelect={(item) => {
+                setOcrResult(item.text);
+                setTranslatedText("");
+                setShowHistory(false);
+                soundManager.playSuccess();
+              }}
               onCopyItem={() => { setIsCopied(true); setTimeout(() => setIsCopied(false), 1000); }}
             />
           )}

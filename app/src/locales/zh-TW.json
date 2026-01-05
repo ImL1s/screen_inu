@@ -14,7 +14,9 @@
         "clear": "丟掉",
         "empty": "空的。好難過。",
         "error": "錯誤",
-        "copied": "已複製！"
+        "copied": "已複製！",
+        "speak": "朗讀",
+        "stop_speak": "停止朗讀"
     },
     "history": {
         "title": "骨頭倉庫",
@@ -47,6 +49,7 @@
         },
         "language": {
             "title": "語言",
+            "auto": "自動偵測",
             "en": "English (英文)",
             "zh-TW": "繁體中文",
             "chi_sim": "簡體中文",

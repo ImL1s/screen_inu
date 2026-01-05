@@ -14,7 +14,9 @@
         "clear": "Throw Away",
         "empty": "Empty. Much sad.",
         "error": "Error",
-        "copied": "COPIED!"
+        "copied": "COPIED!",
+        "speak": "Speak",
+        "stop_speak": "Stop Speaking"
     },
     "history": {
         "title": "BONE STASH",
@@ -47,6 +49,7 @@
         },
         "language": {
             "title": "LANGUAGE",
+            "auto": "Auto (Detect)",
             "en": "English (Woof)",
             "zh-TW": "Traditional Chinese",
             "chi_sim": "Simplified Chinese",

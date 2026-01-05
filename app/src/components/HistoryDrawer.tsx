@@ -9,6 +9,7 @@ interface HistoryDrawerProps {
     onClose: () => void;
     historyItems: HistoryItem[];
     onClearHistory: () => void;
+    onSelect: (item: HistoryItem) => void;
     onCopyItem: (text: string) => void;
 }
 
@@ -21,13 +22,15 @@ export const HistoryDrawer = ({
     onClose,
     historyItems,
     onClearHistory,
+    onSelect,
     onCopyItem,
 }: HistoryDrawerProps) => {
     const { t } = useTranslation();
 
     if (!isOpen) return null;
 
-    const handleCopyItem = (text: string) => {
+    const handleCopyItem = (e: React.MouseEvent, text: string) => {
+        e.stopPropagation();
         navigator.clipboard.writeText(text);
         soundManager.playSuccess();
         onCopyItem(text);
@@ -92,26 +95,35 @@ export const HistoryDrawer = ({
                             {historyItems.map((item) => (
                                 <div
                                     key={item.id}
-                                    onClick={() => handleCopyItem(item.text)}
+                                    onClick={() => onSelect(item)}
                                     role="button"
                                     tabIndex={0}
                                     onKeyDown={(e) => {
                                         if (e.key === 'Enter' || e.key === ' ') {
                                             e.preventDefault();
-                                            handleCopyItem(item.text);
+                                            onSelect(item);
                                         }
                                     }}
                                     className="bg-white border-2 border-[#0a0a0a] p-3 shadow-[4px_4px_0px_#0a0a0a] hover:shadow-[4px_4px_0px_#00ff88] hover:-translate-y-1 transition-all cursor-pointer group relative overflow-hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-[#00ff88] focus-visible:ring-offset-2"
-                                    aria-label={`Copy: ${item.text.substring(0, 50)}...`}
+                                    aria-label={t('history.item_label') || "Load Item"}
                                 >
                                     <div className="absolute top-0 right-0 w-4 h-4 bg-[#0a0a0a] transform rotate-45 translate-x-2 -translate-y-2"></div>
                                     <div className="flex justify-between items-start mb-2 border-b-2 border-dashed border-[#0a0a0a]/10 pb-1">
-                                        <span className="text-[9px] font-black uppercase bg-[#00ff88] text-[#0a0a0a] px-1 border border-[#0a0a0a]">
-                                            {item.lang}
-                                        </span>
-                                        <span className="text-[9px] font-mono opacity-50">
-                                            {new Date(item.timestamp).toLocaleTimeString()}
-                                        </span>
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-[9px] font-black uppercase bg-[#00ff88] text-[#0a0a0a] px-1 border border-[#0a0a0a]">
+                                                {item.lang}
+                                            </span>
+                                            <span className="text-[9px] font-mono opacity-50">
+                                                {new Date(item.timestamp).toLocaleTimeString()}
+                                            </span>
+                                        </div>
+                                        <button
+                                            onClick={(e) => handleCopyItem(e, item.text)}
+                                            className="text-[#0a0a0a] hover:text-[#ff6b35] transition-colors p-1 -mr-1 -mt-1 rounded focus:outline-none focus:ring-1 focus:ring-[#ff6b35]"
+                                            title={t('common.copy') || "Copy"}
+                                        >
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2" /><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" /></svg>
+                                        </button>
                                     </div>
                                     <p className="text-xs font-mono line-clamp-3 leading-relaxed opacity-100 group-hover:text-[#0a0a0a]">
                                         {item.text}
@@ -125,4 +137,3 @@ export const HistoryDrawer = ({
         </>
     );
 };
-

@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { motion } from "framer-motion";
 import { Layers, Upload, Copy, Loader2, X, AlertCircle, CheckCircle } from "lucide-react";
@@ -24,6 +24,17 @@ export default function BatchProcessor({ ocrLang, ocrEngine, onClose }: BatchPro
     const [results, setResults] = useState<BatchOcrResult[]>([]);
     const [files, setFiles] = useState<File[]>([]);
     const fileInputRef = useRef<HTMLInputElement>(null);
+
+    // Close on Escape
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === "Escape" && !isProcessing) {
+                onClose();
+            }
+        };
+        window.addEventListener("keydown", handleKeyDown);
+        return () => window.removeEventListener("keydown", handleKeyDown);
+    }, [onClose, isProcessing]);
 
     const handleDragOver = useCallback((e: React.DragEvent) => {
         e.preventDefault();
@@ -112,6 +123,8 @@ export default function BatchProcessor({ ocrLang, ocrEngine, onClose }: BatchPro
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
+            role="dialog"
+            aria-modal="true"
         >
             <motion.div
                 initial={{ scale: 0.9, y: 20 }}
