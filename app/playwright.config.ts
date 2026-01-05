@@ -2,7 +2,7 @@ import { defineConfig } from '@playwright/test';
 
 export default defineConfig({
     testDir: './e2e/playwright',
-    timeout: 60000,
+    timeout: 300000,
     expect: {
         timeout: 10000,
     },
@@ -21,7 +21,7 @@ export default defineConfig({
         command: 'npm run tauri dev',
         url: 'http://localhost:1420', // We don't visit this, but Playwright waits for it
         reuseExistingServer: !process.env.CI,
-        timeout: 120 * 1000,
+        timeout: 300 * 1000,
         env: {
             // CRITICAL: This enables CDP on port 9222 for Tauri's WebView2
             WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS: "--remote-debugging-port=9222"

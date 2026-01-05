@@ -8,7 +8,8 @@ let page: Page;
 test.beforeAll(async () => {
     console.log('Connecting to Tauri app via CDP...');
     // Retry connection logic (essential for CI/CD reliability)
-    for (let i = 0; i < 60; i++) {
+    // CI machines can be slow to compile/launch the app
+    for (let i = 0; i < 300; i++) {
         try {
             browser = await chromium.connectOverCDP('http://127.0.0.1:9222');
             console.log('Connected to CDP!');
