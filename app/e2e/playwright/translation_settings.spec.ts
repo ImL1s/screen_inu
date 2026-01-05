@@ -84,7 +84,7 @@ test.describe('Translation Settings', () => {
                     language: 'en'
                 }
             ];
-            window.localStorage.setItem('history', JSON.stringify(mockHistory));
+            window.localStorage.setItem('ocr_history', JSON.stringify(mockHistory));
         });
 
         await page.goto('http://localhost:1420');
