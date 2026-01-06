@@ -42,7 +42,12 @@
     *   **Auto-Smart Selection**: Automatically picks the best engine for the language (Windows OCR for CJK, Tesseract for others).
     *   **Windows Native OCR**: Integrated Windows Media OCR for superior accuracy in Chinese/Japanese/Korean.
     *   **Tesseract 5 (Bundled)**: No installation required! Optimized `tessdata_best` models included.
-*   **Multi-language Support**: Fully localized interface in **English** and **Traditional Chinese (繁體中文)**.
+*   **Cloud Sync (CRDT)**: High-performance history synchronization using Loro (CRDT) to ensure conflict-free merges across multiple devices.
+*   **Text-to-Speech (TTS)**: Cross-platform voice synthesis for recognized text.
+*   **Batch Processing**: Smart parallel OCR for bulk image processing.
+*   **Offline Translation**: Privacy-preserving, zero-api translation using pure-Rust ONNX inference.
+*   **Auto-Detection**: PSM 0 based language detection.
+*   **Multi-language Support**: Full support for **English** and **Traditional Chinese** interfaces.
 *   **History Vault**: Automatically saves your recent snips and OCR results locally.
 *   **Auto-Copy**: Optionally text to clipboard automatically after recognition.
 *   **Dark/Light Theme**: Beautiful glassmorphism UI that adapts to your preference (Auto-saved).
