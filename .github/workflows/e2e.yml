@@ -39,6 +39,6 @@ jobs:
         run: npx playwright test
         env:
           # Enable remote debugging for WebView2
-          WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS: "--remote-debugging-port=9222"
+          WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS: "--remote-debugging-port=19222"
           # CI flag usually set by GitHub, but explicit is good
           CI: true

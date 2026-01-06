@@ -23,8 +23,8 @@ export default defineConfig({
         reuseExistingServer: !process.env.CI,
         timeout: 300 * 1000,
         env: {
-            // CRITICAL: This enables CDP on port 9222 for Tauri's WebView2
-            WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS: "--remote-debugging-port=9222"
+            // CRITICAL: This enables CDP on port 19222 for Tauri's WebView2
+            WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS: "--remote-debugging-port=19222"
         }
     },
 });
