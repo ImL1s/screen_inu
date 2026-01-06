@@ -1,7 +1,7 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "Screen Inu",
-  "version": "0.2.3",
+  "version": "0.2.6",
   "identifier": "com.iml1s.screeninu",
   "build": {
     "beforeDevCommand": "npm run dev",
