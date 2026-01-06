@@ -12,11 +12,11 @@ test.beforeAll(async () => {
     // Retry connection logic (essential for CI/CD reliability)
     for (let i = 0; i < 300; i++) {
         try {
-            browser = await chromium.connectOverCDP('http://127.0.0.1:9222');
-            console.log('Connected to CDP!');
+            browser = await chromium.connectOverCDP('http://127.0.0.1:19222');
+            console.log('[Setup] Connected to CDP!');
             break;
         } catch (e) {
-            if (i % 10 === 0) console.log(`Connection attempt ${i} failed. Waiting...`);
+            if (i % 10 === 0) console.log(`[Setup] Connection attempt ${i} failed. Waiting...`);
             await new Promise(r => setTimeout(r, 1000));
         }
     }

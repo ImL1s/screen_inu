@@ -1,0 +1,117 @@
+﻿2026-01-06T08:12:38.1133514Z ##[group]Run actions/checkout@v4
+2026-01-06T08:12:38.1134876Z with:
+2026-01-06T08:12:38.1135585Z   repository: ImL1s/screen_inu
+2026-01-06T08:12:38.1136638Z   token: ***
+2026-01-06T08:12:38.1137324Z   ssh-strict: true
+2026-01-06T08:12:38.1138034Z   ssh-user: git
+2026-01-06T08:12:38.1138751Z   persist-credentials: true
+2026-01-06T08:12:38.1139537Z   clean: true
+2026-01-06T08:12:38.1140260Z   sparse-checkout-cone-mode: true
+2026-01-06T08:12:38.1141120Z   fetch-depth: 1
+2026-01-06T08:12:38.1141820Z   fetch-tags: false
+2026-01-06T08:12:38.1142540Z   show-progress: true
+2026-01-06T08:12:38.1143261Z   lfs: false
+2026-01-06T08:12:38.1143926Z   submodules: false
+2026-01-06T08:12:38.1144645Z   set-safe-directory: true
+2026-01-06T08:12:38.1145639Z ##[endgroup]
+2026-01-06T08:12:38.3005670Z Syncing repository: ImL1s/screen_inu
+2026-01-06T08:12:38.3008056Z ##[group]Getting Git version info
+2026-01-06T08:12:38.3009160Z Working directory is 'D:\a\screen_inu\screen_inu'
+2026-01-06T08:12:38.3949837Z [command]"C:\Program Files\Git\bin\git.exe" version
+2026-01-06T08:12:39.1301748Z git version 2.52.0.windows.1
+2026-01-06T08:12:39.1354875Z ##[endgroup]
+2026-01-06T08:12:39.1376258Z Temporarily overriding HOME='D:\a\_temp\5ec7a085-14bf-4a95-91e5-a1c5b16fd9cc' before making global git config changes
+2026-01-06T08:12:39.1378449Z Adding repository directory to the temporary git global config as a safe directory
+2026-01-06T08:12:39.1388316Z [command]"C:\Program Files\Git\bin\git.exe" config --global --add safe.directory D:\a\screen_inu\screen_inu
+2026-01-06T08:12:39.2540287Z Deleting the contents of 'D:\a\screen_inu\screen_inu'
+2026-01-06T08:12:39.2547109Z ##[group]Initializing the repository
+2026-01-06T08:12:39.2557237Z [command]"C:\Program Files\Git\bin\git.exe" init D:\a\screen_inu\screen_inu
+2026-01-06T08:12:39.4292678Z Initialized empty Git repository in D:/a/screen_inu/screen_inu/.git/
+2026-01-06T08:12:39.4348432Z [command]"C:\Program Files\Git\bin\git.exe" remote add origin https://github.com/ImL1s/screen_inu
+2026-01-06T08:12:39.5189527Z ##[endgroup]
+2026-01-06T08:12:39.5190286Z ##[group]Disabling automatic garbage collection
+2026-01-06T08:12:39.5199465Z [command]"C:\Program Files\Git\bin\git.exe" config --local gc.auto 0
+2026-01-06T08:12:39.5506367Z ##[endgroup]
+2026-01-06T08:12:39.5506987Z ##[group]Setting up auth
+2026-01-06T08:12:39.5507588Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp core\.sshCommand
+2026-01-06T08:12:39.5806712Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :\""
+2026-01-06T08:12:41.8874563Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-01-06T08:12:41.9165933Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :\""
+2026-01-06T08:12:42.4772224Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-01-06T08:12:42.5089851Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "git config --local --show-origin --name-only --get-regexp remote.origin.url"
+2026-01-06T08:12:43.0341875Z [command]"C:\Program Files\Git\bin\git.exe" config --local http.https://github.com/.extraheader "AUTHORIZATION: basic ***"
+2026-01-06T08:12:43.0652525Z ##[endgroup]
+2026-01-06T08:12:43.0653066Z ##[group]Fetching the repository
+2026-01-06T08:12:43.0666712Z [command]"C:\Program Files\Git\bin\git.exe" -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +9376faf4110fc41e48a0289a44f617ad603621db:refs/remotes/pull/6/merge
+2026-01-06T08:12:47.1326508Z From https://github.com/ImL1s/screen_inu
+2026-01-06T08:12:47.1327852Z  * [new ref]         9376faf4110fc41e48a0289a44f617ad603621db -> pull/6/merge
+2026-01-06T08:12:47.1514696Z ##[endgroup]
+2026-01-06T08:12:47.1515418Z ##[group]Determining the checkout info
+2026-01-06T08:12:47.1518790Z ##[endgroup]
+2026-01-06T08:12:47.1536031Z [command]"C:\Program Files\Git\bin\git.exe" sparse-checkout disable
+2026-01-06T08:12:47.1887855Z [command]"C:\Program Files\Git\bin\git.exe" config --local --unset-all extensions.worktreeConfig
+2026-01-06T08:12:47.2195305Z ##[group]Checking out the ref
+2026-01-06T08:12:47.2206571Z [command]"C:\Program Files\Git\bin\git.exe" checkout --progress --force refs/remotes/pull/6/merge
+2026-01-06T08:12:48.5168801Z Updating files:  60% (182/300)
+2026-01-06T08:12:48.5175437Z Updating files:  61% (183/300)
+2026-01-06T08:12:48.5183964Z Updating files:  62% (186/300)
+2026-01-06T08:12:48.5190884Z Updating files:  63% (189/300)
+2026-01-06T08:12:48.5196854Z Updating files:  64% (192/300)
+2026-01-06T08:12:48.5202615Z Updating files:  65% (195/300)
+2026-01-06T08:12:48.5208839Z Updating files:  66% (198/300)
+2026-01-06T08:12:48.5219755Z Updating files:  67% (201/300)
+2026-01-06T08:12:48.5244263Z Updating files:  68% (204/300)
+2026-01-06T08:12:48.6452435Z Updating files:  69% (207/300)
+2026-01-06T08:12:48.8433988Z Updating files:  70% (210/300)
+2026-01-06T08:12:48.9995476Z Updating files:  71% (213/300)
+2026-01-06T08:12:49.0004116Z Updating files:  72% (216/300)
+2026-01-06T08:12:49.0010612Z Updating files:  73% (219/300)
+2026-01-06T08:12:49.0018933Z Updating files:  74% (222/300)
+2026-01-06T08:12:49.0038079Z Updating files:  75% (225/300)
+2026-01-06T08:12:49.0098222Z Updating files:  76% (228/300)
+2026-01-06T08:12:49.0115506Z Updating files:  77% (231/300)
+2026-01-06T08:12:49.0125746Z Updating files:  78% (234/300)
+2026-01-06T08:12:49.0135844Z Updating files:  79% (237/300)
+2026-01-06T08:12:49.0144913Z Updating files:  80% (240/300)
+2026-01-06T08:12:49.0152690Z Updating files:  81% (243/300)
+2026-01-06T08:12:49.0159952Z Updating files:  82% (246/300)
+2026-01-06T08:12:49.0170061Z Updating files:  83% (249/300)
+2026-01-06T08:12:49.0178173Z Updating files:  84% (252/300)
+2026-01-06T08:12:49.0185362Z Updating files:  85% (255/300)
+2026-01-06T08:12:49.0191437Z Updating files:  86% (258/300)
+2026-01-06T08:12:49.0198139Z Updating files:  87% (261/300)
+2026-01-06T08:12:49.0208788Z Updating files:  88% (264/300)
+2026-01-06T08:12:49.0221113Z Updating files:  89% (267/300)
+2026-01-06T08:12:49.0232076Z Updating files:  90% (270/300)
+2026-01-06T08:12:49.0243595Z Updating files:  91% (273/300)
+2026-01-06T08:12:49.0279752Z Updating files:  92% (276/300)
+2026-01-06T08:12:49.0295837Z Updating files:  93% (279/300)
+2026-01-06T08:12:49.0320973Z Updating files:  94% (282/300)
+2026-01-06T08:12:49.0327976Z Updating files:  95% (285/300)
+2026-01-06T08:12:49.0337468Z Updating files:  96% (288/300)
+2026-01-06T08:12:49.0357334Z Updating files:  97% (291/300)
+2026-01-06T08:12:49.0364196Z Updating files:  98% (294/300)
+2026-01-06T08:12:49.0372224Z Updating files:  99% (297/300)
+2026-01-06T08:12:49.0373060Z Updating files: 100% (300/300)
+2026-01-06T08:12:49.0373859Z Updating files: 100% (300/300), done.
+2026-01-06T08:12:49.0523528Z Note: switching to 'refs/remotes/pull/6/merge'.
+2026-01-06T08:12:49.0524008Z 
+2026-01-06T08:12:49.0524337Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-01-06T08:12:49.0525293Z changes and commit them, and you can discard any commits you make in this
+2026-01-06T08:12:49.0526165Z state without impacting any branches by switching back to a branch.
+2026-01-06T08:12:49.0526708Z 
+2026-01-06T08:12:49.0527217Z If you want to create a new branch to retain commits you create, you may
+2026-01-06T08:12:49.0528541Z do so (now or later) by using -c with the switch command. Example:
+2026-01-06T08:12:49.0528955Z 
+2026-01-06T08:12:49.0529177Z   git switch -c <new-branch-name>
+2026-01-06T08:12:49.0529523Z 
+2026-01-06T08:12:49.0529669Z Or undo this operation with:
+2026-01-06T08:12:49.0529910Z 
+2026-01-06T08:12:49.0530036Z   git switch -
+2026-01-06T08:12:49.0531254Z 
+2026-01-06T08:12:49.0531608Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-01-06T08:12:49.0532090Z 
+2026-01-06T08:12:49.0532682Z HEAD is now at 9376faf Merge 8e3dc6b3794c29ea90b847a25a9caab666b27a37 into bd054e71bb22172f6ab6990b4ff82ca1a73eb3f4
+2026-01-06T08:12:49.0735508Z ##[endgroup]
+2026-01-06T08:12:49.1061387Z [command]"C:\Program Files\Git\bin\git.exe" log -1 --format=%H
+2026-01-06T08:12:49.1328726Z 9376faf4110fc41e48a0289a44f617ad603621db

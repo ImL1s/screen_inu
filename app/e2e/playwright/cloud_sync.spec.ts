@@ -195,11 +195,24 @@ test.describe('Cloud Sync (CRDT)', () => {
     });
 
     test('should display Clear History button in History Drawer', async () => {
+        // Inject an item to ensure the button is rendered
+        await page.evaluate(() => {
+            const mockItem = {
+                id: 'btn-test',
+                text: 'Ensuring history is not empty',
+                lang: 'eng',
+                timestamp: Date.now()
+            };
+            localStorage.setItem('ocr_history', JSON.stringify([mockItem]));
+        });
+        await page.reload();
+        await page.waitForTimeout(500);
+
         await openHistoryDrawer();
 
         // Look for clear/dig button
         const clearButton = page.locator('button').filter({ hasText: /clear|dig|清除|挖/i });
-        expect(await clearButton.count()).toBeGreaterThanOrEqual(1);
+        await expect(clearButton.first()).toBeVisible({ timeout: 5000 });
 
         // Close drawer
         await page.keyboard.press('Escape');

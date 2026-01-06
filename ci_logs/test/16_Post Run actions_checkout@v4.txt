@@ -1,0 +1,10 @@
+﻿2026-01-06T08:33:55.8832578Z Post job cleanup.
+2026-01-06T08:33:56.1681207Z [command]"C:\Program Files\Git\bin\git.exe" version
+2026-01-06T08:33:56.2501415Z git version 2.52.0.windows.1
+2026-01-06T08:33:56.2577788Z Temporarily overriding HOME='D:\a\_temp\07501d3f-7fbf-4bc2-b2d9-b40391c427b3' before making global git config changes
+2026-01-06T08:33:56.2578952Z Adding repository directory to the temporary git global config as a safe directory
+2026-01-06T08:33:56.2590775Z [command]"C:\Program Files\Git\bin\git.exe" config --global --add safe.directory D:\a\screen_inu\screen_inu
+2026-01-06T08:33:56.2948640Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp core\.sshCommand
+2026-01-06T08:33:56.3244398Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :\""
+2026-01-06T08:33:56.9090196Z fatal: No url found for submodule path 'homebrew-screen-inu' in .gitmodules
+2026-01-06T08:33:56.9201979Z ##[warning]The process 'C:\Program Files\Git\bin\git.exe' failed with exit code 128

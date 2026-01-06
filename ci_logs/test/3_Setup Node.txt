@@ -1,0 +1,23 @@
+﻿2026-01-06T08:12:49.1814806Z ##[group]Run actions/setup-node@v4
+2026-01-06T08:12:49.1815098Z with:
+2026-01-06T08:12:49.1815258Z   node-version: 22
+2026-01-06T08:12:49.1815431Z   cache: npm
+2026-01-06T08:12:49.1815634Z   cache-dependency-path: app/package-lock.json
+2026-01-06T08:12:49.1815898Z   always-auth: false
+2026-01-06T08:12:49.1816073Z   check-latest: false
+2026-01-06T08:12:49.1816365Z   token: ***
+2026-01-06T08:12:49.1816515Z ##[endgroup]
+2026-01-06T08:12:49.4569491Z Found in cache @ C:\hostedtoolcache\windows\node\22.21.1\x64
+2026-01-06T08:12:49.4579622Z ##[group]Environment details
+2026-01-06T08:12:58.6528084Z node: v22.21.1
+2026-01-06T08:12:58.6528419Z npm: 10.9.4
+2026-01-06T08:12:58.6528574Z yarn: 1.22.22
+2026-01-06T08:12:58.6530595Z ##[endgroup]
+2026-01-06T08:12:58.7472100Z [command]C:\Windows\system32\cmd.exe /D /S /C "C:\hostedtoolcache\windows\node\22.21.1\x64\npm.cmd config get cache"
+2026-01-06T08:12:59.7047185Z C:\npm\cache
+2026-01-06T08:13:00.2476257Z Cache hit for: node-cache-Windows-x64-npm-1afd14348da0f230940be061caf2f50c8ddd7c794441719847974a1324e8b2e8
+2026-01-06T08:13:01.4282191Z Received 42343224 of 42343224 (100.0%), 42.0 MBs/sec
+2026-01-06T08:13:01.4285220Z Cache Size: ~40 MB (42343224 B)
+2026-01-06T08:13:01.4355923Z [command]"C:\Program Files\Git\usr\bin\tar.exe" -xf D:/a/_temp/7d4bb2e5-1904-4267-835b-9495e76c9550/cache.tzst -P -C D:/a/screen_inu/screen_inu --force-local --use-compress-program "zstd -d"
+2026-01-06T08:13:02.9040124Z Cache restored successfully
+2026-01-06T08:13:02.9082382Z Cache restored from key: node-cache-Windows-x64-npm-1afd14348da0f230940be061caf2f50c8ddd7c794441719847974a1324e8b2e8

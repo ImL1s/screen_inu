@@ -1,0 +1,10 @@
+﻿2026-01-06T08:13:49.2783239Z ##[group]Run mkdir -p app/src-tauri/binaries
+2026-01-06T08:13:49.2783699Z [36;1mmkdir -p app/src-tauri/binaries[0m
+2026-01-06T08:13:49.2784091Z [36;1mtouch app/src-tauri/binaries/tesseract-x86_64-pc-windows-msvc.exe[0m
+2026-01-06T08:13:49.2805121Z shell: C:\Program Files\Git\bin\bash.EXE --noprofile --norc -e -o pipefail {0}
+2026-01-06T08:13:49.2805657Z env:
+2026-01-06T08:13:49.2805909Z   CARGO_HOME: C:\Users\runneradmin\.cargo
+2026-01-06T08:13:49.2806166Z   CARGO_INCREMENTAL: 0
+2026-01-06T08:13:49.2806364Z   CARGO_TERM_COLOR: always
+2026-01-06T08:13:49.2806567Z   CACHE_ON_FAILURE: false
+2026-01-06T08:13:49.2806967Z ##[endgroup]
