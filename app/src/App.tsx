@@ -26,7 +26,7 @@ import {
   VolumeX
 } from "lucide-react";
 import { notifyOcrComplete } from "./utils/notification";
-import { addToHistoryAsync, getHistoryAsync, clearHistoryAsync, HistoryItem } from "./utils/history";
+import { addToHistoryAsync, getHistoryAsync, clearHistoryAsync, HistoryItem, startWatchingHistory } from "./utils/history";
 import { soundManager } from "./utils/SoundManager";
 import { translateText, COMMON_TARGET_LANGUAGES } from "./utils/translate";
 import { getSettings, setTranslationEngine as setTranslationEnginePref } from "./utils/settings";
@@ -162,8 +162,17 @@ function App() {
     };
     const unlistenPromise = setupTrayListener();
 
+    // Initialize history watcher (Cloud Sync)
+    let unwatchHistory: (() => void) | undefined;
+    startWatchingHistory(async () => {
+      console.log('🔄 Cloud Sync: Reloading history...');
+      const items = await getHistoryAsync();
+      setHistoryItems(items);
+    }).then(unsub => { unwatchHistory = unsub; });
+
     return () => {
       unlistenPromise.then(unlisten => unlisten());
+      if (unwatchHistory) unwatchHistory();
       // Cleanup shortcut on unmount
       if (shortcutRegistered && currentRegisteredShortcut) {
         import("@tauri-apps/plugin-global-shortcut").then(({ unregister }) => {

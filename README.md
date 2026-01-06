@@ -42,7 +42,12 @@
     *   **Auto-Smart Selection**: Automatically picks the best engine for the language (Windows OCR for CJK, Tesseract for others).
     *   **Windows Native OCR**: Integrated Windows Media OCR for superior accuracy in Chinese/Japanese/Korean.
     *   **Tesseract 5 (Bundled)**: No installation required! Optimized `tessdata_best` models included.
-*   **Multi-language Support**: Fully localized interface in **English** and **Traditional Chinese (繁體中文)**.
+*   **Cloud Sync (CRDT)**: High-performance history synchronization using Loro (CRDT) to ensure conflict-free merges across multiple devices.
+*   **Text-to-Speech (TTS)**: Cross-platform voice synthesis for recognized text.
+*   **Batch Processing**: Smart parallel OCR for bulk image processing.
+*   **Offline Translation**: Privacy-preserving, zero-api translation using pure-Rust ONNX inference.
+*   **Auto-Detection**: PSM 0 based language detection.
+*   **Multi-language Support**: Full support for **English** and **Traditional Chinese** interfaces.
 *   **History Vault**: Automatically saves your recent snips and OCR results locally.
 *   **Auto-Copy**: Optionally text to clipboard automatically after recognition.
 *   **Dark/Light Theme**: Beautiful glassmorphism UI that adapts to your preference (Auto-saved).
@@ -139,7 +144,31 @@ sudo apt update && sudo apt install -y \
     *   **Windows**: `.msi` or `.exe` (NSIS) in `src-tauri/target/release/bundle/`
     *   **Linux**: `.AppImage` or `.deb` in `src-tauri/target/release/bundle/`
 
-## 📄 License
+## 🧪 Testing
+
+We use **Playwright** for End-to-End (E2E) testing to ensure application stability, particularly for the CRDT Cloud Sync and History features.
+
+<div align="center">
+  <img src="app/public/images/test_result.png" alt="E2E Test Result - Empty State" width="40%" />
+  <p><em>Verified: Empty State UI handling during isolated tests</em></p>
+</div>
+
+### Running E2E Tests
+
+1.  **Launch App in Debug Mode**:
+    ```bash
+    # PowerShell
+    $env:WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS='--remote-debugging-port=19222'
+    npm run tauri dev
+    ```
+
+2.  **Run Playwright**:
+    ```bash
+    cd app/e2e
+    npx playwright test
+    ```
+
+> **Note**: E2E tests include a `localStorage` cleanup mechanism to ensure a clean state for testing isolation.
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 

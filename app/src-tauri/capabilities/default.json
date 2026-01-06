@@ -17,6 +17,7 @@
     "updater:default",
     "process:allow-restart",
     "process:allow-exit",
-    "store:default"
+    "store:default",
+    "fs:allow-watch"
   ]
 }

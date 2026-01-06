@@ -6,14 +6,15 @@ let context: BrowserContext;
 let page: Page;
 
 test.beforeAll(async () => {
-    test.setTimeout(60000); // 1 min setup timeout
+    test.setTimeout(300000); // 5 min setup timeout
     console.log('[Setup] Connecting to Tauri app via CDP...');
-    for (let i = 0; i < 60; i++) {
+    for (let i = 0; i < 300; i++) {
         try {
-            browser = await chromium.connectOverCDP('http://127.0.0.1:9222');
+            browser = await chromium.connectOverCDP('http://127.0.0.1:19222');
             console.log('[Setup] Connected to CDP!');
             break;
         } catch (e) {
+            if (i % 10 === 0) console.log(`[Setup] Connection attempt ${i} failed. Waiting...`);
             await new Promise(r => setTimeout(r, 1000));
         }
     }

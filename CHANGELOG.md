@@ -8,8 +8,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- Development roadmap for future improvements
+- Full E2E Test Suite for Cloud Sync and TTS
+- Integration of Tesseract sidecars for zero-dependency OCR on all platforms
 
+## [0.3.0] - 2026-01-06
+
+### Added
+- **Cloud Sync (CRDT)**: High-performance history synchronization using Loro (CRDT) to ensure conflict-free merges across multiple devices.
+- **Text-to-Speech (TTS)**: Cross-platform voice synthesis for recognized text with "Click to Load" history support.
+- **Batch Processing**: Smart parallel OCR for bulk image processing with real-time progress tracking.
+- **Offline Translation AI**: Integrated pure-Rust ONNX inference (`tract-onnx`) for privacy-preserving, zero-api translation.
+- **Auto-Detection**: PSM 0 based language detection to automatically select the best OCR engine/language.
+- **Test Mode**: Backend support for data isolation using `SCREEN_INU_TEST_DIR` for reliable E2E testing.
+
+### Improved
+- **History Drawer**: Interactive "Bone Stash" with better result loading and clearing functionality.
+- **Settings UI**: Reorganized settings categories for better accessibility.
+
+### Fixed
+- **CDP Port Consistency**: Standardized debugger port to 19222 across all environments.
+- **History Button Visibility**: Fixed logic that hid clear button when history was empty in clean test environments.
 ## [0.2.3] - 2026-01-04
 
 ### Added
