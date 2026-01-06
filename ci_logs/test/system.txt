@@ -1,5 +1,0 @@
-2026-01-06T08:12:32.4400000Z Job is waiting for a hosted runner to come online.
-2026-01-06T08:12:32.4480000Z Job is about to start running on the hosted runner: GitHub Actions 1000010712
-2026-01-06T08:12:32.4370000Z Requested labels: windows-latest
-2026-01-06T08:12:32.4370000Z Job defined at: ImL1s/screen_inu/.github/workflows/e2e.yml@refs/pull/6/merge
-2026-01-06T08:12:32.4370000Z Waiting for a runner to pick up this job...
