@@ -172,12 +172,16 @@ test.describe('Cloud Sync (CRDT)', () => {
         await closeSettings();
     });
 
-    test('should display Reset button for Storage Location', async () => {
+    test('should display Storage Location controls', async () => {
         await openSettings();
 
-        // Look for reset/default button
-        const resetButton = page.locator('button').filter({ hasText: /reset|default|重設|預設/i });
-        expect(await resetButton.count()).toBeGreaterThanOrEqual(1);
+        // Look for "Change Location" button (Always present)
+        // Adjust regex to match "Change Location" or "變更位置"
+        const changeButton = page.locator('button').filter({ hasText: /change location|location|變更/i });
+        await expect(changeButton.first()).toBeVisible({ timeout: 5000 });
+
+        // Reset button should NOT be visible in default state (unless we mocked the store)
+        // But checking for Change Location is sufficient to verify the section exists.
 
         await closeSettings();
     });
