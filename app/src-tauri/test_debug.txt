@@ -1,0 +1,51 @@
+warning: variable does not need to be mutable
+   --> src\sync.rs:183:9
+    |
+183 |     let mut guard = SYNC_MANAGER.lock().map_err(|e| e.to_string())?;
+    |         ----^^^^^
+    |         |
+    |         help: remove this `mut`
+    |
+    = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: `screen-inu` (lib) generated 1 warning (run `cargo fix --lib -p screen-inu` to apply 1 suggestion)
+warning: `screen-inu` (lib test) generated 1 warning (1 duplicate)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.47s
+     Running unittests src\lib.rs (target\debug\deps\app_lib-23dfad47bfd48014.exe)
+
+running 2 tests
+test sync::tests::test_sync_manager_flow ... FAILED
+test sync::tests::test_merge_conflict ... FAILED
+
+failures:
+
+---- sync::tests::test_sync_manager_flow stdout ----
+[DEBUG] get_all_items value: Map(LoroMapValue({"item1": Container(Normal(Map 0@1647363408784498700))}))
+[DEBUG] map size: 1
+[DEBUG] checking id: item1
+
+thread 'sync::tests::test_sync_manager_flow' (25524) panicked at src\sync.rs:214:9:
+assertion `left == right` failed
+  left: 0
+ right: 1
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- sync::tests::test_merge_conflict stdout ----
+[DEBUG] get_all_items value: Map(LoroMapValue({"cat": Container(Normal(Map 0@11406599940770290677)), "dog": Container(Normal(Map 0@9967209038812315292))}))
+[DEBUG] map size: 2
+[DEBUG] checking id: cat
+[DEBUG] checking id: dog
+
+thread 'sync::tests::test_merge_conflict' (51168) panicked at src\sync.rs:256:9:
+assertion `left == right` failed: Merged should have 2 items
+  left: 0
+ right: 2
+
+
+failures:
+    sync::tests::test_merge_conflict
+    sync::tests::test_sync_manager_flow
+
+test result: FAILED. 0 passed; 2 failed; 0 ignored; 0 measured; 6 filtered out; finished in 0.01s
+
+error: test failed, to rerun pass `--lib`

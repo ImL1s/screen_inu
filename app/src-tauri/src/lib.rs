@@ -39,6 +39,7 @@ fn capture_region(x: i32, y: i32, width: u32, height: u32) -> Result<String, Str
 mod ocr;
 mod model_manager;
 mod translator;
+mod sync;
 
 #[tauri::command]
 fn perform_ocr(base64_image: &str, langs: Option<String>, engine: Option<String>) -> Result<String, String> {
@@ -308,7 +309,14 @@ pub fn run() {
             translator::list_translation_models,
             translator::get_translation_model_status,
             translator::download_translation_model,
-            translator::delete_translation_model
+            translator::download_translation_model,
+            translator::delete_translation_model,
+            // Cloud Sync (CRDT)
+            sync::sync_init,
+            sync::sync_add_item,
+            sync::sync_delete_item,
+            sync::sync_get_all,
+            sync::sync_import_snapshot
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

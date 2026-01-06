@@ -139,7 +139,31 @@ sudo apt update && sudo apt install -y \
     *   **Windows**: `.msi` or `.exe` (NSIS) in `src-tauri/target/release/bundle/`
     *   **Linux**: `.AppImage` or `.deb` in `src-tauri/target/release/bundle/`
 
-## 📄 License
+## 🧪 Testing
+
+We use **Playwright** for End-to-End (E2E) testing to ensure application stability, particularly for the CRDT Cloud Sync and History features.
+
+<div align="center">
+  <img src="app/public/images/test_result.png" alt="E2E Test Result - Empty State" width="40%" />
+  <p><em>Verified: Empty State UI handling during isolated tests</em></p>
+</div>
+
+### Running E2E Tests
+
+1.  **Launch App in Debug Mode**:
+    ```bash
+    # PowerShell
+    $env:WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS='--remote-debugging-port=19222'
+    npm run tauri dev
+    ```
+
+2.  **Run Playwright**:
+    ```bash
+    cd app/e2e
+    npx playwright test
+    ```
+
+> **Note**: E2E tests include a `localStorage` cleanup mechanism to ensure a clean state for testing isolation.
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
